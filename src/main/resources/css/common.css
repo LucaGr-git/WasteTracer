@@ -27,8 +27,12 @@ body {
    display: flex;
    flex-direction: row;
    flex-wrap: nowrap;
-   justify-content: space-between;
+   justify-content: space-evenly;
    align-items: center;
+}
+
+.topnav-links div {
+   flex-grow: 1;
 }
 
 .topnav-links li {
@@ -36,10 +40,10 @@ body {
    font-size: 1.5em;
    font-weight: bold;  
    list-style: none;
-   flex-grow: 1;
    display: flex;
    align-items: center;
    justify-content: center;
+   color: #FFFFFF;
 }
 
 .topnav-links li:hover {
@@ -49,6 +53,30 @@ body {
 .topnav-links a {
    color: #FFFFFF;
    text-decoration: none;
+}
+
+/*Dropdown Styling*/
+.subtask-dropdown {
+   display: none;
+   position: absolute;
+   background-color: #385418;
+   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+   z-index: 1;
+}
+
+.subtask-dropdown a {
+   display: block;
+   font-weight: bold;
+   padding: 20px 5px;
+   width: 15vw;
+}
+
+.subtask:hover .subtask-dropdown {
+   display: block;
+}
+
+.subtask-dropdown a:hover {
+   background-color: #4C6C38;
 }
 
 /*Content Styling*/
