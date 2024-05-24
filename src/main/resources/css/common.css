@@ -47,7 +47,7 @@ body {
 }
 
 .topnav-links li:hover {
-   background-color: #4C6C38;
+   background-color: #46642E;
 }
 
 .topnav-links a {
@@ -75,12 +75,15 @@ body {
    display: block;
 }
 
+.subtask:hover {
+   background-color: #46642E;
+}
+
 .subtask-dropdown a:hover {
-   background-color: #4C6C38;
+   background-color: #4c6c38;
 }
 
 /*Content Styling*/
-
 .content {
    color: #FFFEF8;
    height: 85vh;
