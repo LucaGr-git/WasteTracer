@@ -1,0 +1,31 @@
+/*Landing Page Styling*/
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.landing-box {
+    height: max-content;
+    width: 65%;
+    padding: 5px 0px 20px 20px;
+    border-radius: 0px 25px 25px 0px;
+    background-color: rgba(96, 108, 56, 0.65);
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    font-size: 5em;
+    font-style: italic;
+}
+
+.landing-info {
+    margin: 13px 0px;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.landing-slogan {
+    font-size: 1.8em;
+}

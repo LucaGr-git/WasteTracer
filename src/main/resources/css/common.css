@@ -1,64 +1,61 @@
-/* External CSS style file */
-
+/*Common Styling*/
 * {
    box-sizing: border-box;
+   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   margin: 0;
+   padding: 0;
 }
 
 body {
-   font-family: Arial;
-   padding: 10px;
-   background: #f1f1f1;
+   font-size: 16px;
+   background-color: #FFFEF8;
 }
 
-/* Header (div) formatting */
-.header {
-   padding: 10px;
-   text-align: center;
-   background-color: #cccccc;
-   color: #000000;
-}
-
-.header h1 {
-   font-size: 50px;
-}
-
-
-/* Make the logo have a rounded edge */
-img.top-image {
-   vertical-align: middle;
-}
-
-/* CSS Layout from W3Schools: https://www.w3schools.com/css/css_templates.asp */
-/* Style the top navigation bar */
+/*Navbar Styling*/
 .topnav {
-   overflow: hidden;
-   background-color: #333;
- }
- 
- /* Style the topnav links */
- .topnav a {
-   float: left;
-   display: block;
-   color: #f2f2f2;
-   text-align: center;
-   padding: 14px 16px;
+   background-color: #385418;
+   height: 15vh;
+   display: flex;
+   flex-direction: row;
+   flex-wrap: nowrap;
+   justify-content: space-between;
+}
+
+.topnav-links {
+   width: 600px;
+   margin-right: 5%;
+   display: flex;
+   flex-direction: row;
+   flex-wrap: nowrap;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.topnav-links li {
+   height: 15vh;
+   font-size: 1.5em;
+   font-weight: bold;  
+   list-style: none;
+   flex-grow: 1;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.topnav-links li:hover {
+   background-color: #4C6C38;
+}
+
+.topnav-links a {
+   color: #FFFFFF;
    text-decoration: none;
- }
- 
- /* Change color on hover */
- .topnav a:hover {
-   background-color: #ddd;
-   color: black;
- }
- 
- /* Style the content */
- .content {
-   background-color: #ddd;
-   padding: 10px;
- }
- 
- /* Style the footer */
- .footer {
-   background-color: #cccccc;
-   padding: 10px;
- }
+}
+
+/*Content Styling*/
+
+.content {
+   color: #FFFEF8;
+   height: 85vh;
+}
+
+/*Filters Styling*/
