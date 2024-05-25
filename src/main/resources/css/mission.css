@@ -1,0 +1,23 @@
+/*Mission Statement Page Styling*/
+.content {
+    display: flex;
+    flex-direction: row;
+}
+
+.mission-image {
+    max-height: 40vw;
+    margin: 20 0 20 20;
+}
+
+h1 {
+    margin-left: 3vw;
+    font-size: 5em;
+    font-style: italic;
+    color: #853F00;
+}
+
+p {
+    margin: 0 3vw 20 3vw;
+    font-size: 1.3em;
+    color: #9F4B00;
+}
