@@ -29,47 +29,60 @@ public class PageIndex implements Handler {
 
     @Override
     public void handle(Context context) throws Exception {
-        // Create a simple HTML webpage in a String
         String html = "<html>";
 
-        // Add some Header information
-        html = html + "<head>" + 
-               "<title>Homepage</title>";
+        html += "<head>" + 
+               "<title>WasteTracer - Homepage</title>";
 
-        // Add some CSS (external file)
-        html = html + "<link rel='stylesheet' type='text/css' href='common.css' />";
-        html = html + "</head>";
+        html += "<link rel='stylesheet' type='text/css' href='common.css'>" +
+                "<link rel='stylesheet' type='text/css' href='landing.css'>";
+        html += "</head>";
 
-        // Add the body
-        html = html + "<body>";
+        html += "<body>";
 
-        // Add the topnav
-        // This uses a Java v15+ Text Block
-        html = html + """
-            <div class='topnav'>
-                <a href='/'>Homepage</a>
-                <a href='mission.html'>Our Mission</a>
-                <a href='page2A.html'>Sub Task 2.A</a>
-                <a href='page2B.html'>Sub Task 2.B</a>
-                <a href='page3A.html'>Sub Task 3.A</a>
-                <a href='page3B.html'>Sub Task 3.B</a>
+        html += """
+            <div class="topnav">
+                <img src="logo.png">
+                <ul class="topnav-links">
+                    <div>
+                        <li><a href="#">About Us</a></li>
+                    </div>
+                    <div class="subtask">
+                        <li>Subtasks 2</li>
+                        <div class="subtask-dropdown">
+                            <a href="#">Subtask 2a</a>
+                            <a href="#">Subtask 2b</a>
+                        </div>
+                    </div>
+                    <div class="subtask">
+                        <li>Subtasks 3</li>
+                        <div class="subtask-dropdown">
+                            <a href="#">Subtask 3a</a>
+                            <a href="#">Subtask 3b</a>
+                        </div>
+                    </div>
+                </ul>
             </div>
         """;
 
-        // Add Div for page Content
-        html = html + "<div class='content'>";
-
-        // Close Content div
-        html = html + "</div>";
-
-        // Footer
-        html = html + """
-            <div class='footer'>
-                <p>COSC2803 - Studio Project Starter Code (Apr24)</p>
+        html += """
+            <div class="content" style=
+            'background-image: url(landing-background.jpg);
+            background-size: cover;'>
+                <div class="landing-box">
+                    <h1>Waste Tracer</h1>
+                    <p class="landing-slogan">Your food, your knowledge</p>
+                    <div class="landing-info">
+                        <p>In 2013, 65% of all Australian cauliflowers were lost</p>
+                        <p>In 2001, 65% of all South Korean strawberries were lost</p>
+                        <p>In 1974, 65% of all Nigerian cow peas were lost</p>
+                    </div>
+                    <p class="landing-slogan">Learn all about food waste in a variety of different regions from 1966 to 2022</p>
+                </div>
             </div>
         """;
 
-        html = html + "</body>" + "</html>";
+        html += "</div>" + "</body>" + "</html>";
 
         context.html(html);
     }
