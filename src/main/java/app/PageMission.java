@@ -29,83 +29,59 @@ public class PageMission implements Handler {
 
     @Override
     public void handle(Context context) throws Exception {
-        // Create a simple HTML webpage in a String
+
         String html = "<html>";
 
-        // Add some Head information
         html += "<head>" + 
-            "<title>Our Mission</title>";
+            "<title>Waste Tracer - Mission</title>";
 
-        // Add some CSS (external file)
-        html += "<link rel='stylesheet' type='text/css' href='common.css' />";
+        html += "<link rel='stylesheet' type='text/css' href='common.css'>" +
+                "<link rel='stylesheet' type='text/css' href='mission.css'>";
         html += "</head>";
 
-        // Add the body
         html += "<body>";
 
-        // Add the topnav
-        // This uses a Java v15+ Text Block
         html += """
-            <div class='topnav'>
-                <a href='/'>Homepage</a>
-                <a href='mission.html'>Our Mission</a>
-                <a href='page2A.html'>Sub Task 2.A</a>
-                <a href='page2B.html'>Sub Task 2.B</a>
-                <a href='page3A.html'>Sub Task 3.A</a>
-                <a href='page3B.html'>Sub Task 3.B</a>
+            <div class="topnav">
+                <a href='/'><img src='logo.png' width='200'></a>
+                <ul class="topnav-links">
+                    <div id='option-1'>
+                        <li><a href="/mission.html">About Us</a></li>
+                    </div>
+                    <div class="subtask">
+                        <li>Subtasks 2</li>
+                        <div class="subtask-dropdown">
+                            <a href="#">Subtask 2a</a>
+                            <a href="#">Subtask 2b</a>
+                        </div>
+                    </div>
+                    <div class="subtask">
+                        <li>Subtasks 3</li>
+                        <div class="subtask-dropdown">
+                            <a href="#">Subtask 3a</a>
+                            <a href="#">Subtask 3b</a>
+                        </div>
+                    </div>
+                </ul>
             </div>
         """;
 
-        // Add header content block
         html += """
-            <div class='header'>
-                <h1>Our Mission</h1>
+            <div class="content">
+                <img class="mission-image" src="mission-photo.jpg">
+                <div>
+                    <h1>Our Mission</h1>
+                    <p>We designed this website to give people an open and unbiased resource on food waste. Big or small, we believe that making a change for the better should always be informed by reliable information. Waste tracer is a website built to provie said information and combat the problem of food waste.</p>
+                    <p>It has statistics ranging from 1966 - 2022 relating to a variety of countries and regions all around the world. These statistics detail the rate of food loss for a myriad of different food groups and commoditites</p>
+                    <p>This website cna be used to search for food loss statistic for a speicifc country or a specific food group. It can alos be used to find similar countries and food groups to a user-chosen option based on statistical similarity.</p>
+                    <p>With this website we hope that people find relevant information to them and make a change for the better.</p>
+                </div>
             </div>
         """;
 
-        // Add Div for page Content
-        html += "<div class='content'>";
-
-        // Add HTML for the page content
-        html += """
-            <p>Mission page content</p>
-            """;
-
-        // This example uses JDBC to lookup the countries
-        JDBCConnection jdbc = new JDBCConnection();
-
-        // Next we will ask this *class* for the Countries
-        ArrayList<Country> countries = jdbc.getAllCountries();
-
-        // Add HTML for the countries list
-        html += "<h1>All Countries in the foodloss database (using JDBC Connection)</h1>" + "<ul>";
-
-        // Finally we can print out all of the Countries
-        for (Country country : countries) {
-            html += "<li>" + country.getM49Code()
-                        + " - " + country.getName() + "</li>";
-        }
-
-        // Finish the List HTML
-        html += "</ul>";
-
-
-        // Close Content div
-        html += "</div>";
-
-        // Footer
-        html += """
-            <div class='footer'>
-                <p>COSC2803 - Studio Project Starter Code (Apr24)</p>
-            </div>
-        """;
-
-        // Finish the HTML webpage
+        
         html += "</body>" + "</html>";
         
-
-        // DO NOT MODIFY THIS
-        // Makes Javalin render the webpage
         context.html(html);
     }
 

@@ -21,24 +21,18 @@ public class App {
     public static final String      IMAGES_DIR      = "images/";
 
     public static void main(String[] args) {
-        // Create our HTTP server and listen in port 7000
         Javalin app = Javalin.create(config -> {
             config.registerPlugin(new RouteOverviewPlugin("/help/routes"));
             
-            // Uncomment this if you have files in the CSS Directory
             config.addStaticFiles(CSS_DIR);
 
-            // Uncomment this if you have files in the Images Directory
             config.addStaticFiles(IMAGES_DIR);
         }).start(JAVALIN_PORT);
 
-
-        // Configure Web Routes
         configureRoutes(app);
     }
 
     public static void configureRoutes(Javalin app) {
-        // All webpages are listed here as GET pages
         app.get(PageIndex.URL, new PageIndex());
         app.get(PageMission.URL, new PageMission());
         app.get(PageST2A.URL, new PageST2A());

@@ -45,7 +45,7 @@ public class PageIndex implements Handler {
                 <img src="logo.png">
                 <ul class="topnav-links">
                     <div>
-                        <li><a href="#">About Us</a></li>
+                        <li><a href="/mission.html">About Us</a></li>
                     </div>
                     <div class="subtask">
                         <li>Subtasks 2</li>
@@ -82,7 +82,7 @@ public class PageIndex implements Handler {
             </div>
         """;
 
-        html += "</div>" + "</body>" + "</html>";
+        html += "</body>" + "</html>";
 
         context.html(html);
     }
