@@ -109,7 +109,7 @@ public class FoodProcessCSV {
 
          // Create Insert Statement
          String query = null;
-         query = "PRAGMA foreign_keys = OFF";
+         query = "PRAGMA foreign_keys = OFF;";
          System.out.println("Executing: \n" + query);
          statement.execute(query);
          query = "DROP TABLE IF EXISTS Country";
