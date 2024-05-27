@@ -5,8 +5,8 @@
 }
 
 .mission-image {
-    max-width: 38vw;
-    margin: 20 0 20 20;
+    width: 38.3cqw;
+    margin: 0 0 0 20;
     align-self: center;
     border-radius: 3px;
 }
@@ -14,14 +14,14 @@
 h1 {
     text-align: center;
     margin: 0 3vw;
-    font-size: 5em;
+    font-size: 7cqw;
     font-style: italic;
     color: #853F00;
 }
 
 p {
     margin: 0 3vw 20 3vw;
-    font-size: 1.18em;
+    font-size: 1.5cqw;
     color: #9F4B00;
 }
 

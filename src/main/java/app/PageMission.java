@@ -45,8 +45,8 @@ public class PageMission implements Handler {
             <div class="topnav">
                 <a href='/'><img src='logo.png' width='200'></a>
                 <ul class="topnav-links">
-                    <div id='option-1'>
-                        <li><a href="/mission.html">About Us</a></li>
+                    <div id='option-1' class="about-us">
+                        <a href="/mission.html">About Us</a>
                     </div>
                     <div class="subtask">
                         <li>Subtasks 2</li>
