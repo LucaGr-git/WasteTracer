@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 import org.eclipse.jetty.util.IO;
 import java.sql.Connection;
@@ -90,7 +91,7 @@ public class FoodProcessCSV_Altered {
 
    // Drops and recreates empty date, country and class tables
    // Add additional create statements to create the rest of your tables
-      public static void dropTablesAndRecreateTables() throws IOException{
+   public static void dropTablesAndRecreateTables() throws IOException{
       // JDBC Database Object
       Connection connection = null;
       Scanner s = new Scanner(System.in);
@@ -158,7 +159,7 @@ public class FoodProcessCSV_Altered {
          // Closing streams/scanners
          fileByteStream.close();
          sqlScanner.close();
-         s.close();
+
 
 
       } catch (Exception e) {
@@ -169,9 +170,176 @@ public class FoodProcessCSV_Altered {
    }
 
 
-   public static void loadCauseOfLoss() {
+   public static void loadActivities() throws IOException 
+   {
+      // JDBC Database Object
+      Connection connection = null;
+      HashSet<String> lossCauseHashMap = new HashSet<String>();
+
+      BufferedReader reader = null;
+      String line;
+
+      // We need some error handling.
+      try {
+         // Open A CSV File to process, one line at a time
+         // CHANGE THIS to process a different file
+         reader = new BufferedReader(new FileReader(FOOD_CSV_FILE));
+
+         // Read the first line of "headings"
+         String header = reader.readLine();
+         System.out.println("Heading row" + header + "\n");
+
+         // Setup JDBC
+         // Connect to JDBC database
+         connection = DriverManager.getConnection(DATABASE);
+
+         //read CSV file line by line, stop if not more lines
+         while ((line = reader.readLine())!=null) {
+
+            // split the line up by commas (ignoring commas within quoted fields)
+            String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+            // Get all of the columns in order
+            String lossCause = splitline[CountryFields.LOSSCAUSE];
+
+            if (lossCause.equals("")){continue;}
+
+
+            // Note: the rest of the attributes are not used, but you can copy this method 
+            // and modify to load appropriate attributes into your other tables using insert statements
+
+            // String regionName = splitline[CountryFields.REGIONAME];
+            // String cpcCode = splitline[CountryFields.CPCCODE];
+            // // remove double quotes from commodity
+            // String commodity = splitline[CountryFields.COMMODITY].replaceAll("^\"|\"$", "");
+            // String year = splitline[CountryFields.YEAR];
+            // String lossPercentage = splitline[CountryFields.LOSSPERCENT];
+            // String activity = splitline[CountryFields.ACTIVITY];
+            // String foodSupplyStage = splitline[CountryFields.SUPPLYSTAGE];
+            // String causeOfLoss = splitline[CountryFields.LOSSCAUSE];
+
+               
+               String[] splitLossCause = lossCause.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+               for (String eachCause : splitLossCause){
+
+                  eachCause = eachCause.replace("\"", "");
+                  eachCause = eachCause.replace("'", "");
+
+                  // check that the country code does not already exists by trying to insert into a hashmap data structure
+                  if(!lossCauseHashMap.contains(eachCause)){
+                     //doesn't exists - insert it
+                     lossCauseHashMap.add(eachCause);
+                     // Create Insert Statement
+                  
+               
+                     //System.out.println(eachCause)
+
+                     String myStatement = " INSERT INTO CAUSEOFLOSS (causeofloss) VALUES ('" + eachCause + "')";
+                     Statement statement = connection.createStatement();
+                     System.out.println(myStatement);
+                     statement.execute(myStatement); 
+                  }
+               }
+               
+               
+            
+         }
+         System.out.println("\ninserted all causes of loss\npress enter to continue");
+
+
+         System.in.read();
+
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+      finally {
+         if(reader!=null) {
+            try{
+            reader.close();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+      }
+   };
+
+   // Loads the CAUSEOFLOSS table in the sql database with the cause of losses from the csv file
+   public static void loadCauseOfLoss() throws IOException {
+      // JDBC Database Object
+      Connection connection = null;
+      // Hash set is used as a unique list as there is only 1 column
+      HashSet<String> lossCauseHashSet = new HashSet<String>(); 
+
+      BufferedReader reader = null; // reader for the csv file
       
-   
+      String line; // Each individual line from the csv file
+
+      // We need some error handling.
+      try {
+         // Open A CSV File to process, one line at a time
+         reader = new BufferedReader(new FileReader(FOOD_CSV_FILE));
+
+         // Read the first line of "headings"
+         String header = reader.readLine();
+         System.out.println("Heading row" + header + "\n");
+
+         // Setup JDBC
+         // Connect to JDBC database
+         connection = DriverManager.getConnection(DATABASE);
+
+         //read CSV file line by line, stop if not more lines
+         while ((line = reader.readLine())!=null) {
+
+            // split the line up by commas (ignoring commas within quoted fields)
+            String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+            // Get the losscause column
+            String lossCause = splitline[CountryFields.LOSSCAUSE];
+
+            // Skips if there is no cause of loss
+            if (lossCause.equals("")){continue;}
+            
+            // Replaces ' (single quote) with '' (double quote) to follow sql syntax
+            lossCause = lossCause.replace("'", "''");
+
+            // Removes any " quotation marks
+            lossCause = lossCause.replace("\"", "");
+
+            // check that the country code does not already exists by trying to insert into a hash set data structure
+            if(!lossCauseHashSet.contains(lossCause)){
+               //doesn't exists - add it to hash set structure
+               lossCauseHashSet.add(lossCause);
+               // Create Insert Statement
+            
+               
+
+               // statement as a string
+               String myStatement = " INSERT INTO CAUSEOFLOSS (causeofloss) VALUES ('" + lossCause + "')";
+               // statenent object created
+               Statement statement = connection.createStatement();
+               // execute and print
+               System.out.println("Executing: \n" + myStatement);
+               statement.execute(myStatement); 
+               }
+               
+         }
+
+         System.out.println("\ninserted all causes of loss\npress enter to continue");
+         System.in.read(); 
+
+      } catch (Exception e) { // catch any errors and print them 
+         e.printStackTrace();
+      }
+      finally { // afterwards try and close the reader and print any errors
+         if(reader!=null) {
+            try{
+            reader.close();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+      }
    };
 
    public static void loadYears() {
