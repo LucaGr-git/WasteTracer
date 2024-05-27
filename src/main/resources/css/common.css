@@ -56,6 +56,10 @@ body {
 }
 
 /*Dropdown Styling*/
+.subtask {
+   height: 14vh;
+}
+
 .subtask-dropdown {
    display: none;
    position: absolute;
@@ -69,11 +73,11 @@ body {
    font-weight: bold;
    padding: 20px 5px;
    min-width: fit-content;
-   width: 15vw;
 }
 
 .subtask:hover .subtask-dropdown {
    display: block;
+   position: relative;
 }
 
 .subtask:hover {
