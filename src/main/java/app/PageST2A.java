@@ -22,8 +22,6 @@ import java.sql.Statement;
  * @author Halil Ali, 2024. email: halil.ali@rmit.edu.au
  */
 
-// FIX CSS FOR WASTE TRACER BOX TO RESIZE, AS WELL AS TEXT FOR OUR MISSION AND IMAGE FOR OUR MISSION
-
 public class PageST2A implements Handler {
 
     // URL of this page relative to http://localhost:7001/

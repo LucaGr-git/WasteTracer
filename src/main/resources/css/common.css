@@ -35,7 +35,7 @@ body {
    flex-grow: 1;
 }
 
-.topnav-links li {
+.topnav-links li, .topnav-links a {
    height: 14vh;
    font-size: 1.9cqw;
    font-weight: bold;  
@@ -46,7 +46,7 @@ body {
    color: #FFFFFF;
 }
 
-.topnav-links li:hover {
+.topnav-links li:hover, .topnav-links a:hover {
    background-color: #46642E;
 }
 
