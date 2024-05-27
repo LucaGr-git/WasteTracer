@@ -37,7 +37,7 @@ body {
 
 .topnav-links li {
    height: 14vh;
-   font-size: 1.5em;
+   font-size: 1.9cqw;
    font-weight: bold;  
    list-style: none;
    display: flex;
@@ -62,7 +62,6 @@ body {
 
 .subtask-dropdown {
    display: none;
-   position: absolute;
    background-color: #385418;
    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
    z-index: 1;
@@ -70,9 +69,9 @@ body {
 
 .subtask-dropdown a {
    display: block;
-   font-weight: bold;
-   padding: 20px 5px;
-   min-width: fit-content;
+   font-weight: 400;
+   padding: 20px 0px 20px 10px;
+   font-size: 1.5cqw;
 }
 
 .subtask:hover .subtask-dropdown {
