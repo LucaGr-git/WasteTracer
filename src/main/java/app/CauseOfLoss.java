@@ -3,7 +3,7 @@ package app;
 /**
  * @author Luca Grosso, 2024
  * @author Joe Czerniecki, 2024
- * Activity class for the table that connects to the TakesPartIn table in the foodloss database
+ * CauseOfLoss class for the table that connects to the LossStats table in the foodloss database
  */
 
 public class CauseOfLoss {
