@@ -170,11 +170,11 @@ public class FoodProcessCSV_Altered {
    }
 
 
-   public static void loadActivities() throws IOException 
+   public static void loadActivitiesTakesPartIn() throws IOException // TODO fix method
    {
       // JDBC Database Object
       Connection connection = null;
-      HashSet<String> lossCauseHashMap = new HashSet<String>();
+      HashSet<String> activitiesHashSet = new HashSet<String>();
 
       BufferedReader reader = null;
       String line;
@@ -200,9 +200,9 @@ public class FoodProcessCSV_Altered {
             String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
             // Get all of the columns in order
-            String lossCause = splitline[CountryFields.LOSSCAUSE];
+            String activities = splitline[CountryFields.ACTIVITY];
 
-            if (lossCause.equals("")){continue;}
+            if (activities.equals("")){continue;}
 
 
             // Note: the rest of the attributes are not used, but you can copy this method 
@@ -219,25 +219,25 @@ public class FoodProcessCSV_Altered {
             // String causeOfLoss = splitline[CountryFields.LOSSCAUSE];
 
                
-               String[] splitLossCause = lossCause.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+               String[] splitActivities = activities.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
-               for (String eachCause : splitLossCause){
+               for (String eachActivity : splitActivities){
 
-                  eachCause = eachCause.replace("\"", "");
-                  eachCause = eachCause.replace("'", "");
+                  eachActivity = eachActivity.replace("\"", "");
+                  eachActivity = eachActivity.replace("'", "''");
 
                   // check that the country code does not already exists by trying to insert into a hashmap data structure
-                  if(!lossCauseHashMap.contains(eachCause)){
+                  if(!activitiesHashSet.contains(eachActivity)){
                      //doesn't exists - insert it
-                     lossCauseHashMap.add(eachCause);
+                     activitiesHashSet.add(eachActivity);
                      // Create Insert Statement
                   
                
-                     //System.out.println(eachCause)
+   
 
-                     String myStatement = " INSERT INTO CAUSEOFLOSS (causeofloss) VALUES ('" + eachCause + "')";
+                     String myStatement = " INSERT INTO TAKESPARTIN (activities) VALUES ('" + eachActivity + "')";
                      Statement statement = connection.createStatement();
-                     System.out.println(myStatement);
+                     System.out.println("Executing: \n" + myStatement);
                      statement.execute(myStatement); 
                   }
                }
@@ -245,7 +245,7 @@ public class FoodProcessCSV_Altered {
                
             
          }
-         System.out.println("\ninserted all causes of loss\npress enter to continue");
+         System.out.println("\ninserted all activities that are taken part in a loss stat \npress enter to continue");
 
 
          System.in.read();
@@ -263,7 +263,7 @@ public class FoodProcessCSV_Altered {
          }
       }
    };
-
+   
    // Loads the CAUSEOFLOSS table in the sql database with the cause of losses from the csv file
    public static void loadCauseOfLoss() throws IOException {
       // JDBC Database Object
