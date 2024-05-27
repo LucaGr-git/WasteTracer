@@ -44,7 +44,7 @@ public class PageIndex implements Handler {
             <div class="topnav">
                 <img src="logo.png">
                 <ul class="topnav-links">
-                    <div>
+                    <div class="about-us">
                         <a href="/mission.html">About Us</a>
                     </div>
                     <div class="subtask">
