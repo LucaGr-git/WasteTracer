@@ -56,6 +56,10 @@ public class FoodProcessCSV_Altered {
       dropTablesAndRecreateTables();
 
 
+      // Load up the CauseOfLoss table
+      loadCauseOfLoss();
+
+
       // Load up the Date table
       // This only needs to be done once
       // Comment this out after runnning it the first time
@@ -163,6 +167,12 @@ public class FoodProcessCSV_Altered {
 
       
    }
+
+
+   public static void loadCauseOfLoss() {
+      
+   
+   };
 
    public static void loadYears() {
       {}};
