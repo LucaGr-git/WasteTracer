@@ -45,7 +45,8 @@ public class FoodProcessCSV_Altered {
    private static final String CPC_CSV_FILE = "database/CPC.csv";
    private static final int RECORD_PERCENT = 27411/100;
    private static final int START_YEAR = 1966;
-   private static final int END_YEAR = 2025;
+   private static final int END_YEAR = 2025;          // TODO Decide whether year should be added to the database as a table
+                                                      // TODO Add personas to database (THROUGH sql init File ???)
 
    //  Food SQL initialization prompt
    private static final String FOOD_SQL_FILE = "database/sql/CPC-initialization.sql"; 
@@ -53,12 +54,17 @@ public class FoodProcessCSV_Altered {
    public static void main (String[] args) throws IOException{
       
       // Drops the date, country and class tables then recreates them
-      // This only needs to be done once (unless your tables need to be updated and recreated)
       dropTablesAndRecreateTables();
 
-
+      
       // Load up the CauseOfLoss table
       loadCauseOfLoss();
+
+      // Load up the Activity table
+      loadActivity();
+
+      // Load up the FOODSUPPLY table
+      loadFoodSupplyStage();
 
 
       // Load up the Date table
@@ -85,7 +91,9 @@ public class FoodProcessCSV_Altered {
       // verifies the loaded data
       // you can also copy this to insert records after a lookup into your other tables
       checkCountryAndClassCodesMatch();
+      
 
+      
       return;
    }
 
@@ -114,7 +122,6 @@ public class FoodProcessCSV_Altered {
       try {
          connection = DriverManager.getConnection(DATABASE);
 
-         
          // Prepare a new SQL Query & Set a timeout
          Statement statement = connection.createStatement();
 
@@ -124,32 +131,22 @@ public class FoodProcessCSV_Altered {
          // Setting up file reading from FOOD_SQL_FILE
          FileInputStream fileByteStream = new FileInputStream(FOOD_SQL_FILE);
          Scanner sqlScanner = new Scanner(fileByteStream);
-
-
-
          
          // Runs Sql file prompt by prompt 
          while (sqlScanner.hasNext()){
 
-            
             // SQL line is created
             query = sqlScanner.nextLine();
             if (query.equals("")){continue;}
-
-
 
             // continues adding to the query until the end of the statement is reached
             while(!query.contains(";")){
                query += sqlScanner.nextLine();
             }
-   
-
-
             
             // Executes and prints query
             System.out.println("Executing: \n" + query);
             statement.execute(query);
-
          }
 
 
@@ -169,20 +166,20 @@ public class FoodProcessCSV_Altered {
       
    }
 
-
-   public static void loadActivitiesTakesPartIn() throws IOException // TODO fix method
+   // Loads the ACTIVITY table in the sql database with the  activities from the csv file keeping in mind comma seperation 
+   public static void loadActivity() throws IOException
    {
       // JDBC Database Object
       Connection connection = null;
+      // Hash set is used as a unique list as there is only 1 column
       HashSet<String> activitiesHashSet = new HashSet<String>();
 
-      BufferedReader reader = null;
-      String line;
+      BufferedReader reader = null; // reader for the csv file
+      String line; // Each individual line from the csv file
 
       // We need some error handling.
       try {
          // Open A CSV File to process, one line at a time
-         // CHANGE THIS to process a different file
          reader = new BufferedReader(new FileReader(FOOD_CSV_FILE));
 
          // Read the first line of "headings"
@@ -202,58 +199,50 @@ public class FoodProcessCSV_Altered {
             // Get all of the columns in order
             String activities = splitline[CountryFields.ACTIVITY];
 
+            // If activities is null then it is skipped
             if (activities.equals("")){continue;}
 
+            // Any quotation markes are removed
+            activities = activities.replace("\"", "");
 
-            // Note: the rest of the attributes are not used, but you can copy this method 
-            // and modify to load appropriate attributes into your other tables using insert statements
+            // split the line up by commas (ignoring commas within quoted fields)
+            String[] splitActivities = activities.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
-            // String regionName = splitline[CountryFields.REGIONAME];
-            // String cpcCode = splitline[CountryFields.CPCCODE];
-            // // remove double quotes from commodity
-            // String commodity = splitline[CountryFields.COMMODITY].replaceAll("^\"|\"$", "");
-            // String year = splitline[CountryFields.YEAR];
-            // String lossPercentage = splitline[CountryFields.LOSSPERCENT];
-            // String activity = splitline[CountryFields.ACTIVITY];
-            // String foodSupplyStage = splitline[CountryFields.SUPPLYSTAGE];
-            // String causeOfLoss = splitline[CountryFields.LOSSCAUSE];
+            // Each comma seperated activity is iterated through
+            for (String eachActivity : splitActivities){
 
-               
-               String[] splitActivities = activities.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+               // Trim leading + trailing spaces
+               eachActivity = eachActivity.trim();
+               // Replace sinqle quotes by the proper sql syntax convention ('')
+               eachActivity = eachActivity.replace("'", "''");
 
-               for (String eachActivity : splitActivities){
+               // check that the activity does not already exists by trying to insert into a hashmap data structure
+               if(!activitiesHashSet.contains(eachActivity)){
+                  //doesn't exists - insert it
+                  activitiesHashSet.add(eachActivity);
+                  // Create Insert Statement
 
-                  eachActivity = eachActivity.replace("\"", "");
-                  eachActivity = eachActivity.replace("'", "''");
-
-                  // check that the country code does not already exists by trying to insert into a hashmap data structure
-                  if(!activitiesHashSet.contains(eachActivity)){
-                     //doesn't exists - insert it
-                     activitiesHashSet.add(eachActivity);
-                     // Create Insert Statement
+                  // statement as a string
+                  String myStatement = " INSERT INTO ACTIVITY (activity) VALUES ('" + eachActivity + "')";
+                  // statement object created
+                  Statement statement = connection.createStatement();
+                  // execute and print
+                  System.out.println("Executing: \n" + myStatement);
+                  statement.execute(myStatement);  
                   
-               
-   
-
-                     String myStatement = " INSERT INTO TAKESPARTIN (activities) VALUES ('" + eachActivity + "')";
-                     Statement statement = connection.createStatement();
-                     System.out.println("Executing: \n" + myStatement);
-                     statement.execute(myStatement); 
-                  }
-               }
+               }        
+            }
                
                
             
          }
          System.out.println("\ninserted all activities that are taken part in a loss stat \npress enter to continue");
-
-
          System.in.read();
 
-      } catch (Exception e) {
+      } catch (Exception e) { // catch any errors and print them 
          e.printStackTrace();
       }
-      finally {
+      finally { // afterwards try and close the reader and print any errors
          if(reader!=null) {
             try{
             reader.close();
@@ -306,7 +295,7 @@ public class FoodProcessCSV_Altered {
             // Removes any " quotation marks
             lossCause = lossCause.replace("\"", "");
 
-            // check that the country code does not already exists by trying to insert into a hash set data structure
+            // check that the loss cause does not already exists by trying to insert into a hash set data structure
             if(!lossCauseHashSet.contains(lossCause)){
                //doesn't exists - add it to hash set structure
                lossCauseHashSet.add(lossCause);
@@ -316,7 +305,7 @@ public class FoodProcessCSV_Altered {
 
                // statement as a string
                String myStatement = " INSERT INTO CAUSEOFLOSS (causeofloss) VALUES ('" + lossCause + "')";
-               // statenent object created
+               // statement object created
                Statement statement = connection.createStatement();
                // execute and print
                System.out.println("Executing: \n" + myStatement);
@@ -342,6 +331,86 @@ public class FoodProcessCSV_Altered {
       }
    };
 
+   // Loads the FOODSUPPLY table in the sql database with the food supply stage from the csv file
+   public static void loadFoodSupplyStage() throws IOException {
+         // JDBC Database Object
+         Connection connection = null;
+         // Hash set is used as a unique list as there is only 1 column
+         HashSet<String> foodSupplyHashSet = new HashSet<String>(); 
+   
+         BufferedReader reader = null; // reader for the csv file
+         
+         String line; // Each individual line from the csv file
+   
+         // We need some error handling.
+         try {
+            // Open A CSV File to process, one line at a time
+            reader = new BufferedReader(new FileReader(FOOD_CSV_FILE));
+   
+            // Read the first line of "headings"
+            String header = reader.readLine();
+            System.out.println("Heading row" + header + "\n");
+   
+            // Setup JDBC
+            // Connect to JDBC database
+            connection = DriverManager.getConnection(DATABASE);
+   
+            //read CSV file line by line, stop if not more lines
+            while ((line = reader.readLine())!=null) {
+   
+               // split the line up by commas (ignoring commas within quoted fields)
+               String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+   
+               // Get the food supply stage column
+               String supplyStage = splitline[CountryFields.SUPPLYSTAGE];
+   
+               // Skips if there is no food supply stage
+               if (supplyStage.equals("")){continue;}
+               
+               // Replaces ' (single quote) with '' (double quote) to follow sql syntax
+               supplyStage = supplyStage.replace("'", "''");
+   
+               // Removes any " quotation marks
+               supplyStage = supplyStage.replace("\"", "");
+   
+               // check that the supply stage does not already exists by trying to insert into a hash set data structure
+               if(!foodSupplyHashSet.contains(supplyStage)){
+                  //doesn't exists - add it to hash set structure
+                  foodSupplyHashSet.add(supplyStage);
+                  // Create Insert Statement
+               
+                  
+   
+                  // statement as a string
+                  String myStatement = " INSERT INTO FOODSUPPLY (foodsupply) VALUES ('" + supplyStage + "')";
+                  // statement object created
+                  Statement statement = connection.createStatement();
+                  // execute and print
+                  System.out.println("Executing: \n" + myStatement);
+                  statement.execute(myStatement); 
+                  }
+                  
+            }
+   
+            System.out.println("\ninserted all food supply stages\npress enter to continue");
+            System.in.read(); 
+   
+         } catch (Exception e) { // catch any errors and print them 
+            e.printStackTrace();
+         }
+         finally { // afterwards try and close the reader and print any errors
+            if(reader!=null) {
+               try{
+               reader.close();
+               } catch (Exception e) {
+                  e.printStackTrace();
+               }
+            }
+         }
+      };
+   
+   
+   
    public static void loadYears() {
       {}};
 
