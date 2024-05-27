@@ -12,7 +12,7 @@ public class CauseOfLoss {
 
 
    /**
-    * Create an activity and set the field
+    * Create a CauseOfLoss and set the field
     */
    public CauseOfLoss(String causeOfLoss) {
       this.causeOfLoss = causeOfLoss;
