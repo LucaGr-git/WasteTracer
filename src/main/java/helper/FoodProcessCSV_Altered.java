@@ -6,6 +6,9 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
+
+import javax.print.DocFlavor.STRING;
+
 import org.eclipse.jetty.util.IO;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -46,10 +49,11 @@ public class FoodProcessCSV_Altered {
    private static final int RECORD_PERCENT = 27411/100;
    private static final int START_YEAR = 1966;
    private static final int END_YEAR = 2025;          // TODO Decide whether year should be added to the database as a table (talk about in schema)
-                                                      // TODO Add personas to database (THROUGH sql init File ???)
+                                                      // TODO Add personas + students to database (THROUGH sql init File ???)
                                                       // TODO Updatade schema + diagram for new changes in sql init file
                                                       // TODO Finish all methods to load databse
                                                       // TODO Finish all the /app classes for each table + possible methods to search through sql in java
+                                                      // TODO DEcide on DIVISIONS VS GROUPS
 
    //  Food SQL initialization prompt
    private static final String FOOD_SQL_FILE = "database/sql/CPC-initialization.sql"; 
@@ -218,7 +222,7 @@ public class FoodProcessCSV_Altered {
                // Replace sinqle quotes by the proper sql syntax convention ('')
                eachActivity = eachActivity.replace("'", "''");
 
-               // check that the activity does not already exists by trying to insert into a hashmap data structure
+               // check that the activity does not already exists by trying to insert into a hash set data structure
                if(!activitiesHashSet.contains(eachActivity)){
                   //doesn't exists - insert it
                   activitiesHashSet.add(eachActivity);
@@ -574,8 +578,190 @@ public class FoodProcessCSV_Altered {
    // note it does not load any sub class OR sub sub classes (or divisions, sections, groups)
    // need to update this to handle this (based on your design)
    public static void loadCpcClass() {
-      {}}
+      // loads food groups
+      loadFoodGroup();
+      // load food classes
+      loadFoodClass();
+      // load food sub-classes
+      loadFoodSubClass();}
 
+   // Loads the FOODGROUP table in the sql database with the cpccode + description from the cpc csv file
+   private static void loadFoodGroup() {
+      // JDBC Database Object
+      Connection connection = null;
+      // Prepared statement used later
+      PreparedStatement statement = null;
+
+      BufferedReader reader = null; // reader for the csv file
+      String line; // Each individual line from the csv file
+
+      // We need some error handling.
+      try {
+         // Open A CSV File to process, one line at a time
+         reader = new BufferedReader(new FileReader(CPC_CSV_FILE));
+
+         // Read the first line of "headings"
+         String header = reader.readLine();
+         System.out.println("Heading row" + header + "\n");
+
+         // Setup JDBC
+         // Connect to JDBC database
+         connection = DriverManager.getConnection(DATABASE);
+
+         //read CSV file line by line, stop if not more lines
+         while ((line = reader.readLine())!=null) {
+
+            // split the line up by commas (ignoring commas within quoted fields)
+            String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+            // Get all of the columns in order
+            String group = splitline[ClassFields.GROUP_SECTION_DIVISION];
+            String desc = splitline[ClassFields.DESCRIPTION];
+
+            // Group is trimmed for leading/trailing whitespaces
+            group = group.trim();
+            // If group is null or a section/division then it is skipped
+            if (group.equals("")){continue;}
+            if (group.contains("Section")){continue;}
+            if (group.contains("Division")){continue;}
+
+
+            // Any quotation marks are removed
+            desc = desc.replace("\"", "");   
+            
+  
+            // Create Insert Statement
+            // statement as a string
+            String myStatement = " INSERT INTO FOODGROUP (groupcode, groupdescriptor) VALUES (?, ?)";
+            // statement object created
+            statement = connection.prepareStatement(myStatement);
+
+            // Sets ? to proper responses
+            statement.setString(1, group);
+            statement.setString(2, desc);
+
+            // Query is printed and executed
+            System.out.println("Execute: \n" + statement.toString());
+            statement.executeUpdate();
+         }  
+            
+         
+         System.out.println("\ninserted all food groups \npress enter to continue");
+         System.in.read();
+
+      } catch (Exception e) { // catch any errors and print them 
+         e.printStackTrace();
+      }
+      finally { // afterwards try and close the reader and print any errors
+         if(reader!=null) {
+            try{
+            reader.close();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+      }
+   };
+
+   // Loads the FOODCLASS table in the sql database with the cpccode + description from the cpc csv file
+   // These are also loaded into the FOODSUBCLASS table with subclass = 0
+   private static void loadFoodClass() {
+      // JDBC Database Object
+      Connection connection = null;
+      // Prepared statement used later
+      PreparedStatement statement = null;
+      
+
+      BufferedReader reader = null; // reader for the csv file
+      String line; // Each individual line from the csv file
+
+      // We need some error handling.
+      try {
+         // Open A CSV File to process, one line at a time
+         reader = new BufferedReader(new FileReader(CPC_CSV_FILE));
+
+         // Read the first line of "headings"
+         String header = reader.readLine();
+         System.out.println("Heading row" + header + "\n");
+
+         // Setup JDBC
+         // Connect to JDBC database
+         connection = DriverManager.getConnection(DATABASE);
+
+         //read CSV file line by line, stop if not more lines
+         while ((line = reader.readLine())!=null) {
+
+            // split the line up by commas (ignoring commas within quoted fields)
+            String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+            // Get all of the columns in order
+            String foodclass = splitline[ClassFields.CLASS];
+            String desc = splitline[ClassFields.DESCRIPTION];
+
+            // If class is null
+            if (foodclass.equals("")){continue;}
+            // food class and food group is drawn from cpc code
+            String group = foodclass.substring(0, 3);
+            foodclass = foodclass.substring(3);
+
+            // Any quotation marks are removed from descripton
+            desc = desc.replace("\"", "");   
+
+         
+            // Create Insert Statement to add food class
+            
+            // statement as a string
+            String myStatement = " INSERT INTO FOODCLASS (classcode, groupcode, classdescriptor) VALUES (?, ?, ?)";
+            // statement object created
+            statement = connection.prepareStatement(myStatement);
+
+            // Sets ? to proper responses
+            statement.setString(1, foodclass);
+            statement.setString(2, group);
+            statement.setString(3, desc);
+
+            // Query is printed and executed
+            System.out.println("Execute: \n" + statement.toString());
+            statement.executeUpdate();
+            
+
+            // Create Insert Statement to add food subclass where subclass = 0
+            // statement as a string
+            String myStatement2 = " INSERT INTO FOODSUBCLASS (subclasscode, classcode, groupcode, descriptor) VALUES (?, ?, ?, ?)";
+            // statement object created
+            statement = connection.prepareStatement(myStatement2);
+
+            // Sets ? to proper responses
+            statement.setString(1, "0");
+            statement.setString(2, foodclass);
+            statement.setString(3, group);
+            statement.setString(4, desc);
+
+            // Query is printed and executed
+            System.out.println("Execute: \n" + statement.toString());
+            statement.executeUpdate(); 
+            
+         }
+         System.out.println("\ninserted all food classes and a subsequent entry in foodsubclass \npress enter to continue");
+         System.in.read();
+
+      } catch (Exception e) { // catch any errors and print them 
+         e.printStackTrace();
+      }
+      finally { // afterwards try and close the reader and print any errors
+         if(reader!=null) {
+            try{
+            reader.close();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+      }
+   };
+
+
+   private static void loadFoodSubClass() {
+      {}}
 
    public static void checkCountryAndClassCodesMatch() {
       {}}
