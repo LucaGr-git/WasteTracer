@@ -47,8 +47,7 @@ public class FoodProcessCSV_Altered {
    private static final String FOOD_CSV_FILE = "database/FoodLoss.csv";
    private static final String CPC_CSV_FILE = "database/CPC.csv";
    private static final int RECORD_PERCENT = 27411/100;
-   private static final int START_YEAR = 1966;
-   private static final int END_YEAR = 2025;          // TODO Decide whether year should be added to the database as a table (talk about in schema)
+                                                    // TODO Decide whether year should be added to the database as a table (talk about in schema)
                                                       // TODO Add personas + students to database (THROUGH sql init File ???)
                                                       // TODO Updatade schema + diagram for new changes in sql init file
                                                       // TODO Finish all methods to load databse
@@ -80,10 +79,7 @@ public class FoodProcessCSV_Altered {
       loadYears();
 
 
-      // loads all the 'Class' level codes into class table
-      // note it does not load any sub class OR sub sub classes (or divisions, sections, groups)
-      // need to update this to handle this (based on your design)
-      // Comment this out after runnning it the first time
+      // loads all the class, group and subclass codes into the database
       loadCpcClass();
 
 
