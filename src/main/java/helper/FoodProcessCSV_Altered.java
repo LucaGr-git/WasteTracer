@@ -47,7 +47,6 @@ public class FoodProcessCSV_Altered {
    private static final String FOOD_CSV_FILE = "database/FoodLoss.csv";
    private static final String CPC_CSV_FILE = "database/CPC.csv";
    private static final int RECORD_PERCENT = 27411/100;
-                                                    // TODO Decide whether year should be added to the database as a table (talk about in schema)
                                                       // TODO Add personas + students to database (THROUGH sql init File ???)
                                                       // TODO Updatade schema + diagram for new changes in sql init file
                                                       // TODO Finish all methods to load databse
@@ -487,84 +486,84 @@ public class FoodProcessCSV_Altered {
 
    // Loads the LOCATIO table in the sql database with the Regions and corresponding Countries/m49codes from the csv file
    public static void loadLocation() throws IOException {
-   // JDBC Database Object
-   Connection connection = null;
-   // Hash map is used as a unique list as there is multiple columns
-   HashMap<String, String> locationHashMap = new HashMap<String, String>(); 
-   // Prepared statement used later
-   PreparedStatement statement = null;
+      // JDBC Database Object
+      Connection connection = null;
+      // Hash map is used as a unique list as there is multiple columns
+      HashMap<String, String> locationHashMap = new HashMap<String, String>(); 
+      // Prepared statement used later
+      PreparedStatement statement = null;
 
-   BufferedReader reader = null; // reader for the csv file
-   
-   String line; // Each individual line from the csv file
+      BufferedReader reader = null; // reader for the csv file
+      
+      String line; // Each individual line from the csv file
 
-   // We need some error handling.
-   try {
-      // Open A CSV File to process, one line at a time
-      reader = new BufferedReader(new FileReader(FOOD_CSV_FILE));
+      // We need some error handling.
+      try {
+         // Open A CSV File to process, one line at a time
+         reader = new BufferedReader(new FileReader(FOOD_CSV_FILE));
 
-      // Read the first line of "headings"
-      String header = reader.readLine();
-      System.out.println("Heading row" + header + "\n");
+         // Read the first line of "headings"
+         String header = reader.readLine();
+         System.out.println("Heading row" + header + "\n");
 
-      // Setup JDBC
-      // Connect to JDBC database
-      connection = DriverManager.getConnection(DATABASE);
+         // Setup JDBC
+         // Connect to JDBC database
+         connection = DriverManager.getConnection(DATABASE);
 
-      //read CSV file line by line, stop if not more lines
-      while ((line = reader.readLine())!=null) {
+         //read CSV file line by line, stop if not more lines
+         while ((line = reader.readLine())!=null) {
 
-         // split the line up by commas (ignoring commas within quoted fields)
-         String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+            // split the line up by commas (ignoring commas within quoted fields)
+            String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
-         // Get the region, m49code and country stage column
-         String region = splitline[CountryFields.REGIONAME];
-         String m49Code = splitline[CountryFields.M49CODE];
-         String country = splitline[CountryFields.COUNTRYNAME];
+            // Get the region, m49code and country stage column
+            String region = splitline[CountryFields.REGIONAME];
+            String m49Code = splitline[CountryFields.M49CODE];
+            String country = splitline[CountryFields.COUNTRYNAME];
 
-         // If no region is listed it is skipped
-         if (region.equals("")){continue;}
+            // If no region is listed it is skipped
+            if (region.equals("")){continue;}
 
-         // " quotation marks are removed
-         region = region.replace("\"", "");
+            // " quotation marks are removed
+            region = region.replace("\"", "");
 
-         // check that the region + m49code does not already exist by trying to insert into a hashmap data structure
-         if(locationHashMap.put(region, m49Code) == null){
-            //doesn't exist 
-            // Create Insert Statement
+            // check that the region + m49code does not already exist by trying to insert into a hashmap data structure
+            if(locationHashMap.put(region, m49Code) == null){
+               //doesn't exist 
+               // Create Insert Statement
 
-            // statement as a string
-            String myStatement = " INSERT INTO LOCATIO (region, m49Code, country) VALUES (?, ?, ?)";
-            // statement object created
-            statement = connection.prepareStatement(myStatement);
+               // statement as a string
+               String myStatement = " INSERT INTO LOCATIO (region, m49Code, country) VALUES (?, ?, ?)";
+               // statement object created
+               statement = connection.prepareStatement(myStatement);
 
-            // Sets ? to proper responses
-            statement.setString(1, region);
-            statement.setString(2, m49Code);
-            statement.setString(3, country);
+               // Sets ? to proper responses
+               statement.setString(1, region);
+               statement.setString(2, m49Code);
+               statement.setString(3, country);
 
-            // Query is printed and executed
-            System.out.println("Execute: \n" + statement.toString());
-            statement.executeUpdate();
-         }  
+               // Query is printed and executed
+               System.out.println("Execute: \n" + statement.toString());
+               statement.executeUpdate();
+            }  
+         }
+
+         System.out.println("\ninserted all regions and corresponding m49codes + countries \npress enter to continue");
+         System.in.read(); 
+
+      } catch (Exception e) { // catch any errors and print them 
+         e.printStackTrace();
       }
-
-      System.out.println("\ninserted all regions and corresponding m49codes + countries \npress enter to continue");
-      System.in.read(); 
-
-   } catch (Exception e) { // catch any errors and print them 
-      e.printStackTrace();
-   }
-   finally { // afterwards try and close the reader and print any errors
-      if(reader!=null) {
-         try{
-         reader.close();
-         } catch (Exception e) {
-            e.printStackTrace();
+      finally { // afterwards try and close the reader and print any errors
+         if(reader!=null) {
+            try{
+            reader.close();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
          }
       }
-   }
-};
+   };
 
    
    public static void loadYears() {
@@ -581,12 +580,15 @@ public class FoodProcessCSV_Altered {
       // load food sub-classes
       loadFoodSubClass();}
 
-   // Loads the FOODGROUP table in the sql database with the cpccode + description from the cpc csv file
+   // Loads the FOODGROUP table in the sql database with the group cpccode + description from the cpc csv file
    private static void loadFoodGroup() {
       // JDBC Database Object
       Connection connection = null;
       // Prepared statement used later
       PreparedStatement statement = null;
+      // Hashset to check for uniqueness
+      HashSet<String> groupHashSet = new HashSet<String>();
+
 
       BufferedReader reader = null; // reader for the csv file
       String line; // Each individual line from the csv file
@@ -625,20 +627,25 @@ public class FoodProcessCSV_Altered {
             // Any quotation marks are removed
             desc = desc.replace("\"", "");   
             
-  
-            // Create Insert Statement
-            // statement as a string
-            String myStatement = " INSERT INTO FOODGROUP (groupcode, groupdescriptor) VALUES (?, ?)";
-            // statement object created
-            statement = connection.prepareStatement(myStatement);
+            // check that the group does not already exists by trying to insert into a hash set data structure
+            if(!groupHashSet.contains(group)){
+               //doesn't exists - add it to hash set structure
+               groupHashSet.add(group);
 
-            // Sets ? to proper responses
-            statement.setString(1, group);
-            statement.setString(2, desc);
+               // Create Insert Statement
+               // statement as a string
+               String myStatement = " INSERT INTO FOODGROUP (groupcode, groupdescriptor) VALUES (?, ?)";
+               // statement object created
+               statement = connection.prepareStatement(myStatement);
 
-            // Query is printed and executed
-            System.out.println("Execute: \n" + statement.toString());
-            statement.executeUpdate();
+               // Sets ? to proper responses
+               statement.setString(1, group);
+               statement.setString(2, desc);
+
+               // Query is printed and executed
+               System.out.println("Execute: \n" + statement.toString());
+               statement.executeUpdate();
+            }
          }  
             
          
@@ -659,14 +666,13 @@ public class FoodProcessCSV_Altered {
       }
    };
 
-   // Loads the FOODCLASS table in the sql database with the cpccode + description from the cpc csv file
+   // Loads the FOODCLASS table in the sql database with the class cpccode + description from the cpc csv file
    // These are also loaded into the FOODSUBCLASS table with subclass = 0
    private static void loadFoodClass() {
       // JDBC Database Object
       Connection connection = null;
       // Prepared statement used later
       PreparedStatement statement = null;
-      
 
       BufferedReader reader = null; // reader for the csv file
       String line; // Each individual line from the csv file
@@ -691,19 +697,20 @@ public class FoodProcessCSV_Altered {
             String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
             // Get all of the columns in order
-            String foodclass = splitline[ClassFields.CLASS];
+            String foodClass = splitline[ClassFields.CLASS];
             String desc = splitline[ClassFields.DESCRIPTION];
 
             // If class is null
-            if (foodclass.equals("")){continue;}
+            if (foodClass.equals("")){continue;}
             // food class and food group is drawn from cpc code
-            String group = foodclass.substring(0, 3);
-            foodclass = foodclass.substring(3);
+            String group = foodClass.substring(0, 3);
+            foodClass = foodClass.substring(3);
 
             // Any quotation marks are removed from descripton
             desc = desc.replace("\"", "");   
 
-         
+            
+      
             // Create Insert Statement to add food class
             
             // statement as a string
@@ -712,7 +719,7 @@ public class FoodProcessCSV_Altered {
             statement = connection.prepareStatement(myStatement);
 
             // Sets ? to proper responses
-            statement.setString(1, foodclass);
+            statement.setString(1, foodClass);
             statement.setString(2, group);
             statement.setString(3, desc);
 
@@ -729,13 +736,14 @@ public class FoodProcessCSV_Altered {
 
             // Sets ? to proper responses
             statement.setString(1, "0");
-            statement.setString(2, foodclass);
+            statement.setString(2, foodClass);
             statement.setString(3, group);
             statement.setString(4, desc);
 
             // Query is printed and executed
             System.out.println("Execute: \n" + statement.toString());
             statement.executeUpdate(); 
+            
             
          }
          System.out.println("\ninserted all food classes and a subsequent entry in foodsubclass \npress enter to continue");
@@ -756,8 +764,91 @@ public class FoodProcessCSV_Altered {
    };
 
 
+   // Loads the FOODSUBCLASS table in the sql database with the subclass cpccode + description from the cpc csv file
    private static void loadFoodSubClass() {
-      {}}
+      // JDBC Database Object
+      Connection connection = null;
+      // Prepared statement used later
+      PreparedStatement statement = null;
+
+      BufferedReader reader = null; // reader for the csv file
+      String line; // Each individual line from the csv file
+
+      // We need some error handling.
+      try {
+         // Open A CSV File to process, one line at a time
+         reader = new BufferedReader(new FileReader(CPC_CSV_FILE));
+
+         // Read the first line of "headings"
+         String header = reader.readLine();
+         System.out.println("Heading row" + header + "\n");
+
+         // Setup JDBC
+         // Connect to JDBC database
+         connection = DriverManager.getConnection(DATABASE);
+
+         //read CSV file line by line, stop if not more lines
+         while ((line = reader.readLine())!=null) {
+
+            // split the line up by commas (ignoring commas within quoted fields)
+            String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+            // Get all of the columns in order
+            String foodSubClass = splitline[ClassFields.SUBCLASS];
+            String desc = splitline[ClassFields.DESCRIPTION];
+
+            // If subclass is null the row is skipped
+            if (foodSubClass.equals("")){continue;}
+
+            // food subclass, class and food group is drawn from cpc code
+            String group = foodSubClass.substring(0, 3);
+            String foodClass = foodSubClass.substring(3,4);
+            foodSubClass = foodSubClass.substring(4);
+
+            // Any quotation marks are removed from descripton
+            desc = desc.replace("\"", "");   
+
+            // If subclass is 0 (AKA it is the main class) the row is skipped
+            if (foodSubClass.equals("0")){continue;}
+            
+            // Create Insert Statement to add food class
+            
+            // statement as a string
+            String myStatement = " INSERT INTO FOODSUBCLASS (subclasscode, classcode, groupcode, descriptor) VALUES (?, ?, ?, ?)";
+            // statement object created
+            statement = connection.prepareStatement(myStatement);
+
+            // Sets ? to proper responses
+            statement.setString(1, foodSubClass);
+            statement.setString(2, foodClass);
+            statement.setString(3, group);
+            statement.setString(4, desc);
+
+
+            // Query is printed and executed
+            System.out.println("Execute: \n" + statement.toString());
+            statement.executeUpdate();
+               
+            
+         }
+         System.out.println("\ninserted all food sub classes \npress enter to continue");
+         System.in.read();
+
+      } catch (Exception e) { // catch any errors and print them 
+         e.printStackTrace();
+      }
+      finally { // afterwards try and close the reader and print any errors
+         if(reader!=null) {
+            try{
+            reader.close();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+      }
+   };
+
+
 
    public static void checkCountryAndClassCodesMatch() {
       {}}
