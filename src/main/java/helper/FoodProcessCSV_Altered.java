@@ -47,15 +47,12 @@ public class FoodProcessCSV_Altered {
    private static final String FOOD_CSV_FILE = "database/FoodLoss.csv";
    private static final String CPC_CSV_FILE = "database/CPC.csv";    // TODO Add personas + students to database (THROUGH sql init File ???)
                                                                      // TODO Updatade schema + diagram for new changes in sql init file
-                                                                     // TODO Finish all methods to load databse
                                                                      // TODO Finish all the /app classes for each table + possible methods to search through sql in java
-                                                                     // TODO DEcide on DIVISIONS VS GROUPS
 
    //  Food SQL initialization prompt
    private static final String FOOD_SQL_FILE = "database/sql/CPC-initialization.sql"; 
 
    public static void main (String[] args) throws IOException{
-      
       // Drops the date, country and class tables then recreates them
       dropTablesAndRecreateTables();
 
@@ -88,7 +85,9 @@ public class FoodProcessCSV_Altered {
       
       // Load up the LOSSSTATS table with loss statistics from foodloss.csv
       loadFoodLossStats();
-
+      
+      // Loads the TAKESPARTIN table in the sql database with the activitie from the csv file and their row_id keeping in mind comma seperation 
+      loadActivitiesTakePartIn();
       
       return;
    }
@@ -231,7 +230,7 @@ public class FoodProcessCSV_Altered {
                
             
          }
-         System.out.println("\ninserted all activities that are taken part in a loss stat \npress enter to continue");
+         System.out.println("\ninserted all activities \npress enter to continue");
          System.in.read();
 
       } catch (Exception e) { // catch any errors and print them 
@@ -950,6 +949,99 @@ public class FoodProcessCSV_Altered {
          }
       }
    }
+
+
+      // Loads the TAKESPARTIN table in the sql database with the activities from the csv file keeping in mind comma seperation 
+      public static void loadActivitiesTakePartIn() throws IOException
+      {
+         // JDBC Database Object
+         Connection connection = null;
+   
+         BufferedReader reader = null; // reader for the csv file
+         String line; // Each individual line from the csv file
+
+         // Prepared statement used later
+         PreparedStatement statement = null;
+   
+         // We need some error handling.
+         try {
+            // Open A CSV File to process, one line at a time
+            reader = new BufferedReader(new FileReader(FOOD_CSV_FILE));
+   
+            // Read the first line of "headings"
+            String header = reader.readLine();
+            System.out.println("Heading row" + header + "\n");
+   
+            // Setup JDBC
+            // Connect to JDBC database
+            connection = DriverManager.getConnection(DATABASE);
+            int rowid = 0;
+            //read CSV file line by line, stop if not more lines
+            while ((line = reader.readLine())!=null) {
+   
+               // split the line up by commas (ignoring commas within quoted fields)
+               String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+   
+               // Get all of the columns in order
+               String activities = splitline[CountryFields.ACTIVITY];
+               ++rowid;
+   
+               // If activities is null then it is skipped
+               if (activities.equals("")){continue;}
+   
+               // Any quotation markes are removed
+               activities = activities.replace("\"", "");
+   
+               // split the line up by commas (ignoring commas within quoted fields)
+               String[] splitActivities = activities.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+   
+               // Each comma seperated activity is iterated through
+               for (String eachActivity : splitActivities){
+   
+                  // Trim leading + trailing spaces
+                  eachActivity = eachActivity.trim();
+                  // Replace sinqle quotes by the proper sql syntax convention ('')
+                  eachActivity = eachActivity.replace("'", "''");
+   
+                  // Create Insert Statement
+
+                  String myStatement = " INSERT INTO TAKESPARTIN (STATSROWID, ACTIVITY) VALUES (?, ?)";
+                  // statement object created
+                  statement = connection.prepareStatement(myStatement);
+
+                  // Sets ? to proper responses
+                  statement.setInt(1, rowid);
+                  statement.setString(2, eachActivity);
+                  
+
+
+                  // Query is printed and executed
+                  System.out.println("Execute: \n" + statement.toString());
+                  statement.executeUpdate(); 
+                  
+                         
+               }
+                  
+                  
+               
+            }
+            System.out.println("\ninserted all activities that have taken part in a loss stat \npress enter to continue");
+            System.in.read();
+   
+         } catch (Exception e) { // catch any errors and print them 
+            e.printStackTrace();
+         }
+         finally { // afterwards try and close the reader and print any errors
+            if(reader!=null) {
+               try{
+               reader.close();
+               } catch (Exception e) {
+                  e.printStackTrace();
+               }
+            }
+         }
+      };
+      
 
 
    public static void checkCountryAndClassCodesMatch() {
