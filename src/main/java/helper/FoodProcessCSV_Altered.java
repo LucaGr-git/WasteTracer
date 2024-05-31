@@ -55,7 +55,7 @@ public class FoodProcessCSV_Altered {
    public static void main (String[] args) throws IOException{
       // Drops the date, country and class tables then recreates them
       dropTablesAndRecreateTables();
-
+      
       
       // Load up the CauseOfLoss table
       loadCauseOfLoss();
