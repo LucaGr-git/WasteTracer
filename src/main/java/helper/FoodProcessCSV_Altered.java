@@ -72,12 +72,6 @@ public class FoodProcessCSV_Altered {
       loadFoodSupplyStage();
 
 
-      // Load up the Date table
-      // This only needs to be done once
-      // Comment this out after runnning it the first time
-      loadYears();
-
-
       // loads all the class, group and subclass codes into the database
       loadCpcClass();
 
@@ -564,10 +558,6 @@ public class FoodProcessCSV_Altered {
          }
       }
    };
-
-   
-   public static void loadYears() {
-      {}};
 
    // loads all the 'Class' level codes into class table
    // note it does not load any sub class OR sub sub classes (or divisions, sections, groups)
