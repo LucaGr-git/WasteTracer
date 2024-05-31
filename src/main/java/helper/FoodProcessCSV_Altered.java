@@ -45,13 +45,11 @@ public class FoodProcessCSV_Altered {
    // MODIFY these to load/store to/from the correct locations
    private static final String DATABASE = "jdbc:sqlite:database/foodloss.db";
    private static final String FOOD_CSV_FILE = "database/FoodLoss.csv";
-   private static final String CPC_CSV_FILE = "database/CPC.csv";
-   private static final int RECORD_PERCENT = 27411/100;
-                                                      // TODO Add personas + students to database (THROUGH sql init File ???)
-                                                      // TODO Updatade schema + diagram for new changes in sql init file
-                                                      // TODO Finish all methods to load databse
-                                                      // TODO Finish all the /app classes for each table + possible methods to search through sql in java
-                                                      // TODO DEcide on DIVISIONS VS GROUPS
+   private static final String CPC_CSV_FILE = "database/CPC.csv";    // TODO Add personas + students to database (THROUGH sql init File ???)
+                                                                     // TODO Updatade schema + diagram for new changes in sql init file
+                                                                     // TODO Finish all methods to load databse
+                                                                     // TODO Finish all the /app classes for each table + possible methods to search through sql in java
+                                                                     // TODO DEcide on DIVISIONS VS GROUPS
 
    //  Food SQL initialization prompt
    private static final String FOOD_SQL_FILE = "database/sql/CPC-initialization.sql"; 
@@ -88,6 +86,8 @@ public class FoodProcessCSV_Altered {
       // you can also copy this to insert records after a lookup into your other tables
       checkCountryAndClassCodesMatch();
       
+      // Load up the LOSSSTATS table with loss statistics from foodloss.csv
+      loadFoodLossStats();
 
       
       return;
@@ -559,9 +559,7 @@ public class FoodProcessCSV_Altered {
       }
    };
 
-   // loads all the 'Class' level codes into class table
-   // note it does not load any sub class OR sub sub classes (or divisions, sections, groups)
-   // need to update this to handle this (based on your design)
+   // loads all the gorup, class and subclass codes level codes into class table
    public static void loadCpcClass() {
       // loads food groups
       loadFoodGroup();
@@ -838,6 +836,120 @@ public class FoodProcessCSV_Altered {
       }
    };
 
+   // Loads the LOSSSTATS table in the sql database with all fields from the csv
+   private static void loadFoodLossStats() {
+      // JDBC Database Object
+      Connection connection = null;
+      // Prepared statement used later
+      PreparedStatement statement = null;
+
+      BufferedReader reader = null; // reader for the csv file
+      String line; // Each individual line from the csv file
+
+      // We need some error handling.
+      try {
+         // Open A CSV File to process, one line at a time
+         reader = new BufferedReader(new FileReader(FOOD_CSV_FILE));
+
+         // Read the first line of "headings"
+         String header = reader.readLine();
+         System.out.println("Heading row" + header + "\n");
+
+         // Setup JDBC
+         // Connect to JDBC database
+         connection = DriverManager.getConnection(DATABASE);
+         int rowid = 0;
+         //read CSV file line by line, stop if not more lines
+         while ((line = reader.readLine())!=null) {
+
+            // split the line up by commas (ignoring commas within quoted fields)
+            String[] splitline = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+            // Get all of the columns in order
+            String m49code = splitline[CountryFields.M49CODE];
+            String country = splitline[CountryFields.COUNTRYNAME];
+            String region = splitline[CountryFields.REGIONAME];
+            String cpccode = splitline[CountryFields.CPCCODE];
+            String commodity = splitline[CountryFields.COMMODITY];
+            int year = Integer.parseInt(splitline[CountryFields.YEAR]);
+            double losspercent = Double.parseDouble(splitline[CountryFields.LOSSPERCENT]);
+            String supplystage = splitline[CountryFields.SUPPLYSTAGE];
+            String losscause = splitline[CountryFields.LOSSCAUSE];
+            ++rowid;
+
+            // Region is formatted and checked for null values
+            region = region.replace("\"", "");
+            if (region.equals("")){region = "NULL";}
+
+            
+
+            // DEFAULT VALUES
+            String groupCode = cpccode.substring(0,3);
+            String classCode = "NULL";
+            String subClassCode = "0"; 
+            // If there is a classcode or subclass code by length (determined by code length) they are updated accordingly
+            if (cpccode.length() >= 4){ classCode = cpccode.substring(3,4);}
+            if (cpccode.length() >= 6){ subClassCode = cpccode.substring(4);}
+
+            // commmodity is formatted
+            commodity = commodity.replace("\"", "");
+
+            // supply stage is formatted and checked for null
+            supplystage = supplystage.replace("\"", "");
+            if (supplystage.equals("")){supplystage = "NULL";}
+
+            // loss cause is formatted and checked for null
+            losscause = losscause.replace("\"", "");
+            if (losscause.equals("")){losscause = "NULL";}
+            
+
+            
+            // Create Insert Statement to add loss statistics
+            
+            // statement as a string
+            String myStatement = " INSERT INTO LOSSSTATS (ROW_ID, LOSSPERCENTAGE, YEAR, GROUPCODE, CLASSCODE," +
+            "SUBCLASSCODE, DESCRIPTOR, CAUSEOFLOSS, M49CODE, COUNTRY, REGION) VALUES (?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?)";
+            // statement object created
+            statement = connection.prepareStatement(myStatement);
+
+            // Sets ? to proper responses
+            statement.setInt(1, rowid);
+            statement.setDouble(2, losspercent);
+            statement.setInt(3, year);
+            statement.setString(4, groupCode);
+            statement.setString(5, classCode);
+            statement.setString(6, subClassCode);
+            statement.setString(7, commodity);
+            statement.setString(8, losscause);
+            statement.setString(9, m49code);
+            statement.setString(10, country);
+            statement.setString(11, region);
+            
+
+
+            // Query is printed and executed
+            System.out.println("Execute: \n" + statement.toString());
+            statement.executeUpdate();
+               
+            
+         }
+         System.out.println("\ninserted all loss statistics \npress enter to continue");
+         System.in.read();
+      
+
+      } catch (Exception e) { // catch any errors and print them 
+         e.printStackTrace();
+      }
+      finally { // afterwards try and close the reader and print any errors
+         if(reader!=null) {
+            try{
+            reader.close();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+      }
+   }
 
 
    public static void checkCountryAndClassCodesMatch() {
