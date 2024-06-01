@@ -907,7 +907,7 @@ public class FoodProcessCSV_Altered {
             
             // statement as a string
             String myStatement = " INSERT INTO LOSSSTATS (ROW_ID, LOSSPERCENTAGE, YEAR, GROUPCODE, CLASSCODE," +
-            "SUBCLASSCODE, DESCRIPTOR, CAUSEOFLOSS, M49CODE, COUNTRY, REGION) VALUES (?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?)";
+            "SUBCLASSCODE, DESCRIPTOR, CAUSEOFLOSS, M49CODE, COUNTRY, REGION, FOODSUPPLY) VALUES (?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ?)";
             // statement object created
             statement = connection.prepareStatement(myStatement);
 
@@ -923,6 +923,7 @@ public class FoodProcessCSV_Altered {
             statement.setString(9, m49code);
             statement.setString(10, country);
             statement.setString(11, region);
+            statement.setString(12, supplystage);
             
 
 
