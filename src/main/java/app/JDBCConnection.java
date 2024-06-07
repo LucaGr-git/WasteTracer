@@ -35,7 +35,7 @@ public class JDBCConnection {
      * @return
      *    Returns an ArrayList of Country objects
      */
-    public ArrayList<Country> getAllCountries() {
+    public static ArrayList<Country> getAllCountries() {
         // Create the ArrayList of Country objects to return
         ArrayList<Country> countries = new ArrayList<Country>();
 
@@ -51,7 +51,7 @@ public class JDBCConnection {
             statement.setQueryTimeout(30);
 
             // The Query
-            String query = "SELECT * FROM Country";
+            String query = "SELECT * FROM Country ORDER BY country.country";
             
             // Get Result
             ResultSet results = statement.executeQuery(query);
@@ -60,7 +60,7 @@ public class JDBCConnection {
             while (results.next()) {
                 // Lookup the columns we need
                 String m49Code     = results.getString("m49code");
-                String name  = results.getString("countryName");
+                String name  = results.getString("country");
 
                 // Create a Country Object
                 Country country = new Country(m49Code, name);
@@ -96,7 +96,7 @@ public class JDBCConnection {
      * Changes an arraylist of countries into string 
      * @return an arraylist of strings with wach countries name
      */
-    public ArrayList<String> getAllCountriesString(ArrayList<Country> countryList) {
+    public static ArrayList<String> getAllCountriesString(ArrayList<Country> countryList) {
         ArrayList<String> countriesArrayList = new ArrayList<String>();
 
         for (Country country : countryList){

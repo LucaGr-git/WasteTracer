@@ -74,15 +74,25 @@ public class PageST2A implements Handler {
         html += "<div class='content'>";
 
         html += """
-                <div class="filters">
-                    <h2>Filters</h2>
+            <div class="filters">
+                <h2>Filters</h2>
+                <form class="form">
                     <div class="country-select">
-                        <p>Countries</p>
-                        <select class="select__input" name="country-selector" id="country-selector">
-                            <option value="0">Please Select</option>
-                            <option value="Algeria">Algeria</option>
-                            <option value="Angola">Angola</option>
-                        </select>
+                        <div>
+                            <p>Countries</p>
+                            <div class='custom-select'>
+                                <select id="country-selector">
+                 """;
+
+        for (String country : JDBCConnection.getAllCountriesString(JDBCConnection.getAllCountries())) {
+            html += "<option>" + country + "</option>";
+        }
+
+        html +=  """
+                                </select>
+                                <span class="custom-arrow"></span>
+                            </div>
+                        </div>
                     </div>
                     <hr>
                     <div class="year-wrapper">
@@ -96,7 +106,8 @@ public class PageST2A implements Handler {
                     <hr>
                     <hr>
                     <hr>
-                </div>
+                </form>
+            </div>
             """;
 
         html += """
