@@ -29,6 +29,7 @@ public class JDBCConnection {
         System.out.println("Created JDBC Connection Object");
     }
 
+    
     /**
      * Get all of the Countries in the database.
      * @return
@@ -90,4 +91,19 @@ public class JDBCConnection {
     }
 
     // TODO: Add your required methods here
+
+     /**
+     * Changes an arraylist of countries into string 
+     * @return an arraylist of strings with wach countries name
+     */
+    public ArrayList<String> getAllCountriesString(ArrayList<Country> countryList) {
+        ArrayList<String> countriesArrayList = new ArrayList<String>();
+
+        for (Country country : countryList){
+            countriesArrayList.add(country.getName());
+        }
+
+        return countriesArrayList;
+    }
+
 }
