@@ -33,60 +33,43 @@ public class PageST3A implements Handler {
         String html = "<html>";
 
         // Add some Head information
-        html = html + "<head>" + 
+        html += "<head>" + 
                "<title>Subtask 3.1</title>";
 
         // Add some CSS (external file)
-        html = html + "<link rel='stylesheet' type='text/css' href='common.css' />";
-        html = html + "</head>";
+        html += "<link rel='stylesheet' type='text/css' href='common.css' />";
+        html += "</head>";
 
         // Add the body
-        html = html + "<body>";
+        html += "<body>";
 
         // Add the topnav
         // This uses a Java v15+ Text Block
-        html = html + """
-            <div class='topnav'>
-                <a href='/'>Homepage</a>
-                <a href='mission.html'>Our Mission</a>
-                <a href='page2A.html'>Sub Task 2.A</a>
-                <a href='page2B.html'>Sub Task 2.B</a>
-                <a href='page3A.html'>Sub Task 3.A</a>
-                <a href='page3B.html'>Sub Task 3.B</a>
+        html += """
+            <div class="topnav">
+                <img src="logo.png">
+                <ul class="topnav-links">
+                    <div class="about-us">
+                        <a href="/mission.html">About Us</a>
+                    </div>
+                    <div class="subtask">
+                        <li>Subtasks 2</li>
+                        <div class="subtask-dropdown">
+                            <a href="/page2A.html">Subtask 2a</a>
+                            <a href="/page2B.html">Subtask 2b</a>
+                        </div>
+                    </div>
+                    <div class="subtask">
+                        <li>Subtasks 3</li>
+                        <div class="subtask-dropdown">
+                            <a href="/page3A.html">Subtask 3a</a>
+                            <a href="/page3B.html">Subtask 3b</a>
+                        </div>
+                    </div>
+                </ul>
             </div>
         """;
-
-        // Add header content block
-        html = html + """
-            <div class='header'>
-                <h1>Subtask 3.A</h1>
-            </div>
-        """;
-
-        // Add Div for page Content
-        html = html + "<div class='content'>";
-
-        // Add HTML for the page content
-        html = html + """
-            <p>Subtask 3.A page content</p>
-            """;
-
-        // Close Content div
-        html = html + "</div>";
-
-        // Footer
-        html = html + """
-            <div class='footer'>
-                <p>COSC2803 - Studio Project Starter Code (Apr24)</p>
-            </div>
-        """;
-
-        // Finish the HTML webpage
-        html = html + "</body>" + "</html>";
         
-
-        // DO NOT MODIFY THIS
-        // Makes Javalin render the webpage
         context.html(html);
     }
 

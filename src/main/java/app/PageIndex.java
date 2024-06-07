@@ -50,15 +50,15 @@ public class PageIndex implements Handler {
                     <div class="subtask">
                         <li>Subtasks 2</li>
                         <div class="subtask-dropdown">
-                            <a href="#">Subtask 2a</a>
-                            <a href="#">Subtask 2b</a>
+                            <a href="/page2A.html">Subtask 2a</a>
+                            <a href="/page2B.html">Subtask 2b</a>
                         </div>
                     </div>
                     <div class="subtask">
                         <li>Subtasks 3</li>
                         <div class="subtask-dropdown">
-                            <a href="#">Subtask 3a</a>
-                            <a href="#">Subtask 3b</a>
+                            <a href="/page3A.html">Subtask 3a</a>
+                            <a href="/page3B.html">Subtask 3b</a>
                         </div>
                     </div>
                 </ul>

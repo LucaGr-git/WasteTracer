@@ -33,60 +33,83 @@ public class PageST2A implements Handler {
         String html = "<html>";
 
         // Add some Head information
-        html = html + "<head>" + 
-               "<title>Subtask 2.1</title>";
+        html += "<head>" + 
+               "<title>Waste - TracerSubtask 2.1</title>";
 
         // Add some CSS (external file)
-        html = html + "<link rel='stylesheet' type='text/css' href='common.css' />";
-        html = html + "</head>";
+        html += "<link rel='stylesheet' type='text/css' href='common.css' />" +
+                "<link rel='stylesheet' type='text/css' href='ST2A.css'/>";
+        html += "</head>";
 
         // Add the body
-        html = html + "<body>";
+        html += "<body>";
 
         // Add the topnav
         // This uses a Java v15+ Text Block
-        html = html + """
-            <div class='topnav'>
-                <a href='/'>Homepage</a>
-                <a href='mission.html'>Our Mission</a>
-                <a href='page2A.html'>Sub Task 2.A</a>
-                <a href='page2B.html'>Sub Task 2.B</a>
-                <a href='page3A.html'>Sub Task 3.A</a>
-                <a href='page3B.html'>Sub Task 3.B</a>
+        html += """
+            <div class="topnav">
+                <img src="logo.png">
+                <ul class="topnav-links">
+                    <div class="about-us">
+                        <a href="/mission.html">About Us</a>
+                    </div>
+                    <div class="subtask">
+                        <li>Subtasks 2</li>
+                        <div class="subtask-dropdown">
+                            <a href="/page2A.html">Subtask 2a</a>
+                            <a href="/page2B.html">Subtask 2b</a>
+                        </div>
+                    </div>
+                    <div class="subtask">
+                        <li>Subtasks 3</li>
+                        <div class="subtask-dropdown">
+                            <a href="/page3A.html">Subtask 3a</a>
+                            <a href="/page3B.html">Subtask 3b</a>
+                        </div>
+                    </div>
+                </ul>
             </div>
         """;
 
-        // Add header content block
-        html = html + """
-            <div class='header'>
-                <h1>Subtask 2.A</h1>
-            </div>
-        """;
+        html += "<div class='content'>";
 
-        // Add Div for page Content
-        html = html + "<div class='content'>";
+        html += """
+                <div class="filters">
+                    <h2>Filters</h2>
+                    <div class="country-select">
+                        <p>Countries</p>
+                        <select class="select__input" name="country-selector" id="country-selector">
+                            <option value="0">Please Select</option>
+                            <option value="Algeria">Algeria</option>
+                            <option value="Angola">Angola</option>
+                        </select>
+                    </div>
+                    <hr>
+                    <div class="year-wrapper">
+                        <div class="start-year-wrapper">
 
-        // Add HTML for the page content
-        html = html + """
-            <p>Subtask 2.A page content</p>
+                        </div>
+                        <div class="end-year-wrapper">
+
+                        </div>
+                    </div>
+                    <hr>
+                    <hr>
+                    <hr>
+                </div>
             """;
 
-        // Close Content div
-        html = html + "</div>";
-
-        // Footer
-        html = html + """
-            <div class='footer'>
-                <p>COSC2803 - Studio Project Starter Code (Apr24)</p>
+        html += """
+            <div class="data-container">
+                <h1>Search Data by Country</h1>
             </div>
-        """;
+                """;
 
-        // Finish the HTML webpage
-        html = html + "</body>" + "</html>";
+        html += "</div></body></html>";
+
         
 
-        // DO NOT MODIFY THIS
-        // Makes Javalin render the webpage
+
         context.html(html);
     }
 
