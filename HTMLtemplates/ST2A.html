@@ -30,7 +30,7 @@
         <div class="content">
             <div class="filters">
                 <h2>Filters</h2>
-                <form class="form">
+                <form class="form" action="ST2A.html">
                     <div class="country-select">
                         <div>
                             <p>Countries</p>
@@ -46,18 +46,47 @@
                             </div>
                         </div>
                     </div>
-                    <hr>
                     <div class="year-wrapper">
                         <div class="start-year-wrapper">
-
+                            <p>Start Year</p>
+                            <select>
+                                <option>2012</option>
+                            </select>
                         </div>
                         <div class="end-year-wrapper">
-
+                            <p>End Year</p>
+                            <select></select>
                         </div>
                     </div>
-                    <hr>
-                    <hr>
-                    <hr>
+                    <h4>Filter Columns</h4>
+                    <div class='checkboxes'>
+                        <div>
+                            <input type='checkbox' name='activity-show' id='activity-show'>
+                            <label for='activity-show'>Show activity</label>
+                        </div>
+                        <div>
+                            <input type='checkbox' name='cause-of-loss-show' id='cause-of-loss-show'>
+                            <label for='cause-of-loss-show'>Show cause of loss</label>
+                        </div>
+                        <div>
+                            <input type='checkbox' name='food-supply-show' id='food-supply-show'>
+                            <label for='food-supply-show'>Show food supply stage</label>
+                        </div>
+                    </div>
+                    <h4>Sort by Loss %</h4>
+                    <div class="radio-buttons">
+                        <div>
+                            <input type="radio" name="sort-by-percent" id="sort-by-ascending">
+                            <label for="sort-by-ascending">Ascending</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="sort-by-percent" id="sort-by-descending">
+                            <label for="sort-by-descending">Descending</label>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit">Search Data</button>
+                    </div>
                 </form>
             </div>
             <div class="data-container">

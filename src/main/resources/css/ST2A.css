@@ -17,7 +17,7 @@ hr {
     margin: 4vh 0;
 }
 
-/*Filters Styling*/
+/*General Filters Styling*/
 .filters h2 {
     color: #853F00;
     margin: 3vh 0 2vh 0;
@@ -30,6 +30,9 @@ hr {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: sticky;
+    left: 0;
+    top: 14vh;
 }
 
 .filters::after {
@@ -52,10 +55,7 @@ hr {
     height: 100%;
 }
 
-.data-container {
-    width: 78vw;
-}
-
+/*Countries selector styling*/
 .country-select {
     background-color: #4C6C38;
     height: fit-content;
@@ -68,8 +68,17 @@ hr {
     padding: 10px;
 }
 
-.country-select p {
+.form p {
+    font-size: 1.2cqw;
     margin-bottom: 5px;
+}
+
+.form > div {
+    margin: 1.5vh 0px;
+}
+
+.form > div:first-child {
+    margin-top: 0;
 }
 
 .custom-select {
@@ -77,6 +86,79 @@ hr {
     position: relative;
 }
 
+/*Year Dropdown styling*/
+.year-wrapper {
+    display: flex;
+    width: 85%;
+    justify-content: space-between;
+    box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.5);
+    border-radius: 5px;
+}
+
+.start-year-wrapper,
+.end-year-wrapper {
+    background-color: #4C6C38;
+    width: 49.5%;
+    padding: 8px;
+}
+
+.start-year-wrapper {
+    border-radius: 5px 0px 0px 5px;
+}
+
+.end-year-wrapper {
+    border-radius: 0px 5px 5px 0px;
+}
+
+/*General Checkbox/radio/label styling*/
+.checkboxes, 
+.radio-buttons {
+    width: 85%;
+}
+
+.checkboxes div,
+.radio-buttons div {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.checkboxes input,
+.radio-buttons input {
+    height: 4vh;
+    width: 4vh;
+    margin-right: 10px;
+}
+
+h4 {
+    color: #4C6C38;
+    font-size: 1.5cqw;
+    width: 85%;
+    text-align: left;
+}
+
+label {
+    color: #9f4b00;
+}
+
+button {
+    height: fit-content;
+    font-size: 3cqw;
+    border-radius: 5px;
+    background-color: #385319;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;  
+    box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.5);  
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/*General select/option styling*/
 select {
     appearance: none;
     font-size: 2cqw;
@@ -95,6 +177,7 @@ option {
     padding: 1em;
 }
 
+/*Dropdown arrow styling*/
 .custom-arrow {
     position: absolute;
     background-color: #303e21;
@@ -123,6 +206,10 @@ option {
 }
 
 /*Data Containeer Styling*/
+.data-container {
+    width: 78vw;
+}
+
 .data-container h1 {
     text-align: center;
     font-size: 5cqw;

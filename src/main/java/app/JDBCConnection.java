@@ -2,6 +2,8 @@ package app;
 
 import java.util.ArrayList;
 
+import javax.swing.plaf.nimbus.State;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -35,6 +37,7 @@ public class JDBCConnection {
      * @return
      *    Returns an ArrayList of Country objects
      */
+
     public static ArrayList<Country> getAllCountries() {
         // Create the ArrayList of Country objects to return
         ArrayList<Country> countries = new ArrayList<Country>();

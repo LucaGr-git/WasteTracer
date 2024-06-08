@@ -11,41 +11,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Example Index HTML class using Javalin
- * <p>
- * Generate a static HTML page using Javalin
- * by writing the raw HTML into a Java String object
- *
- * @author Timothy Wiley, 2023. email: timothy.wiley@rmit.edu.au
- * @author Santha Sumanasekara, 2021. email: santha.sumanasekara@rmit.edu.au
- * @author Halil Ali, 2024. email: halil.ali@rmit.edu.au
- */
-
 public class PageST2A implements Handler {
 
-    // URL of this page relative to http://localhost:7001/
     public static final String URL = "/page2A.html";
+    public static final String DATABASE = "jdbc:sqlite:database/foodloss.db";
 
     @Override
     public void handle(Context context) throws Exception {
-        // Create a simple HTML webpage in a String
         String html = "<html>";
 
-        // Add some Head information
         html += "<head>" + 
                "<title>Waste - TracerSubtask 2.1</title>";
 
-        // Add some CSS (external file)
         html += "<link rel='stylesheet' type='text/css' href='common.css' />" +
                 "<link rel='stylesheet' type='text/css' href='ST2A.css'/>";
         html += "</head>";
 
-        // Add the body
         html += "<body>";
 
-        // Add the topnav
-        // This uses a Java v15+ Text Block
         html += """
             <div class="topnav">
                 <img src="logo.png">
@@ -76,16 +59,16 @@ public class PageST2A implements Handler {
         html += """
             <div class="filters">
                 <h2>Filters</h2>
-                <form class="form">
+                <form class="form" action='/' method='post' id='ST2A-form' name='ST2A-form'>
                     <div class="country-select">
                         <div>
                             <p>Countries</p>
                             <div class='custom-select'>
-                                <select id="country-selector">
+                                <select id="country-selector" name='country-selector'>
                  """;
 
         for (String country : JDBCConnection.getAllCountriesString(JDBCConnection.getAllCountries())) {
-            html += "<option>" + country + "</option>";
+            html += "<option name='country-selector'>" + country + "</option>";
         }
 
         html +=  """
@@ -94,18 +77,55 @@ public class PageST2A implements Handler {
                             </div>
                         </div>
                     </div>
-                    <hr>
                     <div class="year-wrapper">
                         <div class="start-year-wrapper">
-
+                            <p>Start Year</p>
+                            <select>
+                 """;
+        getAllAvailableYears(context, html);                               
+        html +=  """
+                            </select>
                         </div>
                         <div class="end-year-wrapper">
+                            <p>End Year</p>
+                            <select>
+                 """;
+       
+                 
+        html +=  """
 
+                            </select>
                         </div>
                     </div>
-                    <hr>
-                    <hr>
-                    <hr>
+                    <h4>Filter Columns</h4>
+                    <div class='checkboxes'>
+                        <div>
+                            <input type='checkbox' name='activity-show' id='activity-show'>
+                            <label for='activity-show'>Show activity</label>
+                        </div>
+                        <div>
+                            <input type='checkbox' name='cause-of-loss-show' id='cause-of-loss-show'>
+                            <label for='cause-of-loss-show'>Show cause of loss</label>
+                        </div>
+                        <div>
+                            <input type='checkbox' name='food-supply-show' id='food-supply-show'>
+                            <label for='food-supply-show'>Show food supply stage</label>
+                        </div>
+                    </div>
+                    <h4>Sort by Loss %</h4>
+                    <div class="radio-buttons">
+                        <div>
+                            <input type="radio" name="sort-by-percent" id="sort-by-ascending">
+                            <label for="sort-by-ascending">Ascending</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="sort-by-percent" id="sort-by-descending">
+                            <label for="sort-by-descending">Descending</label>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit">Search Data</button>
+                    </div>
                 </form>
             </div>
             """;
@@ -124,4 +144,42 @@ public class PageST2A implements Handler {
         context.html(html);
     }
 
+
+
+    public static void getAllAvailableYears(Context context, String html) {
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            String country_selector = context.formParam("country-selector");
+            if (country_selector == null) {
+                html += "<option>N/A</option>";
+            } 
+            else {
+                String Query = "SELECT DISTINCT year FROM Lossstats WHERE country = " + country_selector;
+
+                ResultSet results = statement.executeQuery(Query);
+
+                while (results.next()) {
+                    html += "<option>" +  results.getInt("year") + "</option>";
+                }
+
+                statement.close();
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
 }
