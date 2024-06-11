@@ -31,7 +31,7 @@ public class PageST2A implements Handler {
 
         html += """
             <div class="topnav">
-                <img src="logo.png">
+                <a href='/'><img src='logo.png' width='200'></a>
                 <ul class="topnav-links">
                     <div class="about-us">
                         <a href="/mission.html">About Us</a>
@@ -59,16 +59,17 @@ public class PageST2A implements Handler {
         html += """
             <div class="filters">
                 <h2>Filters</h2>
-                <form class="form" action='/' method='post' id='ST2A-form' name='ST2A-form'>
+                <form class="form" action='/page2A.html' method='POST' id='ST2A-form' name='ST2A-form'>
                     <div class="country-select">
                         <div>
                             <p>Countries</p>
                             <div class='custom-select'>
                                 <select id="country-selector" name='country-selector'>
+                                    <option>Please Select</option>
                  """;
 
         for (String country : JDBCConnection.getAllCountriesString(JDBCConnection.getAllCountries())) {
-            html += "<option name='country-selector'>" + country + "</option>";
+            html += "<option>" + country + "</option>";
         }
 
         html +=  """
@@ -80,17 +81,25 @@ public class PageST2A implements Handler {
                     <div class="year-wrapper">
                         <div class="start-year-wrapper">
                             <p>Start Year</p>
-                            <select>
+                            <select id="start-year" name="start-year">
                  """;
-        getAllAvailableYears(context, html);                               
+        String selectedCountry = context.formParam("country-selector");
+
+        for (Integer year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
+            html += "<option>" + year + "</option>";
+        }
+        
         html +=  """
                             </select>
                         </div>
                         <div class="end-year-wrapper">
                             <p>End Year</p>
-                            <select>
+                            <select id="end-year" name="end-year">
                  """;
-       
+        
+        for (Integer year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
+            html += "<option selected>" + year + "</option>";
+        }
                  
         html +=  """
 
@@ -133,53 +142,31 @@ public class PageST2A implements Handler {
         html += """
             <div class="data-container">
                 <h1>Search Data by Country</h1>
+                """;
+
+        ResultSet results = JDBCConnection.getST2AResults(
+            selectedCountry,
+            context.formParam("start-year"),
+            context.formParam("end-year"),
+            context.formParam("activity-show"),
+            context.formParam("cause-of-loss-show"),
+            context.formParam("food-supply-show")
+        );
+
+        while (results.next()) {
+
+        }
+
+        html += """
             </div>
                 """;
 
+        html += "<p>" + selectedCountry + "</p><br>";
+        html += "<p>" + context.formParam("sort-by-percent") + "</p><br>";
+        html += "<p>" + context.formParam("food-supply-show") + "</p><br>";
+
         html += "</div></body></html>";
 
-        
-
-
         context.html(html);
-    }
-
-
-
-    public static void getAllAvailableYears(Context context, String html) {
-        Connection connection = null;
-
-        try {
-            connection = DriverManager.getConnection(DATABASE);
-
-            Statement statement = connection.createStatement();
-            statement.setQueryTimeout(30);
-
-            String country_selector = context.formParam("country-selector");
-            if (country_selector == null) {
-                html += "<option>N/A</option>";
-            } 
-            else {
-                String Query = "SELECT DISTINCT year FROM Lossstats WHERE country = " + country_selector;
-
-                ResultSet results = statement.executeQuery(Query);
-
-                while (results.next()) {
-                    html += "<option>" +  results.getInt("year") + "</option>";
-                }
-
-                statement.close();
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                System.err.println(e.getMessage());
-            }
-        }
     }
 }

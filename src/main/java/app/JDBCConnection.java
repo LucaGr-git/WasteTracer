@@ -2,6 +2,7 @@ package app;
 
 import java.util.ArrayList;
 
+import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.plaf.nimbus.State;
 
 import java.sql.Connection;
@@ -39,52 +40,38 @@ public class JDBCConnection {
      */
 
     public static ArrayList<Country> getAllCountries() {
-        // Create the ArrayList of Country objects to return
         ArrayList<Country> countries = new ArrayList<Country>();
 
-        // Setup the variable for the JDBC connection
         Connection connection = null;
 
         try {
-            // Connect to JDBC data base
             connection = DriverManager.getConnection(DATABASE);
 
-            // Prepare a new SQL Query & Set a timeout
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            // The Query
-            String query = "SELECT * FROM Country ORDER BY country.country";
-            
-            // Get Result
+            String query = "SELECT * FROM Country ORDER BY country";
+  
             ResultSet results = statement.executeQuery(query);
 
-            // Process all of the results
             while (results.next()) {
-                // Lookup the columns we need
                 String m49Code     = results.getString("m49code");
                 String name  = results.getString("country");
 
-                // Create a Country Object
                 Country country = new Country(m49Code, name);
 
-                // Add the Country object to the array
                 countries.add(country);
             }
 
-            // Close the statement because we are done with it
             statement.close();
         } catch (SQLException e) {
-            // If there is an error, lets just pring the error
             System.err.println(e.getMessage());
         } finally {
-            // Safety code to cleanup
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException e) {
-                // connection close failed.
                 System.err.println(e.getMessage());
             }
         }
@@ -109,4 +96,88 @@ public class JDBCConnection {
         return countriesArrayList;
     }
 
+    public static ArrayList<Integer> getAllAvailableYears(String country) {
+        ArrayList<Integer> availableYears = new ArrayList<Integer>();
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            if (country == null || country.equals("Please Select")) {
+                availableYears.add(0);
+            }
+            else {
+                String query = "SELECT DISTINCT year FROM Lossstats WHERE country = '" + 
+                            country + 
+                            "' ORDER BY year ASC ";
+
+                ResultSet results = statement.executeQuery(query);
+
+                while (results.next()) {
+                    int year = results.getInt("Year");
+                    availableYears.add(year);
+                }   
+            }
+
+            
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return availableYears;
+    }
+
+    public static ResultSet getST2AResults(
+        String country, 
+        String startYear,
+        String endYear,
+        String activity, 
+        String causeOfLoss, 
+        String foodSupply) {
+
+        Connection connection = null;
+
+        String query = "";
+        ResultSet results = null;
+        
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            if (country == null || country.equals("Please Select")) {}
+            else if (Integer.parseInt(startYear) > Integer.parseInt(endYear)) {}
+            else {
+                
+            }
+
+            results = statement.executeQuery(query);
+
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return results;
+    }
 }
+
