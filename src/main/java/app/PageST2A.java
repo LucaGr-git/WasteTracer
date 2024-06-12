@@ -151,26 +151,52 @@ public class PageST2A implements Handler {
 
         String startYear = context.formParam("start-year");
         String endYear = context.formParam("end-year");
-        
-        ResultSet results = JDBCConnection.getST2AResults(
-            selectedCountry,
-            startYear,
-            endYear,
-            context.formParam("activity-show"),
-            context.formParam("cause-of-loss-show"),
-            context.formParam("food-supply-show")
-        );
+        String activity = context.formParam("activity-show");
+        String causeOfLoss = context.formParam("cause-of-loss-show");
+        String foodSupply = context.formParam("food-supply-show");
 
         html += """
             <div class="data-container">
-                <h1>Search Data by Country</h1>
+                <h1>Search Loss by Country</h1>
+                <table>
                 """;
+
+        String query = JDBCConnection.getST2AQuery(
+            selectedCountry,
+            startYear,
+            endYear,
+            activity,
+            causeOfLoss,
+            foodSupply
+        );
+
+        if (query != null) {
+            html += "<caption>" + selectedCountry + "</caption>";
+            html += """
+                <tr>
+                    <th>Commodity</th>
+                    <th>Start Year</th>
+                    <th>End Year</th>
+                    <th>Difference</th>
+                """;
+            if (activity != null) {
+                html += "<th>Activity</th>";
+            }
+            if (causeOfLoss != null) {
+                html += "<th>Cause of Loss</th>";
+            }
+            if (foodSupply != null) {
+                html += "<th>Food Supply</th>";
+            }
+            html += "</tr>";
+
+            html += JDBCConnection.ST2ATableHTML(query);
+        }
 
         html += """
+                </table>
             </div>
                 """;
-
-        html += "<p>" + context.formParam("sort-by-percent") + "</p><br>";
 
         html += "</div></body></html>";
 
