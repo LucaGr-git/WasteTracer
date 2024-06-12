@@ -68,7 +68,11 @@ public class PageST2A implements Handler {
                                     <option>Please Select</option>
                  """;
 
+        String selectedCountry = context.formParam("country-selector");
         for (String country : JDBCConnection.getAllCountriesString(JDBCConnection.getAllCountries())) {
+            if (selectedCountry != null && country.equals(selectedCountry)) {
+                html += "<option selected>" + country + "</option>";
+            }
             html += "<option>" + country + "</option>";
         }
 
@@ -76,6 +80,7 @@ public class PageST2A implements Handler {
                                 </select>
                                 <span class="custom-arrow"></span>
                             </div>
+                            <button type="submit" class="confirm-select">Confirm Country</submit>
                         </div>
                     </div>
                     <div class="year-wrapper">
@@ -83,10 +88,9 @@ public class PageST2A implements Handler {
                             <p>Start Year</p>
                             <select id="start-year" name="start-year">
                  """;
-        String selectedCountry = context.formParam("country-selector");
 
         for (Integer year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
-            html += "<option>" + year + "</option>";
+            html += "<option value=" + year + ">" + year + "</option>";
         }
         
         html +=  """
@@ -98,12 +102,18 @@ public class PageST2A implements Handler {
                  """;
         
         for (Integer year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
-            html += "<option selected>" + year + "</option>";
+            html += "<option selected value=" + year + ">" + year + "</option>";
         }
                  
         html +=  """
 
                             </select>
+                        </div>
+                    </div>
+                    <div class='checkboxes'>
+                        <div>
+                            <input type='checkbox' name='all-years' id='all-years'>
+                            <label for='all-years'>Show all available years</label>
                         </div>
                     </div>
                     <h4>Filter Columns</h4>
@@ -139,31 +149,28 @@ public class PageST2A implements Handler {
             </div>
             """;
 
-        html += """
-            <div class="data-container">
-                <h1>Search Data by Country</h1>
-                """;
-
+        String startYear = context.formParam("start-year");
+        String endYear = context.formParam("end-year");
+        
         ResultSet results = JDBCConnection.getST2AResults(
             selectedCountry,
-            context.formParam("start-year"),
-            context.formParam("end-year"),
+            startYear,
+            endYear,
             context.formParam("activity-show"),
             context.formParam("cause-of-loss-show"),
             context.formParam("food-supply-show")
         );
 
-        while (results.next()) {
-
-        }
+        html += """
+            <div class="data-container">
+                <h1>Search Data by Country</h1>
+                """;
 
         html += """
             </div>
                 """;
 
-        html += "<p>" + selectedCountry + "</p><br>";
         html += "<p>" + context.formParam("sort-by-percent") + "</p><br>";
-        html += "<p>" + context.formParam("food-supply-show") + "</p><br>";
 
         html += "</div></body></html>";
 

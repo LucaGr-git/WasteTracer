@@ -59,18 +59,22 @@ hr {
 .country-select {
     background-color: #4C6C38;
     height: fit-content;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     width: 85%;
     border-radius: 5px;
     box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.5);
     padding: 10px;
 }
 
+.country-select > div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: left;
+    gap: 5px;
+}
+
 .form p {
     font-size: 1.2cqw;
-    margin-bottom: 5px;
 }
 
 .form > div {
@@ -100,6 +104,9 @@ hr {
     background-color: #4C6C38;
     width: 49.5%;
     padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .start-year-wrapper {
@@ -142,6 +149,11 @@ label {
     color: #9f4b00;
 }
 
+.confirm-select {
+    font-size: 1.5cqw;
+    margin-bottom: 0px;
+}
+
 button {
     height: fit-content;
     font-size: 3cqw;
@@ -153,6 +165,7 @@ button {
     cursor: pointer;  
     box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.5);  
     margin-bottom: 20px;
+    font-weight: 700;
 }
 
 button:active {
@@ -189,8 +202,7 @@ option {
     border-radius: 0px 5px 5px 0px;
 }
 
-.custom-arrow::before,
-.custom-arrow::after {
+.custom-arrow::before {
     content: '';
     position: absolute;
     height: 0;
