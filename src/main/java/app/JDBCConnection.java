@@ -275,7 +275,7 @@ public class JDBCConnection {
                     html += "<td>" + endYearData + "</td>";
                     html += "<td>" + difference + "</td>";
 
-                    String activityString, causeOfLossString, foodSupplyString;
+                    String activityString = "", causeOfLossString = "", foodSupplyString = "";
 
                     if (activty != null) {
                         activityString = (
@@ -285,7 +285,23 @@ public class JDBCConnection {
                         html += "<td>" + activityString + "</td>";
                     }
                     if (causeOfLoss != null) {
-            
+                        if (
+                            results.getString("causeOfLoss0") == null ||
+                            results.getString("causeOfLoss0").equals("NULL")) {
+                            causeOfLossString = "N/A";
+                        }
+                        else if (
+                            results.getString("causeOfLoss1") == null ||
+                            results.getString("causeOfLoss1").equals("NULL")) {
+                            causeOfLossString = "N/A";
+                        }
+                        else {
+                            causeOfLossString = (
+                            results.getString("causeOfLoss0") != null) ?
+                            results.getString("causeOfLoss0") :
+                            results.getString("causeOfLoss1");
+                        }
+                        html += "<td>" + causeOfLossString + "</td>";
                     }
                     if (foodSupply != null) {
                         foodSupplyString = (
