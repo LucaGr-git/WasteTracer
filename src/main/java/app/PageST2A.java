@@ -134,11 +134,11 @@ public class PageST2A implements Handler {
                     <h4>Sort by Loss %</h4>
                     <div class="radio-buttons">
                         <div>
-                            <input type="radio" name="sort-by-percent" id="sort-by-ascending">
+                            <input type="radio" name="sort-by-percent" value="sort-by-ascending">
                             <label for="sort-by-ascending">Ascending</label>
                         </div>
                         <div>
-                            <input type="radio" name="sort-by-percent" id="sort-by-descending">
+                            <input type="radio" name="sort-by-percent" value="sort-by-descending">
                             <label for="sort-by-descending">Descending</label>
                         </div>
                     </div>
@@ -154,6 +154,7 @@ public class PageST2A implements Handler {
         String activity = context.formParam("activity-show");
         String causeOfLoss = context.formParam("cause-of-loss-show");
         String foodSupply = context.formParam("food-supply-show");
+        String sortByPercent = context.formParam("sort-by-percent");
 
         html += """
             <div class="data-container">
@@ -167,18 +168,19 @@ public class PageST2A implements Handler {
             endYear,
             activity,
             causeOfLoss,
-            foodSupply
+            foodSupply,
+            sortByPercent
         );
 
         if (query != null) {
             html += "<caption>" + selectedCountry + "</caption>";
-            html += """
-                <tr>
-                    <th>Commodity</th>
-                    <th>Start Year</th>
-                    <th>End Year</th>
-                    <th>Difference</th>
-                """;
+            html += "<tr>";
+            html += "<th>Commodity</th>";
+            html += "<th>" + startYear + "</th>";
+            html += "<th>" + endYear + "</th>";
+
+            html += "<th>Difference</th>";
+
             if (activity != null) {
                 html += "<th>Activity</th>";
             }
@@ -190,7 +192,7 @@ public class PageST2A implements Handler {
             }
             html += "</tr>";
 
-            html += JDBCConnection.ST2ATableHTML(query);
+            html += JDBCConnection.ST2ATableHTML(query, activity, causeOfLoss, foodSupply);
         }
 
         html += """

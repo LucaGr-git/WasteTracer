@@ -1,6 +1,8 @@
 package app;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.plaf.nimbus.State;
@@ -144,7 +146,8 @@ public class JDBCConnection {
         String endYear,
         String activity, 
         String causeOfLoss, 
-        String foodSupply) {
+        String foodSupply,
+        String sortByPercent) {
 
         String query = "";
         
@@ -154,7 +157,7 @@ public class JDBCConnection {
         
         for (int i = 0; i < 2; ++i) {
             if (i == 0) {
-                query += "SELECT DISTINCT *, avg0 - avg1 AS difference, IFNULL(avg0, 0) + IFNULL(avg1, 0) AS combined FROM (";
+                query += "SELECT DISTINCT *, IFNULL(avg0, avg1) - IFNULL(avg1, avg0) AS difference, IFNULL(avg0, 0) + IFNULL(avg1, 0) AS combined FROM (";
             }
 
             query += "SELECT year AS year" + i + ", descriptor AS descriptor" + i + ", AVG(lossPercentage) AS avg" + i + " ";
@@ -209,6 +212,17 @@ public class JDBCConnection {
                 if (causeOfLoss != null) {
                     query += "AND causeOfLoss0 = causeOfLoss1 ";
                 }
+                if (sortByPercent == null) {
+                    query += "ORDER BY IFNULL(descriptor0, descriptor1)"; 
+                }
+                else {
+                    if (sortByPercent.equals("sort-by-descending")) {
+                        query += "ORDER BY difference DESC";
+                    }
+                    if (sortByPercent.equals("sort-by-ascending")) {
+                        query += "ORDER BY difference ASC";
+                    }
+                }
             }
         }
         System.out.println(query);
@@ -216,7 +230,12 @@ public class JDBCConnection {
         return query;
     }
 
-    public static String ST2ATableHTML(String query) {
+    public static String ST2ATableHTML(
+        String query,
+        String activty,
+        String causeOfLoss,
+        String foodSupply) {
+
         String html = "";
         Connection connection = null;
 
@@ -237,24 +256,44 @@ public class JDBCConnection {
                     results.getString("descriptor1");
 
                     String startYearData = (
-                    String.valueOf(results.getFloat("avg0")) != null) ?
-                    String.valueOf(results.getFloat("avg0")) :
+                    results.getFloat("avg0") != 0.0) ?
+                    String.format("%.3f", results.getFloat("avg0")) :
                     "N/A";
 
                     String endYearData = (
-                    String.valueOf(results.getFloat("avg1")) != null) ?
-                    String.valueOf(results.getFloat("avg1")) :
+                    results.getFloat("avg1") != 0.0) ?
+                    String.format("%.3f", results.getFloat("avg1")) :
                     "N/A";
 
                     String difference = (
-                    String.valueOf("difference") != null) ?
-                    String.valueOf("difference") :
+                    results.getFloat("difference") != 0) ?
+                    String.format("%.3f", results.getFloat("difference")) :
                     "N/A";
 
                     html += "<td>" + commodity + "</td>";
                     html += "<td>" + startYearData + "</td>";
                     html += "<td>" + endYearData + "</td>";
                     html += "<td>" + difference + "</td>";
+
+                    String activityString, causeOfLossString, foodSupplyString;
+
+                    if (activty != null) {
+                        activityString = (
+                        results.getString("activity0") != null) ?
+                        results.getString("activity0") :
+                        results.getString("activity1");
+                        html += "<td>" + activityString + "</td>";
+                    }
+                    if (causeOfLoss != null) {
+            
+                    }
+                    if (foodSupply != null) {
+                        foodSupplyString = (
+                        results.getString("foodSupply0") != null) ?
+                        results.getString("foodSupply0") :
+                        results.getString("foodSupply1");
+                        html += "<td>" + foodSupplyString + "</td>";
+                    }
 
                     html += "</tr>";
                 }
