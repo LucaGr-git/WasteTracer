@@ -60,7 +60,7 @@ public class FoodProcessCSV_Altered {
       //loadCauseOfLoss(); TODO REMOVE THESE FUNCTIONS
 
       // Load up the Activity table
-      loadActivity();
+      //loadActivity(); TODO REMOVE THESE FUNCTIONS
 
       // Load up the FOODSUPPLY table
       //loadFoodSupplyStage(); TODO REMOVE THESE FUNCTIONS
@@ -73,12 +73,12 @@ public class FoodProcessCSV_Altered {
       // Load up the Country table
       loadCountries();
 
-      // Load up the LOCATIO table
+      // Load up the LOCATION table
       loadLocation();
 
       
-      // Load up the LOSSSTATS table with loss statistics from foodloss.csv
-      loadFoodLossStats();
+      // Load up the LOSSSTAT table with loss statistics from foodloss.csv
+      loadFoodLossStat();
       
       // Loads the TAKESPARTIN table in the sql database with the activitie from the csv file and their row_id keeping in mind comma seperation 
       loadActivitiesTakePartIn();
@@ -506,7 +506,7 @@ public class FoodProcessCSV_Altered {
             // Get the region, m49code and country stage column
             String region = splitline[CountryFields.REGIONAME];
             String m49Code = splitline[CountryFields.M49CODE];
-            String country = splitline[CountryFields.COUNTRYNAME];
+
 
             // If no region is listed it is skipped
             if (region.equals("")){continue;}
@@ -520,14 +520,14 @@ public class FoodProcessCSV_Altered {
                // Create Insert Statement
 
                // statement as a string
-               String myStatement = " INSERT INTO LOCATIO (region, m49Code, country) VALUES (?, ?, ?)";
+               String myStatement = " INSERT INTO LOCATION (region, m49Code) VALUES (?, ?)";
                // statement object created
                statement = connection.prepareStatement(myStatement);
 
                // Sets ? to proper responses
                statement.setString(1, region);
                statement.setString(2, m49Code);
-               statement.setString(3, country);
+
 
                // Query is printed and executed
                System.out.println("Execute: \n" + statement.toString());
@@ -829,8 +829,8 @@ public class FoodProcessCSV_Altered {
       }
    };
 
-   // Loads the LOSSSTATS table in the sql database with all fields from the csv
-   private static void loadFoodLossStats() {
+   // Loads the LOSSSTAT table in the sql database with all fields from the csv
+   private static void loadFoodLossStat() {
       // JDBC Database Object
       Connection connection = null;
       // Prepared statement used later
@@ -899,7 +899,7 @@ public class FoodProcessCSV_Altered {
             // Create Insert Statement to add loss statistics
             
             // statement as a string
-            String myStatement = " INSERT INTO LOSSSTATS (ROW_ID, LOSSPERCENTAGE, YEAR, GROUPCODE, CLASSCODE," +
+            String myStatement = " INSERT INTO LOSSSTAT (ROW_ID, LOSSPERCENTAGE, YEAR, GROUPCODE, CLASSCODE," +
             "SUBCLASSCODE, DESCRIPTOR, CAUSEOFLOSS, M49CODE, COUNTRY, REGION, FOODSUPPLY) VALUES (?, ?, ?, ?, ?, ?, ?, ? , ? , ? , ?, ?)";
             // statement object created
             statement = connection.prepareStatement(myStatement);
