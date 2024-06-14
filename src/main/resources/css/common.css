@@ -13,10 +13,6 @@ body {
 }
 
 /*Navbar Styling*/
-.topnav * {
-   z-index: 10;
-}
-
 .topnav {
    background-color: #385418;
    height: 14vh;
@@ -28,6 +24,7 @@ body {
    top: 0;
    left: 0;
    width: 100%;
+   z-index: 10;
 }
 
 .topnav-links {

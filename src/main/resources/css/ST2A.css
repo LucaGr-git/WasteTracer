@@ -4,11 +4,6 @@
     width: 100%;
 }
 
-.filters, .data-contatainer {
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
 hr {    
     background-color: #9F5C11;
     border-style: none;
@@ -84,8 +79,9 @@ hr {
 }
 
 .custom-select {
-    width: 100%;
     position: relative;
+    width: 100%;
+    z-index: 2;
 }
 
 /*Year Dropdown styling*/
@@ -226,18 +222,22 @@ option {
     justify-content: center;
     align-items: center;
     z-index: -1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    container-type: inline-size;
 }
 
 .data-container h1 {
-    font-size: 5cqw;
+    font-size: 7cqw;
     color: #9f4b00;
-    margin: 3vh 0 2vh 0;
+    margin: 3vh 0 2vh 2vw;
     font-style: italic;
 }
 
 table {
     width: 80%;
     border-collapse: collapse;
+    margin-bottom: 5vh;
 }
 
 table:nth-child(1) {

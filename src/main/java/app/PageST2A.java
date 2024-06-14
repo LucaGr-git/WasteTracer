@@ -89,7 +89,7 @@ public class PageST2A implements Handler {
                             <select id="start-year" name="start-year">
                  """;
 
-        for (Integer year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
+        for (String year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
             html += "<option value=" + year + ">" + year + "</option>";
         }
         
@@ -101,7 +101,7 @@ public class PageST2A implements Handler {
                             <select id="end-year" name="end-year">
                  """;
         
-        for (Integer year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
+        for (String year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
             html += "<option selected value=" + year + ">" + year + "</option>";
         }
                  

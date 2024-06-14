@@ -98,8 +98,8 @@ public class JDBCConnection {
         return countriesArrayList;
     }
 
-    public static ArrayList<Integer> getAllAvailableYears(String country) {
-        ArrayList<Integer> availableYears = new ArrayList<Integer>();
+    public static ArrayList<String> getAllAvailableYears(String country) {
+        ArrayList<String> availableYears = new ArrayList<String>();
         Connection connection = null;
 
         try {
@@ -109,7 +109,8 @@ public class JDBCConnection {
             statement.setQueryTimeout(30);
 
             if (country == null || country.equals("Please Select")) {
-                availableYears.add(0);
+                availableYears.add("");
+                return availableYears;
             }
             else {
                 String query = "SELECT DISTINCT year FROM Lossstats WHERE country = \"" + 
@@ -119,7 +120,7 @@ public class JDBCConnection {
                 ResultSet results = statement.executeQuery(query);
 
                 while (results.next()) {
-                    int year = results.getInt("Year");
+                    String year = String.valueOf(results.getInt("Year"));
                     availableYears.add(year);
                 }   
             }
@@ -152,7 +153,7 @@ public class JDBCConnection {
         String query = "";
         
         if (country == null || country.equals("Please Select")) {return null;}
-        if (Integer.parseInt(startYear) == 0 || Integer.parseInt(endYear) == 0) {return null;}
+        if (startYear.equals("") || endYear.equals("")) {return null;}
         if (Integer.parseInt(startYear) > Integer.parseInt(endYear)) {return null;}
         
         for (int i = 0; i < 2; ++i) {
@@ -217,10 +218,10 @@ public class JDBCConnection {
                 }
                 else {
                     if (sortByPercent.equals("sort-by-descending")) {
-                        query += "ORDER BY difference DESC";
+                        query += "ORDER BY difference ASC";
                     }
                     if (sortByPercent.equals("sort-by-ascending")) {
-                        query += "ORDER BY difference ASC";
+                        query += "ORDER BY difference DESC";
                     }
                 }
             }
@@ -258,18 +259,24 @@ public class JDBCConnection {
 
                     String startYearData = (
                     results.getFloat("avg0") != 0.0) ?
-                    String.format("%.3f", results.getFloat("avg0")) :
+                    (String.format("%.3f", results.getFloat("avg0")) + "%") :
                     "N/A";
 
                     String endYearData = (
                     results.getFloat("avg1") != 0.0) ?
-                    String.format("%.3f", results.getFloat("avg1")) :
+                    (String.format("%.3f", results.getFloat("avg1")) + "%") :
                     "N/A";
 
-                    String difference = (
-                    results.getFloat("difference") != 0) ?
-                    String.format("%.3f", results.getFloat("difference")) :
-                    "N/A";
+                    String difference;
+                    if (startYearData.equals("N/A") || endYearData.equals("N/A")) {
+                        difference = "N/A";
+                    }
+                    else {
+                        difference = String.valueOf(results.getFloat("difference") * -1) + "%";
+                        if (difference.equals("-0.0%")) {
+                            difference = "0%";
+                        }
+                    }
 
                     html += "<td>" + commodity + "</td>";
                     html += "<td>" + startYearData + "</td>";
