@@ -134,11 +134,11 @@ public class PageST2A implements Handler {
                     <h4>Sort by Loss %</h4>
                     <div class="radio-buttons">
                         <div>
-                            <input type="radio" name="sort-by-percent" value="sort-by-ascending">
+                            <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending">
                             <label for="sort-by-ascending">Ascending</label>
                         </div>
                         <div>
-                            <input type="radio" name="sort-by-percent" value="sort-by-descending">
+                            <input type="radio" name="sort-by-percent" value="sort-by-descending" id="sort-by-descending">
                             <label for="sort-by-descending">Descending</label>
                         </div>
                     </div>
@@ -174,6 +174,7 @@ public class PageST2A implements Handler {
 
         if (query != null) {
             html += "<caption>" + selectedCountry + "</caption>";
+            html += "<thead>";
             html += "<tr>";
             html += "<th>Commodity</th>";
             html += "<th>" + startYear + "</th>";
@@ -190,7 +191,7 @@ public class PageST2A implements Handler {
             if (foodSupply != null) {
                 html += "<th>Food Supply</th>";
             }
-            html += "</tr>";
+            html += "</tr></thead>";
 
             html += JDBCConnection.ST2ATableHTML(query, activity, causeOfLoss, foodSupply);
         }

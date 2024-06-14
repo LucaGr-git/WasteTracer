@@ -1,6 +1,7 @@
 /*Large Content Styling*/
 .content {
     display: flex;
+    width: 100%;
 }
 
 .filters, .data-contatainer {
@@ -217,15 +218,64 @@ option {
 
 /*Data Containeer Styling*/
 .data-container {
+    position: absolute;
+    left: 21vw;
     width: 78vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: -1;
 }
 
 .data-container h1 {
-    text-align: center;
     font-size: 5cqw;
     color: #9f4b00;
     margin: 3vh 0 2vh 0;
     font-style: italic;
+}
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+}
+
+table:nth-child(1) {
+    background-color: #303e21;
+}
+
+caption {
+    background-color: #4C6C38;
+    color: white;
+    text-align: left;
+    padding: 1vh 10px;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 1.4cqw;
+}
+
+thead {
+    background-color: #F0F0F0;
+}
+
+th {
+    text-align: left;
+    size: 12rem;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #A6A6A6;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #CACACA;
+}
+
+th, td {
+    border: none;
+    max-width: 25%;
+    word-break: normal;
+    padding: 12px 8px;
 }
 
 /*Scrollbar Styling*/
@@ -257,8 +307,4 @@ select::-webkit-scrollbar-track {
 select::-webkit-scrollbar-thumb {
     background-color: white;
     border-radius: 50px;
-}
-
-p {
-    background-color: black;
 }

@@ -52,7 +52,7 @@ public class JDBCConnection {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT * FROM Country ORDER BY country";
+            String query = "SELECT DISTINCT * FROM Country ORDER BY country";
   
             ResultSet results = statement.executeQuery(query);
 
@@ -112,9 +112,9 @@ public class JDBCConnection {
                 availableYears.add(0);
             }
             else {
-                String query = "SELECT DISTINCT year FROM Lossstats WHERE country = '" + 
+                String query = "SELECT DISTINCT year FROM Lossstats WHERE country = \"" + 
                             country + 
-                            "' ORDER BY year ASC ";
+                            "\" ORDER BY year ASC ";
 
                 ResultSet results = statement.executeQuery(query);
 
@@ -176,7 +176,7 @@ public class JDBCConnection {
             if (activity != null) {
                 query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
             }
-            query += "WHERE country = '" + country + "' ";
+            query += "WHERE country = \"" + country + "\" ";
             
             if (i == 0) {
                 query += "AND year = " + Integer.parseInt(startYear) + " ";
@@ -247,6 +247,7 @@ public class JDBCConnection {
 
                 ResultSet results = statement.executeQuery(query);
 
+                html += "<tbody>";
                 while (results.next()) {
                     html += "<tr>";
 
@@ -313,6 +314,7 @@ public class JDBCConnection {
 
                     html += "</tr>";
                 }
+            html += "</tbody>";
             statement.close();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
