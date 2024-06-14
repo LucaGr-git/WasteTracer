@@ -45,9 +45,8 @@ public class FoodProcessCSV_Altered {
    // MODIFY these to load/store to/from the correct locations
    private static final String DATABASE = "jdbc:sqlite:database/foodloss.db";
    private static final String FOOD_CSV_FILE = "database/FoodLoss.csv";
-   private static final String CPC_CSV_FILE = "database/CPC.csv";    // TODO Add personas + students to database (THROUGH sql init File ???)
-                                                                     // TODO Updatade schema + diagram for new changes in sql init file
-                                                                     // TODO Finish all the /app classes for each table + possible methods to search through sql in java
+   private static final String CPC_CSV_FILE = "database/CPC.csv";    
+                                                                   
 
    //  Food SQL initialization prompt
    private static final String FOOD_SQL_FILE = "database/sql/CPC-initialization.sql"; 
@@ -58,13 +57,13 @@ public class FoodProcessCSV_Altered {
       
       
       // Load up the CauseOfLoss table
-      loadCauseOfLoss();
+      //loadCauseOfLoss(); TODO REMOVE THESE FUNCTIONS
 
       // Load up the Activity table
       loadActivity();
 
       // Load up the FOODSUPPLY table
-      loadFoodSupplyStage();
+      //loadFoodSupplyStage(); TODO REMOVE THESE FUNCTIONS
 
 
       // loads all the class, group and subclass codes into the database
@@ -77,11 +76,6 @@ public class FoodProcessCSV_Altered {
       // Load up the LOCATIO table
       loadLocation();
 
-
-      // read foodloss csv and check for matching country code and class codes in created tables
-      // verifies the loaded data
-      // you can also copy this to insert records after a lookup into your other tables
-      checkCountryAndClassCodesMatch();
       
       // Load up the LOSSSTATS table with loss statistics from foodloss.csv
       loadFoodLossStats();
@@ -1042,9 +1036,5 @@ public class FoodProcessCSV_Altered {
       }
    };
    
-
-
-   public static void checkCountryAndClassCodesMatch() {
-      {}}
 
 }
