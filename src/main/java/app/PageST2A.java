@@ -24,7 +24,7 @@ public class PageST2A implements Handler {
                "<title>Waste - TracerSubtask 2.1</title>";
 
         html += "<link rel='stylesheet' type='text/css' href='common.css' />" +
-                "<link rel='stylesheet' type='text/css' href='ST2A.css'/>";
+                "<link rel='stylesheet' type='text/css' href='ST2common.css'/>";
         html += "</head>";
 
         html += "<body>";
@@ -60,10 +60,10 @@ public class PageST2A implements Handler {
             <div class="filters">
                 <h2>Filters</h2>
                 <form class="form" action='/page2A.html' method='POST' id='ST2A-form' name='ST2A-form'>
-                    <div class="country-select">
+                    <div class="select-area">
                         <div>
                             <p>Countries</p>
-                            <div class='custom-select'>
+                            <div class='custom-select-wrapper'>
                                 <select id="country-selector" name='country-selector'>
                                     <option>Please Select</option>
                  """;
@@ -73,7 +73,9 @@ public class PageST2A implements Handler {
             if (selectedCountry != null && country.equals(selectedCountry)) {
                 html += "<option selected>" + country + "</option>";
             }
-            html += "<option>" + country + "</option>";
+            else {
+                html += "<option>" + country + "</option>";
+            }
         }
 
         html +=  """

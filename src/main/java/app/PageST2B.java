@@ -70,6 +70,17 @@ public class PageST2B implements Handler {
             </div>
         """;
 
+        html += "<div class='content>'";
+
+        html += """
+                <div class='filters'>
+                    <h2>Filters</h2>
+                    <form class='form' action'/page2b.html' method='POST' id='ST2B-form' name='ST2B-form'>
+                        <div class='select-area'>
+                            <div>
+                                <p>Food Groups</p>
+                                <div class='custom-select-wrapper'>
+                """;
         context.html(html);
     }
 

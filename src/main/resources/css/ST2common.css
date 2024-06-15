@@ -49,7 +49,7 @@ hr {
 }
 
 /*Countries selector styling*/
-.country-select {
+.select-area {
     background-color: #4C6C38;
     height: fit-content;
     width: 85%;
@@ -58,7 +58,7 @@ hr {
     padding: 10px;
 }
 
-.country-select > div{
+.select-area > div{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -78,7 +78,7 @@ hr {
     margin-top: 0;
 }
 
-.custom-select {
+.custom-select-wrapper {
     position: relative;
     width: 100%;
     z-index: 2;
@@ -251,7 +251,7 @@ caption {
     padding: 1vh 10px;
     font-style: italic;
     font-weight: 600;
-    font-size: 1.4cqw;
+    font-size: 2.5cqw;
 }
 
 thead {
@@ -260,7 +260,6 @@ thead {
 
 th {
     text-align: left;
-    size: 12rem;
 }
 
 tbody tr:nth-child(even) {
@@ -274,8 +273,10 @@ tbody tr:nth-child(odd) {
 th, td {
     border: none;
     max-width: 25%;
+    min-width: 14%;
     word-break: normal;
     padding: 12px 8px;
+    border: 1px solid white;
 }
 
 /*Scrollbar Styling*/

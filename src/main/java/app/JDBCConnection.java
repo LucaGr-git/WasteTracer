@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 
 /**
  * Class for Managing the JDBC Connection to a SQLLite Database.
@@ -33,13 +34,6 @@ public class JDBCConnection {
     public JDBCConnection() {
         System.out.println("Created JDBC Connection Object");
     }
-
-    
-    /**
-     * Get all of the Countries in the database.
-     * @return
-     *    Returns an ArrayList of Country objects
-     */
 
     public static ArrayList<Country> getAllCountries() {
         ArrayList<Country> countries = new ArrayList<Country>();
@@ -290,32 +284,38 @@ public class JDBCConnection {
                         results.getString("activity0") != null) ?
                         results.getString("activity0") :
                         results.getString("activity1");
+
+
+                        if (activityString.equals("NULL")) {
+                            activityString = "N/A";
+                        }
+
                         html += "<td>" + activityString + "</td>";
                     }
+
                     if (causeOfLoss != null) {
-                        if (
-                            results.getString("causeOfLoss0") == null ||
-                            results.getString("causeOfLoss0").equals("NULL")) {
+                        causeOfLossString = (
+                        results.getString("causeOfLoss0") != null) ?
+                        results.getString("causeOfLoss0") :
+                        results.getString("causeOfLoss1");
+
+                        if (causeOfLossString.equals("NULL")) {
                             causeOfLossString = "N/A";
                         }
-                        else if (
-                            results.getString("causeOfLoss1") == null ||
-                            results.getString("causeOfLoss1").equals("NULL")) {
-                            causeOfLossString = "N/A";
-                        }
-                        else {
-                            causeOfLossString = (
-                            results.getString("causeOfLoss0") != null) ?
-                            results.getString("causeOfLoss0") :
-                            results.getString("causeOfLoss1");
-                        }
+
                         html += "<td>" + causeOfLossString + "</td>";
                     }
+
                     if (foodSupply != null) {
                         foodSupplyString = (
                         results.getString("foodSupply0") != null) ?
                         results.getString("foodSupply0") :
                         results.getString("foodSupply1");
+
+                        if (foodSupplyString.equals("NULL")) {
+                            foodSupplyString = "N/A";
+                        }
+
                         html += "<td>" + foodSupplyString + "</td>";
                     }
 
@@ -336,5 +336,7 @@ public class JDBCConnection {
         }
         return html;
     }
+    
+
 }
 
