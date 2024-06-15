@@ -109,7 +109,7 @@ public class PageST2A implements Handler {
         for (String year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
             html += "<option selected value=" + year + ">" + year + "</option>";
         }
-                 
+        
         html +=  """
 
                             </select>
@@ -136,7 +136,7 @@ public class PageST2A implements Handler {
                             <label for='food-supply-show'>Show food supply stage</label>
                         </div>
                     </div>
-                    <h4>Sort by Difference</h4>
+                    <h4>Sort by Loss %</h4>
                     <div class="radio-buttons">
                         <div>
                             <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending">
@@ -165,17 +165,9 @@ public class PageST2A implements Handler {
                 <table>
                 """;
 
-        String query = JDBCConnection.getST2AQuery(
-            selectedCountry,
-            startYear,
-            endYear,
-            activity,
-            causeOfLoss,
-            foodSupply,
-            sortByPercent
-        );
-
-        if (query != null) {
+        if (selectedCountry == null || selectedCountry.equals("Please Select")) {}
+        else {
+            if (context.formParam("all-years") == null) {
             html += "<caption>" + selectedCountry + "</caption>";
             html += "<thead>";
             html += "<tr>";
@@ -196,8 +188,33 @@ public class PageST2A implements Handler {
             }
             html += "</tr></thead>";
 
-            html += JDBCConnection.ST2ATableHTML(query, activity, causeOfLoss, foodSupply);
-        }
+            String query = JDBCConnection.getST2AQuery(selectedCountry, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+
+            if (query != null) {
+                html += JDBCConnection.ST2ATableHTML(query, activity, causeOfLoss, foodSupply);
+            }
+            } 
+            else {
+                html += "<caption>" + selectedCountry + "</caption>";
+                html += "<thead>";
+                html += "<tr>";
+                html += "<th>Commodity</th>";
+                html += "<th>Year</th>";
+                html += "<th>Average Loss %</th>";
+
+                if (activity != null) {
+                    html += "<th>Activity</th>";
+                }
+                if (causeOfLoss != null) {
+                    html += "<th>Cause of Loss</th>";
+                }
+                if (foodSupply != null) {
+                    html += "<th>Food Supply</th>";
+                }
+                html += "</tr></thead>";
+
+                html += JDBCConnection.getST2AQueryAllYears(selectedCountry, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+            }
 
         html += """
                 </table>
@@ -205,7 +222,7 @@ public class PageST2A implements Handler {
                 """;
 
         html += "</div></body></html>";
-
+        }
         context.html(html);
     }
 }

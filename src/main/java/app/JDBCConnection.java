@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.plaf.nimbus.State;
 
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -144,7 +145,7 @@ public class JDBCConnection {
         String causeOfLoss, 
         String foodSupply,
         String sortByPercent) {
-
+            
         String query = "";
         
         if (country == null || country.equals("Please Select")) {return null;}
@@ -154,7 +155,7 @@ public class JDBCConnection {
         
         for (int i = 0; i < 2; ++i) {
             if (i == 0) {
-                query += "SELECT DISTINCT *, IFNULL(avg0, avg1) - IFNULL(avg1, avg0) AS difference, IFNULL(avg0, 0) + IFNULL(avg1, 0) AS combined FROM (";
+                query += "SELECT DISTINCT *, IFNULL(avg0, avg1) - IFNULL(avg1, avg0) AS difference FROM (";
             }
 
             query += "SELECT year AS year" + i + ", descriptor AS descriptor" + i + ", AVG(lossPercentage) AS avg" + i + " ";
@@ -225,6 +226,68 @@ public class JDBCConnection {
         System.out.println(query);
 
         return query;
+    }
+
+    public static String getST2AQueryAllYears(
+        String country, 
+        String startYear,
+        String endYear,
+        String activity, 
+        String causeOfLoss, 
+        String foodSupply,
+        String sortByPercent) {
+
+            String html = "<tbody>";
+
+            if (country == null || country.equals("Please Select")) {return null;}
+
+            String query = "SELECT DISTINCT year, descriptor, AVG(losspercentage) AS avg ";
+            
+            if (activity != null) {
+                query += ", IFNULL(activity, 'N/A') AS activity ";
+            }
+            if (causeOfLoss != null) {
+                query += ", IFNULL(causeOfLoss, 'N/A') AS causeOfLoss ";
+            }
+            if (foodSupply != null) {
+                query += ", IFNULL(foodSupply, 'N/A') AS foodSupply ";
+            }
+
+            query += "FROM LossStat ";
+
+            if (activity != null) {
+                query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
+            }
+
+            query += "WHERE country = \"" + country + "\" "; 
+            query += "AND year >= " + startYear + " AND year <= " + endYear + " "; 
+            query += "GROUP BY descriptor, year ";
+
+            if (activity != null) {
+                query += ", activity ";
+            }
+            if (causeOfLoss != null) {
+                query += ", causeOfLoss ";
+            }
+            if (foodSupply != null) {
+                query += ", foodSupply ";
+            }
+
+            if (sortByPercent == null) {
+                query += "ORDER BY descriptor";
+            }
+            else if (sortByPercent.equals("sort-by-descending")) {
+                query += "ORDER BY avg ASC";
+            }
+            else {
+                query += "ORDER BY avg DESC";
+            }
+
+            html += ST2ATableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
+            System.out.println(query);
+                
+            html += "</tbody>";
+            return html;
     }
 
     public static String ST2ATableHTML(
@@ -339,6 +402,84 @@ public class JDBCConnection {
         return html;
     }
     
+    public static String ST2ATableHTMLAllYears(
+        String query,
+        String activty,
+        String causeOfLoss,
+        String foodSupply ) {
 
+        String html = "";
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            ResultSet results = statement.executeQuery(query);
+
+            while (results.next()) {
+                html += "<tr>";
+
+                String Data = (
+                results.getFloat("avg") != 0.0) ?
+                (String.format("%.3f", results.getFloat("avg")) + "%") :
+                "N/A";
+
+                html += "<td>" + results.getString("descriptor") + "</td>";
+                html += "<td>" + results.getInt("year") + "</td>";
+                html += "<td>" + Data + "</td>";
+
+                String activityString = "", causeOfLossString = "", foodSupplyString = "";
+
+                if (activty != null) {
+                    System.out.println("WORKIGN");
+                    activityString = (
+                    results.getString("activity") == null || 
+                    results.getString("activity").equals("NULL")) ?
+                    "N/A" :
+                    results.getString("activity") ;
+
+                    html += "<td>" + activityString + "</td>";
+                }
+
+                if (causeOfLoss != null) {
+                    causeOfLossString = (
+                    results.getString("causeOfLoss") == null ||
+                    results.getString("causeOfLoss").equals("NULL")) ?
+                    "N/A" :
+                    results.getString("causeOfLoss");
+
+                    html += "<td>" + causeOfLossString + "</td>";
+                }
+
+                if (foodSupply != null) {
+                    foodSupplyString = (
+                    results.getString("foodSupply") == null ||
+                    results.getString("foodSupply").equals("NULL")) ?
+                    "N/A" :
+                    results.getString("foodSupply");
+
+                    html += "<td>" + foodSupplyString + "</td>";
+                }
+
+                html += "</tr>";
+            }
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        System.out.println(html);
+        return html;
+    }
 }
 
