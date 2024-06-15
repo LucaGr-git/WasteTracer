@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
  * Class for Managing the JDBC Connection to a SQLLite Database.
@@ -107,7 +108,7 @@ public class JDBCConnection {
                 return availableYears;
             }
             else {
-                String query = "SELECT DISTINCT year FROM Lossstats WHERE country = \"" + 
+                String query = "SELECT DISTINCT year FROM Lossstat WHERE country = \"" + 
                             country + 
                             "\" ORDER BY year ASC ";
 
@@ -147,8 +148,8 @@ public class JDBCConnection {
         String query = "";
         
         if (country == null || country.equals("Please Select")) {return null;}
-        if (startYear.equals("") || endYear.equals("")) {return null;}
-        if (Integer.parseInt(startYear) > Integer.parseInt(endYear)) {return null;}
+        if (startYear == null || endYear == null) {return null;}
+        if (!startYear.equals("") && (Integer.parseInt(startYear) > Integer.parseInt(endYear))) {return null;}
         
         for (int i = 0; i < 2; ++i) {
             if (i == 0) {
@@ -167,17 +168,17 @@ public class JDBCConnection {
                 query += ", IFNULL(causeOfLoss, 'N/A') AS causeOfLoss" + i + " ";
             }
 
-            query += "FROM LossStats ";
+            query += "FROM LossStat ";
             if (activity != null) {
                 query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
             }
             query += "WHERE country = \"" + country + "\" ";
             
             if (i == 0) {
-                query += "AND year = " + Integer.parseInt(startYear) + " ";
+                query += "AND year = " + startYear + " ";
             }
             else {
-                query += "AND year = " + Integer.parseInt(endYear) + " ";
+                query += "AND year = " + endYear + " ";
             }
 
             query += "GROUP BY descriptor" + i + " ";
@@ -266,8 +267,8 @@ public class JDBCConnection {
                         difference = "N/A";
                     }
                     else {
-                        difference = String.valueOf(results.getFloat("difference") * -1) + "%";
-                        if (difference.equals("-0.0%")) {
+                        difference = String.format("%.3f", results.getFloat("difference") * -1) + "%";
+                        if (difference.equals("-0.000%")) {
                             difference = "0%";
                         }
                     }

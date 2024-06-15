@@ -53,7 +53,7 @@ public class PageST2A implements Handler {
                 </ul>
             </div>
         """;
-
+        html += "<p>" + context.formParam("start-year") + "</p>";
         html += "<div class='content'>";
 
         html += """
@@ -91,9 +91,16 @@ public class PageST2A implements Handler {
                             <select id="start-year" name="start-year">
                  """;
 
+        String startYear = context.formParam("start-year");
         for (String year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
-            html += "<option value=" + year + ">" + year + "</option>";
+            if (startYear != null && year.equals(startYear)) {
+                html += "<option value=" + year + " selected>" + year + "</option>";
+            }
+            else {
+                html += "<option value=" + year + ">" + year + "</option>";
+            }
         }
+        
         
         html +=  """
                             </select>
@@ -103,8 +110,14 @@ public class PageST2A implements Handler {
                             <select id="end-year" name="end-year">
                  """;
         
+        String endYear = context.formParam("end-year");
         for (String year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
-            html += "<option selected value=" + year + ">" + year + "</option>";
+            if (endYear != null && year.equals(endYear)) {
+                html += "<option value=" + year + " selected>" + year + "</option>";
+            }
+            else {
+                html += "<option value=" + year + ">" + year + "</option>";
+            }
         }
                  
         html +=  """
@@ -133,7 +146,7 @@ public class PageST2A implements Handler {
                             <label for='food-supply-show'>Show food supply stage</label>
                         </div>
                     </div>
-                    <h4>Sort by Loss %</h4>
+                    <h4>Sort by Difference</h4>
                     <div class="radio-buttons">
                         <div>
                             <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending">
@@ -151,8 +164,6 @@ public class PageST2A implements Handler {
             </div>
             """;
 
-        String startYear = context.formParam("start-year");
-        String endYear = context.formParam("end-year");
         String activity = context.formParam("activity-show");
         String causeOfLoss = context.formParam("cause-of-loss-show");
         String foodSupply = context.formParam("food-supply-show");
