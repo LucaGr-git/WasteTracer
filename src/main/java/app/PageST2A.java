@@ -53,7 +53,7 @@ public class PageST2A implements Handler {
                 </ul>
             </div>
         """;
-        html += "<p>" + context.formParam("start-year") + "</p>";
+
         html += "<div class='content'>";
 
         html += """
@@ -82,7 +82,7 @@ public class PageST2A implements Handler {
                                 </select>
                                 <span class="custom-arrow"></span>
                             </div>
-                            <button type="submit" class="confirm-select">Confirm Country</submit>
+                            <button type="submit" class="confirm-select">Confirm Country</button>
                         </div>
                     </div>
                     <div class="year-wrapper">
@@ -93,12 +93,7 @@ public class PageST2A implements Handler {
 
         String startYear = context.formParam("start-year");
         for (String year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
-            if (startYear != null && year.equals(startYear)) {
-                html += "<option value=" + year + " selected>" + year + "</option>";
-            }
-            else {
-                html += "<option value=" + year + ">" + year + "</option>";
-            }
+            html += "<option value=" + year + ">" + year + "</option>";
         }
         
         
@@ -112,12 +107,7 @@ public class PageST2A implements Handler {
         
         String endYear = context.formParam("end-year");
         for (String year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
-            if (endYear != null && year.equals(endYear)) {
-                html += "<option value=" + year + " selected>" + year + "</option>";
-            }
-            else {
-                html += "<option value=" + year + ">" + year + "</option>";
-            }
+            html += "<option selected value=" + year + ">" + year + "</option>";
         }
                  
         html +=  """

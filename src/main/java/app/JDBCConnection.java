@@ -52,7 +52,7 @@ public class JDBCConnection {
             ResultSet results = statement.executeQuery(query);
 
             while (results.next()) {
-                String m49Code     = results.getString("m49code");
+                String m49Code = results.getString("m49code");
                 String name  = results.getString("country");
 
                 Country country = new Country(m49Code, name);
@@ -149,6 +149,7 @@ public class JDBCConnection {
         
         if (country == null || country.equals("Please Select")) {return null;}
         if (startYear == null || endYear == null) {return null;}
+        if (startYear.equals("selected")) {return null;}
         if (!startYear.equals("") && (Integer.parseInt(startYear) > Integer.parseInt(endYear))) {return null;}
         
         for (int i = 0; i < 2; ++i) {
