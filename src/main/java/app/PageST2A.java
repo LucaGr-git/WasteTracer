@@ -192,7 +192,7 @@ public class PageST2A implements Handler {
                 String query = JDBCConnection.getST2AQuery(selectedCountry, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
 
                 if (query != null) {
-                    html += JDBCConnection.ST2ATableHTML(query, activity, causeOfLoss, foodSupply);
+                    html += JDBCConnection.ST2ABTableHTML(query, activity, causeOfLoss, foodSupply);
                 }
             } 
             else {

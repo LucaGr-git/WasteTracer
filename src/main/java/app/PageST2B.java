@@ -210,6 +210,10 @@ public class PageST2B implements Handler {
                 html += "</tr></thead>";
 
                 String query = JDBCConnection.getST2BQuery(selectedFoodGroup, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+                
+                if (query != null) {
+                    html += JDBCConnection.ST2ABTableHTML(query, activity, causeOfLoss, foodSupply);
+                }
             }
             else {
                 html += "<caption>" + selectedFoodGroup + "</caption>";
