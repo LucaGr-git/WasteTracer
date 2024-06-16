@@ -70,24 +70,6 @@ public class PageST3B implements Handler {
                 </ul>
             </div>
         """;
-        
-        html += "<div class='content'>";
-
-        html += """
-            <div class="filters">    
-                <h2>Filters</h2>
-                <form class="form" action='/page3A.html' method='POST' id='ST23-form' name='ST3A-form'>
-                    <div class="select-area">
-                        <div>
-                            <p>Countries and Regions</p>
-                            <div class='custom-select-wrapper'>
-                                <select id="country-region-selector" name='country-region-selector'>
-                                    <option>Please Select</option>
-                """;
-
-        String selectedCountryRegion = context.formParam("country-region-selector");
-
-        for ()
 
         context.html(html);
     }

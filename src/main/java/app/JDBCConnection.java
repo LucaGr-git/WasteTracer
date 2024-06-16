@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.plaf.nimbus.State;
 
+import org.eclipse.jetty.server.LowResourceMonitor.ConnectorsThreadPoolLowResourceCheck;
+
 import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -103,6 +105,43 @@ public class JDBCConnection {
             }
         }
         return foodGroups;
+    }
+
+    public static ArrayList<String> getAllCountriesRegions() {
+        ArrayList<String> countriesAndRegions = new ArrayList<>();
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            String query = "SELECT DISTINCT country, region FROM lossstat ORDER BY country";
+
+            ResultSet results = statement.executeQuery(query);
+
+            while (results.next()) {
+                String countryOrRegion = 
+                (results.getString("region") == null) ?
+                results.getString("country") :
+                results.getString("region");
+
+                countriesAndRegions.add(countryOrRegion);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return countriesAndRegions;
     }
 
     public static ArrayList<String> getAllAvailableYearsCountry(String country) {
