@@ -88,7 +88,7 @@ public class PageST2B implements Handler {
                 """;
 
         String selectedFoodGroup = context.formParam("food-group-selector");
-        
+
         for (String foodGroup : JDBCConnection.getAllFoodGroups()) {
             if (selectedFoodGroup != null && foodGroup.equals(selectedFoodGroup)) {
                 html += "<option selected>" + foodGroup + "</option>"; 
@@ -184,6 +184,8 @@ public class PageST2B implements Handler {
                 <h1>Search Loss by Food Group</h1>
                 <table>
                 """;
+        
+
 
         html += """
                 </table>

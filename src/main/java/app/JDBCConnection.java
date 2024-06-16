@@ -82,7 +82,7 @@ public class JDBCConnection {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT DISTINCT * FROM FoodGroup ORDER BY groupDescriptor";
+            String query = "SELECT DISTINCT groupDescriptor FROM FoodGroup fg JOIN LossStat l ON fg.groupCode = l.groupCode ORDER BY groupDescriptor";
   
             ResultSet results = statement.executeQuery(query);
 
@@ -157,7 +157,6 @@ public class JDBCConnection {
             statement.setQueryTimeout(30);
 
             if (foodGroup == null || foodGroup.equals("Please Select")) {
-                availableYears.add("");
                 return availableYears;
             }
             else {
