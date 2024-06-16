@@ -334,7 +334,7 @@ public class JDBCConnection {
                 query += "ORDER BY avg ASC";
             }
 
-            html += ST2ATableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
+            html += ST2ABTableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
             System.out.println(query);
                 
             html += "</tbody>";
@@ -453,7 +453,7 @@ public class JDBCConnection {
         return html;
     }
     
-    public static String ST2ATableHTMLAllYears(
+    public static String ST2ABTableHTMLAllYears(
         String query,
         String activty,
         String causeOfLoss,
@@ -683,7 +683,7 @@ public class JDBCConnection {
                 query += "ORDER BY avg ASC";
             }
 
-            html += ST2ATableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
+            html += ST2ABTableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
             System.out.println(query);
                 
             html += "</tbody>";
