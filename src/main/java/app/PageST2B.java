@@ -2,6 +2,8 @@ package app;
 
 import java.util.ArrayList;
 
+import org.sqlite.JDBC;
+
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 
@@ -34,10 +36,11 @@ public class PageST2B implements Handler {
 
         // Add some Head information
         html += "<head>" + 
-               "<title>Subtask 2.2</title>";
+                "<title>Subtask 2.2</title>";
 
         // Add some CSS (external file)
         html += "<link rel='stylesheet' type='text/css' href='common.css' />";
+        html += "<link rel='stylesheet' type='text/css' href='ST2common.css' />";
         html += "</head>";
 
         // Add the body
@@ -70,7 +73,7 @@ public class PageST2B implements Handler {
             </div>
         """;
 
-        html += "<div class='content>'";
+        html += "<div class='content'>";
 
         html += """
                 <div class='filters'>
@@ -80,7 +83,115 @@ public class PageST2B implements Handler {
                             <div>
                                 <p>Food Groups</p>
                                 <div class='custom-select-wrapper'>
+                                    <select id="food-group-selector" name="food-group-selector">
+                                        <option>Please Select</option>
                 """;
+
+        String selectedFoodGroup = context.formParam("food-group-selector");
+        
+        for (String foodGroup : JDBCConnection.getAllFoodGroups()) {
+            if (selectedFoodGroup != null && foodGroup.equals(selectedFoodGroup)) {
+                html += "<option selected>" + foodGroup + "</option>"; 
+            }
+            else {
+                html += "<option>" + foodGroup + "</option>";
+            }
+        }
+
+        html += """
+                                    </select>
+                                    <span class="custom-arrow"></span>
+                                </div>
+                                <button type="submit" class="confirm-select">Confirm Food Group</button>
+                            </div>
+                        </div>
+                        <div class="year-wrapper">
+                            <div class="start-year-wrapper">
+                                <p>Start Year</p>
+                                <select id="start-year" name="start-year">
+                """;
+        
+        String startYear = context.formParam("start-year");
+
+        for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
+            html += "<option value='" + year + "'>" + year + "</option>";
+        }
+
+        html += """
+                                </select>
+                            </div>
+                            <div class="end-year-wrapper">
+                                <p>End Year</p>
+                                <select id="end-year" name="end-year">
+                """;
+
+        String endYear = context.formParam("end-year");
+
+        for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
+            html += "<option selected value='" + year + "'>" + year + "</option>";
+        }
+
+        html += """
+                            </select>
+                        </div>
+                    </div>
+                    <div class="checkboxes">
+                        <div>
+                            <input type="checkbox" name="all-years" id="all-years">
+                            <label for="all-years">Show all available years</label>
+                        </div>
+                    </div>
+                    <h4>Filter Columns</h4>
+                    <div class='checkboxes'>
+                        <div>
+                            <input type='checkbox' name='activity-show' id='activity-show'>
+                            <label for='activity-show'>Show activity</label>
+                        </div>
+                        <div>
+                            <input type='checkbox' name='cause-of-loss-show' id='cause-of-loss-show'>
+                            <label for='cause-of-loss-show'>Show cause of loss</label>
+                        </div>
+                        <div>
+                            <input type='checkbox' name='food-supply-show' id='food-supply-show'>
+                            <label for='food-supply-show'>Show food supply stage</label>
+                        </div>
+                    </div>
+                    <h4>Sort by Loss %</h4>
+                    <div class="radio-buttons">
+                        <div>
+                            <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending">
+                            <label for="sort-by-ascending">Ascending</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="sort-by-percent" value="sort-by-descending" id="sort-by-descending">
+                            <label for="sort-by-descending">Descending</label>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit">Search Data</button>
+                    </div>
+                </form>
+            </div>
+            """;
+
+        String activity = context.formParam("activity-show");
+        String causeOfLoss = context.formParam("cause-of-loss-show");
+        String foodSupply = context.formParam("food-supply-show");
+        String sortByPercent = context.formParam("sort-by-percent");
+
+        html += """
+            <div class="data-container">
+                <h1>Search Loss by Food Group</h1>
+                <table>
+                """;
+
+        html += """
+                </table>
+            </div>
+                """;
+
+        html += "</div></body></html>";
+
         context.html(html);
     }
 
