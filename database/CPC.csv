@@ -208,7 +208,7 @@ Division 01,,,"Products of agriculture, horticulture and market gardening"
 ,0162,01620,Tea leaves
 ,,01620.01,Green tea
 ,,01620.02,Black tea
-,0163,01630,Maté leaves
+,0163,01630,Matï¿½ leaves
 ,0164,01640,Cocoa beans
 ,0165,,"Spice and aromatic crops, raw"
 ,,01651,"Pepper (Piper spp.), raw"
@@ -243,7 +243,7 @@ Division 01,,,"Products of agriculture, horticulture and market gardening"
 ,,01802,Sugar cane
 ,,01803,Sugar beet seeds
 ,,01809,Other sugar crops n.e.c.
-019,,,"Forage products; fibre crops; plants used in perfumery, pharmacy, or for insecticidal, fungicidal or similar purposes; beet, forage plant and flower seeds; natural rubber; living plants, cut flowers and flower buds; unmanufactured tobacco; other raw vegetable materials"
+019,,,"Forage products; fibre crops;"
 ,0191,,Forage products
 ,,01911,Maize for forage
 ,,01912,Alfalfa for forage
@@ -428,7 +428,7 @@ Division 02,,,Live animals and animal products (excluding meat)
 ,,02960.02,Spermaceti
 ,,02960.90,Other insect waxes
 Division 03,,,Forestry and logging products
-032,,,"Fuel wood, in logs, in billets, in twigs, in faggots or in similar forms"
+032,,,"Fuel wood"
 ,0321,,"Natural gums and resins, gums-resins and oleoresins"
 ,,03211,"Balata, gutta-percha, guayule, chicle and similar natural gums in primary forms or in plates, sheets or strip"
 ,,03219,"Lac, resins, balsams, natural gums and other resins n.e.c."
@@ -554,11 +554,11 @@ Division 21,,,"Meat, fish, fruit, vegetables, oils and fats"
 ,,21190.01,Meat meal
 ,,21190.02,Blood meal
 ,,21190.90,"Flours, other meals and pellets of meat or meat offal, inedible; greaves"
-212,,,"Prepared and preserved fish, crustaceans, molluscs and other aquatic invertebrates"
+212,,,"Prepared and preserved aquatic animals"
 ,2129,,"Flours, meals and pellets, inedible, and other products n.e.c., of fish or of crustaceans, molluscs or other aquatic invertebrates; dead fish, crustaceans, molluscs or other aquatic invertebrates unfit for human consumption"
 ,,21291,"Flours, meals and pellets, inedible, of fish, crustaceans, molluscs or other aquatic invertebrates"
 ,,21299,"Products n.e.c. of fish, crustaceans, molluscs or other aquatic invertebrates; dead fish, crustaceans, molluscs or other aquatic invertebrates unfit for human consumption"
-213,,,"Prepared and preserved vegetables, pulses and potatoes"
+213,,,"Prepared and preserved vegetables"
 ,2131,,"Frozen vegetables, pulses and potatoes"
 ,,21311,"Beans, frozen"
 ,,21312,"Peas, frozen"
@@ -735,7 +735,7 @@ Division 21,,,"Meat, fish, fruit, vegetables, oils and fats"
 ,,21700.01,Liquid margarine
 ,,21700.02,Margarine and shortening
 218,2180,21800,Cotton linters
-219,,,"Oil-cake and other residues resulting from the extraction of vegetable fats or oils; flours and meals of oil seeds or oleaginous fruits, except those of mustard; vegetable waxes, except triglycerides; degras; residues resulting from the treatment of fatty substances or animal or vegetable waxes"
+219,,,"Oil-cake and other residues resulting from the extraction of vegetable fats or oils"
 ,2191,21910,"Oil-cake and other solid residues, of vegetable fats or oils"
 ,,21910.01,Cake of rice bran
 ,,21910.02,Cake of maize
@@ -873,7 +873,7 @@ Division 23,,,"Grain mill products, starches and starch products; other food pro
 ,2323,23230,"Tapioca and substitutes therefor prepared from starch, in the form of flakes, grains, siftings or similar forms"
 ,,23230.01,Tapioca of potatoes
 ,,23230.02,Tapioca of cassava
-233,,,Preparations used in animal feeding; lucerne (alfalfa) meal and pellets
+233,,,Preparations used in animal food
 ,2331,,Preparations used in animal feeding
 ,,23311,"Dog or cat food, put up for retail sale"
 ,,23319,Preparations used in animal feeding n.e.c.
@@ -896,7 +896,7 @@ Division 23,,,"Grain mill products, starches and starch products; other food pro
 ,2343,23430,Pastry goods and cakes
 ,2349,23490,Bread and other bakers' wares
 ,,23490.01,"Communion wafers, empty cachets of a kind suitable for pharmaceutical use, sealing wafers, rice paper and similar products."
-,,23490.90,"Bread and other bakers’ wares, n.e.c."
+,,23490.90,"Bread and other bakersï¿½ wares, n.e.c."
 235,,,Sugar and molasses
 ,2351f,,Raw cane or beet sugar (centrifugal only)
 ,2351,,Raw cane or beet sugar
@@ -907,7 +907,7 @@ Division 23,,,"Grain mill products, starches and starch products; other food pro
 ,2352,23520,Refined sugar
 ,2353,23530,"Refined cane or beet sugar, in solid form, containing added flavouring or colouring matter; maple sugar and maple syrup"
 ,2354,23540,"Molasses (from beet, cane and maize)"
-236,,,"Cocoa, chocolate and sugar confectionery"
+236,,,"Chocolate and sugar confectionery"
 ,2361,23610,"Cocoa paste, whether or not defatted"
 ,,23610.01,Cocoa paste not defatted
 ,,23610.02,Cocoa paste defatted
@@ -919,7 +919,7 @@ Division 23,,,"Grain mill products, starches and starch products; other food pro
 ,2367,23670,"Sugar confectionery (including white chocolate), not containing cocoa; vegetables, fruit, nuts, fruit-peel and other parts of plants, preserved by sugar"
 ,,23670.01,Sugar confectionery
  ,,23670.02,"Fruit, nuts, peel, sugar preserved"
-237,,,"Macaroni, noodles, couscous and similar farinaceous products"
+237,,,"Noodles, couscous and similar farinaceous products"
 ,2371,23710,"Uncooked pasta, not stuffed or otherwise prepared"
 ,2372,,"Pasta, cooked, stuffed or otherwise prepared; couscous"
 ,,23721,"Pasta, cooked, stuffed or otherwise prepared (but not as a complete dish); couscous, except as a complete dish"
@@ -931,7 +931,7 @@ Division 23,,,"Grain mill products, starches and starch products; other food pro
 ,,23912.01,Coffee substitutes
 ,,23912.02,Coffee extracts
 ,,23913,"Green tea (not fermented), black tea (fermented) and partly fermented tea, in immediate packings of a content not exceeding 3 kg"
-,,23914,"Extracts, essences and concentrates of tea or mate, and preparations with a basis thereof or with a basis of tea or maté"
+,,23914,"Extracts, essences and concentrates of tea or mate, and preparations with a basis thereof or with a basis of tea or matï¿½"
 ,2392,,"Spices and aromatics, processed"
 ,,23921,"Pepper (piper spp.), processed"
 ,,23922,"Chillies and peppers, dry (capsicum spp., pimenta), processed"
@@ -969,7 +969,7 @@ Division 23,,,"Grain mill products, starches and starch products; other food pro
 ,,23999.04,Pyrethrum extract
 ,,23999.90,Other food products n.e.c.
 Division 24,,,Beverages
-241,,,"Ethyl alcohol; spirits, liqueurs and other spirituous beverages"
+241,,,"spirits and liqueurs "
 ,2411,24110,Undenatured ethyl alcohol of an alcoholic strength by volume of 80% vol or higher
 ,2413,,"Undenatured ethyl alcohol of an alcoholic strength by volume of less than 80% vol; spirits, liqueurs and other spirituous beverages"
 ,,24131,"Spirits, liqueurs and other spirituous beverages of an alcoholic strength by volume of about 40% vol"
