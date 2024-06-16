@@ -277,10 +277,11 @@ public class JDBCConnection {
                 query += "ORDER BY descriptor";
             }
             else if (sortByPercent.equals("sort-by-descending")) {
-                query += "ORDER BY avg ASC";
+                System.out.print("WORKING");
+                query += "ORDER BY avg DESC";
             }
             else {
-                query += "ORDER BY avg DESC";
+                query += "ORDER BY avg ASC";
             }
 
             html += ST2ATableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
@@ -434,7 +435,6 @@ public class JDBCConnection {
                 String activityString = "", causeOfLossString = "", foodSupplyString = "";
 
                 if (activty != null) {
-                    System.out.println("WORKIGN");
                     activityString = (
                     results.getString("activity") == null || 
                     results.getString("activity").equals("NULL")) ?
