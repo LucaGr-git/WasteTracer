@@ -69,7 +69,8 @@ public class PageST2A implements Handler {
                  """;
 
         String selectedCountry = context.formParam("country-selector");
-        for (String country : JDBCConnection.getAllCountriesString(JDBCConnection.getAllCountries())) {
+        
+        for (String country : (JDBCConnection.getAllCountries())) {
             if (selectedCountry != null && country.equals(selectedCountry)) {
                 html += "<option selected>" + country + "</option>";
             }

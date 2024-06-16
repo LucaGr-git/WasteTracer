@@ -37,8 +37,8 @@ public class JDBCConnection {
         System.out.println("Created JDBC Connection Object");
     }
 
-    public static ArrayList<Country> getAllCountries() {
-        ArrayList<Country> countries = new ArrayList<Country>();
+    public static ArrayList<String> getAllCountries() {
+        ArrayList<String> countries = new ArrayList<String>();
 
         Connection connection = null;
 
@@ -53,12 +53,7 @@ public class JDBCConnection {
             ResultSet results = statement.executeQuery(query);
 
             while (results.next()) {
-                String m49Code = results.getString("m49code");
-                String name  = results.getString("country");
-
-                Country country = new Country(m49Code, name);
-
-                countries.add(country);
+                countries.add(results.getString("country"));
             }
 
             statement.close();
@@ -73,8 +68,6 @@ public class JDBCConnection {
                 System.err.println(e.getMessage());
             }
         }
-
-        // Finally we return all of the countries
         return countries;
     }
 
@@ -84,15 +77,6 @@ public class JDBCConnection {
      * Changes an arraylist of countries into string 
      * @return an arraylist of strings with wach countries name
      */
-    public static ArrayList<String> getAllCountriesString(ArrayList<Country> countryList) {
-        ArrayList<String> countriesArrayList = new ArrayList<String>();
-
-        for (Country country : countryList){
-            countriesArrayList.add(country.getName());
-        }
-
-        return countriesArrayList;
-    }
 
     public static ArrayList<String> getAllAvailableYears(String country) {
         ArrayList<String> availableYears = new ArrayList<String>();
