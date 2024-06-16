@@ -56,7 +56,7 @@ public class PageST2B implements Handler {
                         <a href="/mission.html">About Us</a>
                     </div>
                     <div class="subtask">
-                        <li>Subtasks 2</li>
+                        <li>Search Raw Data</li>
                         <div class="subtask-dropdown">
                             <a href="/page2A.html">Subtask 2a</a>
                             <a href="/page2B.html">Subtask 2b</a>
@@ -97,6 +97,7 @@ public class PageST2B implements Handler {
                 html += "<option>" + foodGroup + "</option>";
             }
         }
+        // Some of the CPC code names were changed because they were too verbose
 
         html += """
                                     </select>
@@ -184,7 +185,7 @@ public class PageST2B implements Handler {
                 <h1>Search Loss by Food Group</h1>
                 <table>
                 """;
-        
+
 
 
         html += """

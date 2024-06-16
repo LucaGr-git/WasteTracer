@@ -48,17 +48,17 @@ public class PageIndex implements Handler {
                         <a href="/mission.html">About Us</a>
                     </div>
                     <div class="subtask">
-                        <li>Subtasks 2</li>
+                        <li>Search Raw Data</li>
                         <div class="subtask-dropdown">
-                            <a href="/page2A.html">Subtask 2a</a>
-                            <a href="/page2B.html">Subtask 2b</a>
+                            <a href="/page2A.html">Search by Country</a>
+                            <a href="/page2B.html">Search by Food Group</a>
                         </div>
                     </div>
                     <div class="subtask">
-                        <li>Subtasks 3</li>
+                        <li>Search Similar Data</li>
                         <div class="subtask-dropdown">
-                            <a href="/page3A.html">Subtask 3a</a>
-                            <a href="/page3B.html">Subtask 3b</a>
+                            <a href="/page3A.html">Search by Country/Region</a>
+                            <a href="/page3B.html">Search by Commodity</a>
                         </div>
                     </div>
                 </ul>
