@@ -36,7 +36,7 @@ public class PageST2B implements Handler {
 
         // Add some Head information
         html += "<head>" + 
-                "<title>Subtask 2.2</title>";
+                "<title>WasteTracer - Search Raw Data by Food Group</title>";
 
         // Add some CSS (external file)
         html += "<link rel='stylesheet' type='text/css' href='common.css' />";
@@ -50,23 +50,23 @@ public class PageST2B implements Handler {
         // This uses a Java v15+ Text Block
         html += """
             <div class="topnav">
-                <img src="logo.png">
+                <a href='/'><img src='logo.png' width='200'></a>
                 <ul class="topnav-links">
-                    <div class="about-us">
+                    <div id='option-1' class="about-us">
                         <a href="/mission.html">About Us</a>
                     </div>
                     <div class="subtask">
                         <li>Search Raw Data</li>
                         <div class="subtask-dropdown">
-                            <a href="/page2A.html">Subtask 2a</a>
-                            <a href="/page2B.html">Subtask 2b</a>
+                            <a href="/page2A.html">Search by Country</a>
+                            <a href="/page2B.html">Search by Food Group</a>
                         </div>
                     </div>
                     <div class="subtask">
-                        <li>Subtasks 3</li>
+                        <li>Search Similar Data</li>
                         <div class="subtask-dropdown">
-                            <a href="/page3A.html">Subtask 3a</a>
-                            <a href="/page3B.html">Subtask 3b</a>
+                            <a href="/page3A.html">Search by Country/Region</a>
+                            <a href="/page3B.html">Search by Commodity</a>
                         </div>
                     </div>
                 </ul>
@@ -186,14 +186,59 @@ public class PageST2B implements Handler {
                 <table>
                 """;
 
+        if (selectedFoodGroup == null || selectedFoodGroup.equals("Please Select")) {}
+        else {
+            if (context.formParam("all-years") == null) {
+                html += "<caption>" + selectedFoodGroup + "</caption>";
+                html += "<thead>";
+                html += "<tr>";
+                html += "<th>Commodity</th>";
+                html += "<th>" + startYear + "</th>";
+                html += "<th>" + endYear + "</th>";
 
+                html += "<th>Difference</th>";
 
-        html += """
+                if (activity != null) {
+                    html += "<th>Activity</th>";
+                }
+                if (causeOfLoss != null) {
+                    html += "<th>Cause of Loss</th>";
+                }
+                if (foodSupply != null) {
+                    html += "<th>Food Supply</th>";
+                }
+                html += "</tr></thead>";
+
+                String query = JDBCConnection.getST2BQuery(selectedFoodGroup, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+            }
+            else {
+                html += "<caption>" + selectedFoodGroup + "</caption>";
+                html += "<thead>";
+                html += "<tr>";
+                html += "<th>Commodity</th>";
+                html += "<th>Year</th>";
+                html += "<th>Average Loss %</th>";
+
+                if (activity != null) {
+                    html += "<th>Activity</th>";
+                }
+                if (causeOfLoss != null) {
+                    html += "<th>Cause of Loss</th>";
+                }
+                if (foodSupply != null) {
+                    html += "<th>Food Supply</th>";
+                }
+                html += "</tr></thead>";
+
+                html += JDBCConnection.getST2BQueryAllYears(selectedFoodGroup, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+            }
+            html += """
                 </table>
             </div>
                 """;
 
-        html += "</div></body></html>";
+             html += "</div></body></html>";
+        }
 
         context.html(html);
     }

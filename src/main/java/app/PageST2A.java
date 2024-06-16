@@ -21,7 +21,7 @@ public class PageST2A implements Handler {
         String html = "<html>";
 
         html += "<head>" + 
-                "<title>Waste - TracerSubtask 2.1</title>";
+                "<title>WasteTracer - Search Raw Data by Country</title>";
 
         html += "<link rel='stylesheet' type='text/css' href='common.css' />" +
                 "<link rel='stylesheet' type='text/css' href='ST2common.css'/>";
@@ -33,21 +33,21 @@ public class PageST2A implements Handler {
             <div class="topnav">
                 <a href='/'><img src='logo.png' width='200'></a>
                 <ul class="topnav-links">
-                    <div class="about-us">
+                    <div id='option-1' class="about-us">
                         <a href="/mission.html">About Us</a>
                     </div>
                     <div class="subtask">
-                        <li>Subtasks 2</li>
+                        <li>Search Raw Data</li>
                         <div class="subtask-dropdown">
-                            <a href="/page2A.html">Subtask 2a</a>
-                            <a href="/page2B.html">Subtask 2b</a>
+                            <a href="/page2A.html">Search by Country</a>
+                            <a href="/page2B.html">Search by Food Group</a>
                         </div>
                     </div>
                     <div class="subtask">
-                        <li>Subtasks 3</li>
+                        <li>Search Similar Data</li>
                         <div class="subtask-dropdown">
-                            <a href="/page3A.html">Subtask 3a</a>
-                            <a href="/page3B.html">Subtask 3b</a>
+                            <a href="/page3A.html">Search by Country/Region</a>
+                            <a href="/page3B.html">Search by Commodity</a>
                         </div>
                     </div>
                 </ul>
@@ -169,37 +169,37 @@ public class PageST2A implements Handler {
         if (selectedCountry == null || selectedCountry.equals("Please Select")) {}
         else {
             if (context.formParam("all-years") == null) {
-            html += "<caption>" + selectedCountry + "</caption>";
-            html += "<thead>";
-            html += "<tr>";
-            html += "<th>Commodity</th>";
-            html += "<th>" + startYear + "</th>";
-            html += "<th>" + endYear + "</th>";
+                html += "<caption>" + selectedCountry + "</caption>";
+                html += "<thead>";
+                html += "<tr>";
+                html += "<th>Food Group</th>";
+                html += "<th>" + startYear + "</th>";
+                html += "<th>" + endYear + "</th>";
 
-            html += "<th>Difference</th>";
+                html += "<th>Difference</th>";
 
-            if (activity != null) {
-                html += "<th>Activity</th>";
-            }
-            if (causeOfLoss != null) {
-                html += "<th>Cause of Loss</th>";
-            }
-            if (foodSupply != null) {
-                html += "<th>Food Supply</th>";
-            }
-            html += "</tr></thead>";
+                if (activity != null) {
+                    html += "<th>Activity</th>";
+                }
+                if (causeOfLoss != null) {
+                    html += "<th>Cause of Loss</th>";
+                }
+                if (foodSupply != null) {
+                    html += "<th>Food Supply</th>";
+                }
+                html += "</tr></thead>";
 
-            String query = JDBCConnection.getST2AQuery(selectedCountry, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+                String query = JDBCConnection.getST2AQuery(selectedCountry, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
 
-            if (query != null) {
-                html += JDBCConnection.ST2ATableHTML(query, activity, causeOfLoss, foodSupply);
-            }
+                if (query != null) {
+                    html += JDBCConnection.ST2ATableHTML(query, activity, causeOfLoss, foodSupply);
+                }
             } 
             else {
                 html += "<caption>" + selectedCountry + "</caption>";
                 html += "<thead>";
                 html += "<tr>";
-                html += "<th>Commodity</th>";
+                html += "<th>Food Group</th>";
                 html += "<th>Year</th>";
                 html += "<th>Average Loss %</th>";
 

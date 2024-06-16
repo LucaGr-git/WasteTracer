@@ -531,5 +531,96 @@ public class JDBCConnection {
         System.out.println(html);
         return html;
     }
+
+    public static String getST2BQuery (
+        String foodGroup, 
+        String startYear,
+        String endYear,
+        String activity, 
+        String causeOfLoss, 
+        String foodSupply,
+        String sortByPercent) {
+            
+        String query = "";
+        
+        if (foodGroup == null || foodGroup.equals("Please Select")) {return null;}
+        if (startYear == null || endYear == null) {return null;}
+        if (startYear.equals("selected")) {return null;}
+        if (!startYear.equals("") && (Integer.parseInt(startYear) > Integer.parseInt(endYear))) {return null;}
+        
+        for (int i = 0; i < 2; ++i) {
+            if (i == 0) {
+                query += "SELECT DISTINCT *, IFNULL(avg0, avg1) - IFNULL(avg1, avg0) AS difference FROM (";
+            }
+
+            query += "SELECT year AS year" + i + ", descriptor AS descriptor" + i + ", AVG(lossPercentage) AS avg" + i + " ";
+
+            if (activity != null) {
+                query += ", IFNULL(activity, 'N/A') AS activity" + i + " ";
+            }
+            if (foodSupply != null) {
+                query += ", IFNULL(foodSupply, 'N/A') AS foodSupply" + i + " ";
+            }
+            if (causeOfLoss != null) {
+                query += ", IFNULL(causeOfLoss, 'N/A') AS causeOfLoss" + i + " ";
+            }
+
+            query += "FROM LossStat ";
+            if (activity != null) {
+                query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
+            }
+            query += "WHERE foodGroup = \"" + foodGroup + "\" ";
+            
+            if (i == 0) {
+                query += "AND year = " + startYear + " ";
+            }
+            else {
+                query += "AND year = " + endYear + " ";
+            }
+
+            query += "GROUP BY descriptor" + i + " ";
+
+            if (activity != null) {
+                query += ", activity" + i + " ";
+            }
+            if (foodSupply != null) {
+                query += ", foodSupply" + i + " ";
+            }
+            if (causeOfLoss != null) {
+                query += ", causeOfLoss" + i + " ";
+            }
+
+            if (i == 0) {
+                query += ") AS min FULL OUTER JOIN (";
+            }
+            else {
+                query += ") AS max ON descriptor0 = descriptor1 ";
+                
+                if (activity != null) {
+                    query += "AND activity0 = activity1 ";
+                }
+                if (foodSupply != null) {
+                    query += "AND foodSupply0 = foodSupply1 ";
+                }
+                if (causeOfLoss != null) {
+                    query += "AND causeOfLoss0 = causeOfLoss1 ";
+                }
+                if (sortByPercent == null) {
+                    query += "ORDER BY IFNULL(descriptor0, descriptor1)"; 
+                }
+                else {
+                    if (sortByPercent.equals("sort-by-descending")) {
+                        query += "ORDER BY difference ASC";
+                    }
+                    if (sortByPercent.equals("sort-by-ascending")) {
+                        query += "ORDER BY difference DESC";
+                    }
+                }
+            }
+        }
+        System.out.println(query);
+
+        return query;
+    }
 }
 
