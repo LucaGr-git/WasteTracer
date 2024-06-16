@@ -21,7 +21,7 @@ public class PageST2A implements Handler {
         String html = "<html>";
 
         html += "<head>" + 
-               "<title>Waste - TracerSubtask 2.1</title>";
+                "<title>Waste - TracerSubtask 2.1</title>";
 
         html += "<link rel='stylesheet' type='text/css' href='common.css' />" +
                 "<link rel='stylesheet' type='text/css' href='ST2common.css'/>";
@@ -69,8 +69,8 @@ public class PageST2A implements Handler {
                  """;
 
         String selectedCountry = context.formParam("country-selector");
-        
-        for (String country : (JDBCConnection.getAllCountries())) {
+
+        for (String country : JDBCConnection.getAllCountries()) {
             if (selectedCountry != null && country.equals(selectedCountry)) {
                 html += "<option selected>" + country + "</option>";
             }
@@ -93,10 +93,10 @@ public class PageST2A implements Handler {
                  """;
 
         String startYear = context.formParam("start-year");
-        for (String year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
-            html += "<option value=" + year + ">" + year + "</option>";
+
+        for (String year : JDBCConnection.getAllAvailableYearsCountry(selectedCountry)) {
+            html += "<option value='" + year + "'>" + year + "</option>";
         }
-        
         
         html +=  """
                             </select>
@@ -107,12 +107,12 @@ public class PageST2A implements Handler {
                  """;
         
         String endYear = context.formParam("end-year");
-        for (String year : JDBCConnection.getAllAvailableYears(selectedCountry)) {
+
+        for (String year : JDBCConnection.getAllAvailableYearsCountry(selectedCountry)) {
             html += "<option selected value=" + year + ">" + year + "</option>";
         }
         
         html +=  """
-
                             </select>
                         </div>
                     </div>

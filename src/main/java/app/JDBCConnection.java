@@ -71,14 +71,41 @@ public class JDBCConnection {
         return countries;
     }
 
-    // TODO: Add your required methods here
+    public static ArrayList<String> getAllFoodGroups() {
+        ArrayList<String> foodGroups = new ArrayList<>();
 
-     /**
-     * Changes an arraylist of countries into string 
-     * @return an arraylist of strings with wach countries name
-     */
+        Connection connection = null;
 
-    public static ArrayList<String> getAllAvailableYears(String country) {
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            String query = "SELECT DISTINCT * FROM FoodGroup ORDER BY groupDescriptor";
+  
+            ResultSet results = statement.executeQuery(query);
+
+            while (results.next()) {
+                foodGroups.add(results.getString("groupDescriptor"));
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return foodGroups;
+    }
+
+    public static ArrayList<String> getAllAvailableYearsCountry(String country) {
         ArrayList<String> availableYears = new ArrayList<String>();
         Connection connection = null;
 
@@ -93,9 +120,8 @@ public class JDBCConnection {
                 return availableYears;
             }
             else {
-                String query = "SELECT DISTINCT year FROM Lossstat WHERE country = \"" + 
-                            country + 
-                            "\" ORDER BY year ASC ";
+                String query = "SELECT DISTINCT year FROM Lossstat ";
+                query += "WHERE country = \"" + country + "\" ORDER BY year ASC";
 
                 ResultSet results = statement.executeQuery(query);
 
@@ -105,7 +131,6 @@ public class JDBCConnection {
                 }   
             }
 
-            
             statement.close();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -120,6 +145,48 @@ public class JDBCConnection {
         }
         return availableYears;
     }
+
+    public static ArrayList<String> getAllAvailableYearsFoodGroup(String foodGroup) {
+        ArrayList<String> availableYears = new ArrayList<String>();
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            if (foodGroup == null || foodGroup.equals("Please Select")) {
+                availableYears.add("");
+                return availableYears;
+            }
+            else {
+                String query = "SELECT DISTINCT year FROM LossStat l JOIN FoodGroup fg ON fg.groupCode = l.groupCode ";
+                query += "WHERE groupDescriptor = \"" + foodGroup + "\" ORDER BY l.groupCode, year";
+
+
+                ResultSet results = statement.executeQuery(query);
+
+                while (results.next()) {
+                    String year = String.valueOf(results.getInt("Year"));
+                    availableYears.add(year);
+                }   
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return availableYears;
+    }    
 
     public static String getST2AQuery(
         String country, 
