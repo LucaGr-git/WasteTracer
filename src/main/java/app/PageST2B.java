@@ -229,7 +229,7 @@ public class PageST2B implements Handler {
                     html += "<th>Food Supply</th>";
                 }
                 html += "</tr></thead>";
-
+                
                 html += JDBCConnection.getST2BQueryAllYears(selectedFoodGroup, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
             }
             html += """
