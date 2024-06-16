@@ -341,7 +341,7 @@ public class JDBCConnection {
             return html;
     }
 
-    public static String ST2ABTableHTML(
+    public static String ST2ATableHTML(
         String query,
         String activty,
         String causeOfLoss,
@@ -624,7 +624,72 @@ public class JDBCConnection {
 
         return query;
     }
+    
+    public static String getST2BQueryAllYears(
+        String foodGroup, 
+        String startYear,
+        String endYear,
+        String activity, 
+        String causeOfLoss, 
+        String foodSupply,
+        String sortByPercent) {
+            String foodGroupCode = getGroupCode(foodGroup);
 
+
+            String html = "<tbody>";
+
+            if (foodGroup == null || foodGroup.equals("Please Select")) {return null;}
+
+            String query = "SELECT DISTINCT year, descriptor, AVG(losspercentage) AS avg ";
+            
+            if (activity != null) {
+                query += ", IFNULL(activity, 'N/A') AS activity ";
+            }
+            if (causeOfLoss != null) {
+                query += ", IFNULL(causeOfLoss, 'N/A') AS causeOfLoss ";
+            }
+            if (foodSupply != null) {
+                query += ", IFNULL(foodSupply, 'N/A') AS foodSupply ";
+            }
+
+            query += "FROM LossStat ";
+
+            if (activity != null) {
+                query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
+            }
+
+            query += "WHERE groupcode = \"" + foodGroupCode + "\" "; 
+            query += "AND year >= " + startYear + " AND year <= " + endYear + " "; 
+            query += "GROUP BY descriptor, year ";
+
+            if (activity != null) {
+                query += ", activity ";
+            }
+            if (causeOfLoss != null) {
+                query += ", causeOfLoss ";
+            }
+            if (foodSupply != null) {
+                query += ", foodSupply ";
+            }
+
+            if (sortByPercent == null) {
+                query += "ORDER BY descriptor";
+            }
+            else if (sortByPercent.equals("sort-by-descending")) {
+                System.out.print("WORKING");
+                query += "ORDER BY avg DESC";
+            }
+            else {
+                query += "ORDER BY avg ASC";
+            }
+
+            html += ST2ATableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
+            System.out.println(query);
+                
+            html += "</tbody>";
+            return html;
+    }
+    
     private static String getGroupCode(String groupDescriptor){
         String matchingGroupCode = "";
 
@@ -664,5 +729,4 @@ public class JDBCConnection {
         }
         return matchingGroupCode;
     }
-
 }
