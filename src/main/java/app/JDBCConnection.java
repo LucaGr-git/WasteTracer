@@ -540,6 +540,8 @@ public class JDBCConnection {
         String causeOfLoss, 
         String foodSupply,
         String sortByPercent) {
+        
+        String foodGroupCode = getGroupCode(foodGroup);
             
         String query = "";
         
@@ -569,7 +571,7 @@ public class JDBCConnection {
             if (activity != null) {
                 query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
             }
-            query += "WHERE foodGroup = \"" + foodGroup + "\" ";
+            query += "WHERE groupcode = \"" + foodGroupCode + "\" ";
             
             if (i == 0) {
                 query += "AND year = " + startYear + " ";
@@ -622,5 +624,44 @@ public class JDBCConnection {
 
         return query;
     }
-}
 
+    private static String getGroupCode(String groupDescriptor){
+        String matchingGroupCode = "";
+
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            String query = "SELECT * FROM FOODGROUP";
+  
+            ResultSet results = statement.executeQuery(query);
+
+            String groupCode;
+            String groupDesc;
+            while (results.next()) {
+                groupCode = results.getString("groupcode");
+                groupDesc = results.getString("groupdescriptor");
+                if (groupDesc.equals(groupDescriptor)){
+                    matchingGroupCode = groupCode;
+                }
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return matchingGroupCode;
+    }
+}
