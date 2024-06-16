@@ -341,7 +341,7 @@ public class JDBCConnection {
             return html;
     }
 
-    public static String ST2ATableHTML(
+    public static String ST2ABTableHTML(
         String query,
         String activty,
         String causeOfLoss,
