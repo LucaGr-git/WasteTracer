@@ -193,8 +193,8 @@ public class PageST2B implements Handler {
                 html += "<thead>";
                 html += "<tr>";
                 html += "<th>Commodity</th>";
-                html += "<th>" + startYear + "</th>";
-                html += "<th>" + endYear + "</th>";
+                html += "<th>" + startYear + "Loss %" + "</th>";
+                html += "<th>" + endYear + "Loss %" + "</th>";
 
                 html += "<th>Difference</th>";
 

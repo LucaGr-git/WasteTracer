@@ -39,6 +39,7 @@ public class JDBCConnection {
         System.out.println("Created JDBC Connection Object");
     }
 
+/*Methods to populate select inputs*/
     public static ArrayList<String> getAllCountries() {
         ArrayList<String> countries = new ArrayList<String>();
 
@@ -259,6 +260,7 @@ public class JDBCConnection {
         return availableYears;
     }    
 
+/*ST2A/ST2B Methods*/
     public static String getST2AQuery(
         String country, 
         String startYear,
@@ -763,4 +765,92 @@ public class JDBCConnection {
             return html;
     }
     
+/*ST3B/ST3A Methods*/
+    public static String getST3BGroupFromCommodity(String commodity) {
+        String group = "";
+
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            String query = "SELECT DISTINCT groupCode FROM FoodSubclass WHERE descriptor = \"" + commodity + "\"";
+
+            ResultSet results = statement.executeQuery(query);
+
+            results.next();
+            group = results.getString("groupCode");
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return group;
+    }
+
+    public static String getST3BavgLossTable(
+        String foodGroupCPC,
+        String selectedAmount ) {
+        String avgSimilarityTable = "";
+
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            String query = "SELECT groupDescriptor, AVG(lossPercentage) AS avg0, ";
+            query += "(SELECT AVG(LossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "' GROUP BY groupCode) AS avg1 ";
+            query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
+            query += "ORDER BY ABS(avg0 - avg1) LIMIT " + Integer.parseInt(selectedAmount) + 1;
+
+            ResultSet results = statement.executeQuery(query);
+
+            int i = 0;
+            while (results.next()) {
+                if (i == 0) {
+                    avgSimilarityTable += "<tr>";
+                    avgSimilarityTable += "<td>Group of Choice</td>";
+                    avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
+                    avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
+                    avgSimilarityTable += "</tr>"; 
+                    ++i;
+                }
+                else {
+                    avgSimilarityTable += "<tr>";
+                    avgSimilarityTable += "<td>" + i + ")</td>";
+                    avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
+                    avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
+                    avgSimilarityTable += "</tr>";
+                    ++i;
+                }
+                if (i > Integer.parseInt(selectedAmount)) {
+                    break;
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return avgSimilarityTable;
+    }
 }

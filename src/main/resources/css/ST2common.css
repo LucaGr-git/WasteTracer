@@ -259,6 +259,7 @@ thead {
 }
 
 th {
+    white-space: nowrap;
     text-align: left;
 }
 
@@ -273,7 +274,7 @@ tbody tr:nth-child(odd) {
 th, td {
     border: none;
     max-width: 25%;
-    min-width: 14%;
+    min-width: 20%;
     word-break: normal;
     padding: 12px 8px;
     border: 1px solid white;

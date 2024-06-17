@@ -153,7 +153,7 @@ public class PageST3A implements Handler {
         
         html += """
             <div class="data-container">
-                <h1>Search Similarity by Area</h1>
+                <h1>Search Area by Similarity</h1>
                 <table>
                 """;
         

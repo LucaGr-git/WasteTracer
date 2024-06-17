@@ -106,14 +106,14 @@ public class PageST3B implements Handler {
                         <div>
                             <p>No. of similar foods shown</p>
                             <div class='custom-select-wrapper'>
-                                <select id='amount-selector' name='amount-selector'>
+                                <select id='amount-selector' name='amount-selector' required>
                                     <option>Please Select</option>
                 """;
             
         String selectedAmount = context.formParam("amount-selector");
 
-        //147 is the amount of available commodities
-        for (int i = 1; i < 147; ++i) {
+        //23 is the amount of food groups with available data
+        for (int i = 1; i < 23; ++i) {
             html += "<option value='" + i + "'>" + i + "</option>";
         }
 
@@ -126,7 +126,7 @@ public class PageST3B implements Handler {
                     <h4>Search Similarity by</h4>
                     <div class='radio-buttons'>
                         <div>
-                            <input type='radio' name='similarity-choice' value='avg-loss-percent' id='avg-loss-percent'>
+                            <input type='radio' name='similarity-choice' value='avg-loss-percent' id='avg-loss-percent' required>
                             <label for='avg-loss-percent'>Average Loss %</label>
                         </div>
                         <div>
@@ -149,15 +149,34 @@ public class PageST3B implements Handler {
 
         html += """
             <div class="data-container">
-                <h1>Search Similarity by Commodity</h1>
+                <h1>Search Commodity by Similarity</h1>
                 <table>
                 """;
 
-        if (selectedCommodity == null || selectedCommodity.equals("Please Select")) {}
+        if (selectedCommodity == null || selectedCommodity.equals("Please Select") ||
+            selectedAmount == null || selectedAmount.equals("Please Select")) {}
         else {
-            
-        }
+            html += "<caption>" + selectedCommodity + "</caption>";
+            html += "<thead>";
+            html += "<tr>";
+            html += "<th>Similarity Rank</th>";
+            html += "<th>Food Group</th>";
 
+            String foodGroupCPC = JDBCConnection.getST3BGroupFromCommodity(selectedCommodity);
+
+            if (similarityChoice.equals("avg-loss-percent")) {
+                html += "<th>Average Loss %</th>";
+                html += "</thead>";
+
+                html += JDBCConnection.getST3BavgLossTable(foodGroupCPC, selectedAmount);
+            }
+            else if (similarityChoice.equals("highest-percent")) {
+                
+            }
+            else {
+
+            }
+        }
         context.html(html);
     }
 
