@@ -123,7 +123,7 @@ public class JDBCConnection {
 
             while (results.next()) {
                 String countryOrRegion = 
-                (results.getString("region") == null) ?
+                (results.getString("region") == null || results.getString("region").equals("NULL")) ?
                 results.getString("country") :
                 results.getString("region");
 
@@ -144,7 +144,7 @@ public class JDBCConnection {
         return countriesAndRegions;
     }
 
-    public static ArrayList<String> getAllAvailableYearsCountry(String country) {
+    public static ArrayList<String> getAllAvailableYearsCountryRegion(String area) {
         ArrayList<String> availableYears = new ArrayList<String>();
         Connection connection = null;
 
@@ -154,20 +154,20 @@ public class JDBCConnection {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            if (country == null || country.equals("Please Select")) {
+            if (area == null || area.equals("Please Select")) {
                 availableYears.add("");
                 return availableYears;
             }
             else {
                 String query = "SELECT DISTINCT year FROM Lossstat ";
-                query += "WHERE country = \"" + country + "\" ORDER BY year ASC";
+                query += "WHERE country = \"" + area + "\" OR region = \"" + area + "\" ORDER BY year ASC";
 
                 ResultSet results = statement.executeQuery(query);
 
                 while (results.next()) {
                     String year = String.valueOf(results.getInt("Year"));
                     availableYears.add(year);
-                }   
+                }
             }
 
             statement.close();

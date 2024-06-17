@@ -38,6 +38,7 @@ public class PageST3A implements Handler {
 
         // Add some CSS (external file)
         html += "<link rel='stylesheet' type='text/css' href='common.css' />";
+        html += "<link rel='stylesheet' type='text/css' href='ST2common.css />'";
         html += "</head>";
 
         // Add the body
@@ -75,7 +76,7 @@ public class PageST3A implements Handler {
         html += """
             <div class="filters">    
                 <h2>Filters</h2>
-                <form class="form" action='/page3A.html' method='POST' id='ST23-form' name='ST3A-form'>
+                <form class="form" action='/page3A.html' method='POST' id='ST3A-form' name='ST3A-form'>
                     <div class="select-area">
                         <div>
                             <p>Countries and Regions</p>
@@ -86,7 +87,76 @@ public class PageST3A implements Handler {
 
         String selectedCountryRegion = context.formParam("country-region-selector");
 
-        for ()
+        for (String countryOrRegion : JDBCConnection.getAllCountriesRegions()) {
+            if (selectedCountryRegion != null && countryOrRegion.equals(selectedCountryRegion)) {
+                html += "<option selected>" + countryOrRegion + "</option>";
+            }
+            else {
+                html += "<option>" + countryOrRegion + "</option>";
+            }
+        }
+
+        html += """
+                                </select>
+                                <span class="custom-arrow"></span>
+                            </div>
+                             <button type="submit" class="confirm-select">Confirm Selection</button>
+                        </div>
+                    </div>
+                    <div class="select-area">
+                        <div>
+                            <p>Year</p>
+                            <div class="custom-select-wrapper">
+                                <select id="year-selector" name="year-selector">
+                                    <option>Please Select</option>
+                """;
+
+        String selectedYear = context.formParam("year-selector");
+
+        for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountryRegion)) {
+            html += "<option value='" + year + "'>" + year + "</option>";
+        }
+
+        html += """
+                                </select>
+                                <span class="custom-arrow"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="select-area">
+                        <div>
+                            <p>Year</p>
+                            <div class="custom-select-wrapper">
+                                <select id="year-selector" name="year-selector">
+                                    <option>Please Select</option>
+                """;
+                        
+        for (int i = 1; i < JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountryRegion).size(); ++i) {
+            html += "<option value=" + i + ">" + i + "</option>";
+        }
+
+        html += """
+                    <h4>Search Similarity by</h4>
+                    <div class='radio-buttons'>
+                        <div>
+                            <input type='radio' name='food-in-common' id='food-in-common'>
+                            <label for='food-in-common'>Foods in common</label>
+                        </div>
+                        <div>
+                            <input type='radio' name='Loss %' id='Loss %'>
+                            <label for='Loss %'>Show cause of loss</label>
+                        </div>
+                        <div>
+                            <input type='radio' name='food-supply-show' id='food-supply-show'>
+                            <label for='food-supply-show'>Show food supply stage</label>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit">Search Data</button>
+                    </div>
+                </form>
+            </div>
+            """;
 
         context.html(html);
     }

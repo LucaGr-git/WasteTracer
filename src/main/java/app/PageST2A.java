@@ -66,7 +66,7 @@ public class PageST2A implements Handler {
                             <div class='custom-select-wrapper'>
                                 <select id="country-selector" name='country-selector'>
                                     <option>Please Select</option>
-                 """;
+                """;
 
         String selectedCountry = context.formParam("country-selector");
 
@@ -94,7 +94,7 @@ public class PageST2A implements Handler {
 
         String startYear = context.formParam("start-year");
 
-        for (String year : JDBCConnection.getAllAvailableYearsCountry(selectedCountry)) {
+        for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
             html += "<option value='" + year + "'>" + year + "</option>";
         }
         
@@ -108,7 +108,7 @@ public class PageST2A implements Handler {
         
         String endYear = context.formParam("end-year");
 
-        for (String year : JDBCConnection.getAllAvailableYearsCountry(selectedCountry)) {
+        for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
             html += "<option selected value=" + year + ">" + year + "</option>";
         }
         
