@@ -43,7 +43,7 @@ body {
 
 .topnav-links li, .about-us a {
    height: 14vh;
-   font-size: 1.9cqw;
+   font-size: 1.8cqw;
    font-weight: bold;  
    list-style: none;
    display: flex;
@@ -77,7 +77,7 @@ body {
    display: block;
    font-weight: 400;
    padding: 20 0 20 10;
-   font-size: 1.5cqw;
+   font-size: 1.4cqw;
 }
 
 .subtask:hover .subtask-dropdown {

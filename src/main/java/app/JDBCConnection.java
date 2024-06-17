@@ -144,6 +144,39 @@ public class JDBCConnection {
         return countriesAndRegions;
     }
 
+    public static ArrayList<String> getAllCommodities() {
+        ArrayList<String> commodities = new ArrayList<>();
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            String query = "SELECT DISTINCT descriptor FROM LossStat";
+
+            ResultSet results = statement.executeQuery(query);
+
+            while (results.next()) {
+                commodities.add(results.getString("descriptor"));
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return commodities;
+    }   
+
     public static ArrayList<String> getAllAvailableYearsCountryRegion(String area) {
         ArrayList<String> availableYears = new ArrayList<String>();
         Connection connection = null;

@@ -34,7 +34,7 @@ public class PageST3B implements Handler {
 
         // Add some Head information
         html += "<head>" + 
-                "<title>Search Similar Data by Commodity</title>";
+                "<title>Waste Tracer - Search Similar Data by Commodity</title>";
 
         // Add some CSS (external file)
         html += "<link rel='stylesheet' type='text/css' href='common.css' />";
@@ -70,6 +70,93 @@ public class PageST3B implements Handler {
                 </ul>
             </div>
         """;
+
+        html += "<div class='content'>";
+
+        html += """
+            <div class='filters'>
+                <h2>Filters</h2>
+                <form class='form' action='/page3B.html' method='POST' id='ST3B-form' name='ST3B-form'>
+                    <div class='select-area'>
+                        <div>
+                            <p>Food Commodities</p>
+                            <div class='custom-select-wrapper'>
+                                <select id='commodity-selector' name='commodity-selector'>
+                                    <option>Please Select</option>
+                """;
+
+        String selectedCommodity = context.formParam("commodity-selector");
+
+        for (String commodity : JDBCConnection.getAllCommodities()) {
+            if (selectedCommodity != null && commodity.equals(selectedCommodity)) {
+                html += "<option selected>" + commodity + "</option>";
+            }
+            else {
+                html += "<option>" + commodity + "</option>";
+            }
+        }
+
+        html += """
+                                </select>
+                                <span class='custom-arrow'></span>
+                            </div>        
+                        </div>
+                    </div>
+                    <div class='select-area'>
+                        <div>
+                            <p>No. of similar foods shown</p>
+                            <div class='custom-select-wrapper'>
+                                <select id='amount-selector' name='amount-selector'>
+                                    <option>Please Select</option>
+                """;
+            
+        String selectedAmount = context.formParam("amount-selector");
+
+        //147 is the amount of available commodities
+        for (int i = 1; i < 147; ++i) {
+            html += "<option value='" + i + "'>" + i + "</option>";
+        }
+
+        html += """
+                                </select>
+                                <span class='custom-arrow'></span>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>Search Similarity by</h4>
+                    <div class='radio-buttons'>
+                        <div>
+                            <input type='radio' name='similarity-choice' value='avg-loss-percent' id='avg-loss-percent'>
+                            <label for='avg-loss-percent'>Average Loss %</label>
+                        </div>
+                        <div>
+                            <input type='radio' name='similarity-choice' value='highest-percent' id='highest-percent'>
+                            <label for='highest-percent'>Item with highest % of loss within the Food Group</label>
+                        </div>
+                        <div>
+                            <input type='radio' name='similarity-choice' value='lowest-percent' id='lowest-percent'>
+                            <label for='lowest-percent'>Item with lowest % of loss within the Food Group</label>
+                        </div>
+                    </div>
+                    <div>
+                        <button type='submit'>Search Data</button>
+                    </div>
+                </form>
+            </div>
+                """;
+
+        String similarityChoice = context.formParam("similarity-choice");
+
+        html += """
+            <div class="data-container">
+                <h1>Search Similarity by Commodity</h1>
+                <table>
+                """;
+
+        if (selectedCommodity == null || selectedCommodity.equals("Please Select")) {}
+        else {
+            
+        }
 
         context.html(html);
     }

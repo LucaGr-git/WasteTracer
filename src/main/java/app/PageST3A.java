@@ -30,24 +30,24 @@ public class PageST3A implements Handler {
         html += "<body>";
 
         html += """
-            <div class="topnav">
+            <div class='topnav'>
                 <a href='/'><img src='logo.png' width='200'></a>
-                <ul class="topnav-links">
-                    <div id='option-1' class="about-us">
-                        <a href="/mission.html">About Us</a>
+                <ul class='topnav-links'>
+                    <div id='option-1' class='about-us'>
+                        <a href='/mission.html'>About Us</a>
                     </div>
-                    <div class="subtask">
+                    <div class='subtask'>
                         <li>Search Raw Data</li>
-                        <div class="subtask-dropdown">
-                            <a href="/page2A.html">Search by Country</a>
-                            <a href="/page2B.html">Search by Food Group</a>
+                        <div class='subtask-dropdown'>
+                            <a href='/page2A.html'>Search by Country</a>
+                            <a href='/page2B.html'>Search by Food Group</a>
                         </div>
                     </div>
-                    <div class="subtask">
+                    <div class='subtask'>
                         <li>Search Similar Data</li>
-                        <div class="subtask-dropdown">
-                            <a href="/page3A.html">Search by Country/Region</a>
-                            <a href="/page3B.html">Search by Commodity</a>
+                        <div class='subtask-dropdown'>
+                            <a href='/page3A.html'>Search by Country/Region</a>
+                            <a href='/page3B.html'>Search by Commodity</a>
                         </div>
                     </div>
                 </ul>
@@ -57,14 +57,14 @@ public class PageST3A implements Handler {
         html += "<div class='content'>";
 
         html += """
-            <div class="filters">    
+            <div class='filters'>    
                 <h2>Filters</h2>
-                <form class="form" action='/page3A.html' method='POST' id='ST3A-form' name='ST3A-form'>
-                    <div class="select-area">
+                <form class='form' action='/page3A.html' method='POST' id='ST3A-form' name='ST3A-form'>
+                    <div class='select-area'>
                         <div>
                             <p>Countries and Regions</p>
                             <div class='custom-select-wrapper'>
-                                <select id="country-region-selector" name='country-region-selector'>
+                                <select id='country-region-selector' name='country-region-selector'>
                                     <option>Please Select</option>
                 """;
 
@@ -81,16 +81,16 @@ public class PageST3A implements Handler {
 
         html += """
                                 </select>
-                                <span class="custom-arrow"></span>
+                                <span class='custom-arrow'></span>
                             </div>
-                             <button type="submit" class="confirm-select">Confirm Selection</button>
+                            <button type='submit' class='confirm-select'>Confirm Selection</button>
                         </div>
                     </div>
-                    <div class="select-area">
+                    <div class='select-area'>
                         <div>
                             <p>Available Years</p>
-                            <div class="custom-select-wrapper">
-                                <select id="year-selector" name="year-selector">
+                            <div class='custom-select-wrapper'>
+                                <select id='year-selector' name='year-selector'>
                                     <option>Please Select</option>
                 """;
 
@@ -102,51 +102,65 @@ public class PageST3A implements Handler {
 
         html += """
                                 </select>
-                                <span class="custom-arrow"></span>
+                                <span class='custom-arrow'></span>
                             </div>
                         </div>
                     </div>
-                    <div class="select-area">
+                    <div class='select-area'>
                         <div>
                             <p>No. of similar areas shown</p>
-                            <div class="custom-select-wrapper">
-                                <select id="amount-selector" name="amount-selector">
+                            <div class='custom-select-wrapper'>
+                                <select id='amount-selector' name='amount-selector'>
                                     <option>Please Select</option>
                 """;
         
         String selectedAmount = context.formParam("amount-selector");
 
+        //392 is the amount of available regions/countries
         for (int i = 1; i < 392; ++i) {
-            html += "<option value=" + i + ">" + i + "</option>";
+            html += "<option value='" + i + "'>" + i + "</option>";
         }
 
         html += """
                                 </select>
-                                <span class="custom-arrow"></span>
+                                <span class='custom-arrow'></span>
                             </div>
                         </div>
                     </div>
                     <h4>Search Similarity by</h4>
                     <div class='radio-buttons'>
                         <div>
-                            <input type='radio' name='food-in-common' id='food-in-common'>
+                            <input type='radio' name='similarity-choice' value='food-in-common' id='food-in-common'>
                             <label for='food-in-common'>Foods in common</label>
                         </div>
                         <div>
-                            <input type='radio' name='loss-percent' id='loss-percent'>
+                            <input type='radio' name='similarity-choice' value='loss-percent' id='loss-percent'>
                             <label for='loss-percent'>Loss %</label>
                         </div>
                         <div>
-                            <input type='radio' name='common-and-loss' id='common-and-loss'>
+                            <input type='radio' name='similarity-choice' value='common-and-loss' id='common-and-loss'>
                             <label for='common-and-loss'>Common foods and loss % (Country Exclusive)</label>
                         </div>
                     </div>
                     <div>
-                        <button type="submit">Search Data</button>
+                        <button type='submit'>Search Data</button>
                     </div>
                 </form>
             </div>
             """;
+
+        String similarityChoice = context.formParam("similarity-choice");
+        
+        html += """
+            <div class="data-container">
+                <h1>Search Similarity by Area</h1>
+                <table>
+                """;
+        
+        if (selectedCountryRegion == null || selectedCountryRegion.equals("Please Select")) {}
+        else {
+
+        }
 
         context.html(html);
     }
