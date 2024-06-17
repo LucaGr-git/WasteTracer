@@ -11,17 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Example Index HTML class using Javalin
- * <p>
- * Generate a static HTML page using Javalin
- * by writing the raw HTML into a Java String object
- *
- * @author Timothy Wiley, 2023. email: timothy.wiley@rmit.edu.au
- * @author Santha Sumanasekara, 2021. email: santha.sumanasekara@rmit.edu.au
- * @author Halil Ali, 2024. email: halil.ali@rmit.edu.au
- */
-
 public class PageST3A implements Handler {
 
     // URL of this page relative to http://localhost:7001/
@@ -29,23 +18,17 @@ public class PageST3A implements Handler {
 
     @Override
     public void handle(Context context) throws Exception {
-        // Create a simple HTML webpage in a String
         String html = "<html>";
 
-        // Add some Head information
         html += "<head>" + 
                 "<title>WasteTracer - Search Similar Data by COuntry/Region</title>";
 
-        // Add some CSS (external file)
         html += "<link rel='stylesheet' type='text/css' href='common.css' />";
-        html += "<link rel='stylesheet' type='text/css' href='ST2common.css />'";
+        html += "<link rel='stylesheet' type='text/css' href='ST2common.css' />";
         html += "</head>";
 
-        // Add the body
         html += "<body>";
 
-        // Add the topnav
-        // This uses a Java v15+ Text Block
         html += """
             <div class="topnav">
                 <a href='/'><img src='logo.png' width='200'></a>
@@ -105,7 +88,7 @@ public class PageST3A implements Handler {
                     </div>
                     <div class="select-area">
                         <div>
-                            <p>Year</p>
+                            <p>Available Years</p>
                             <div class="custom-select-wrapper">
                                 <select id="year-selector" name="year-selector">
                                     <option>Please Select</option>
@@ -125,17 +108,24 @@ public class PageST3A implements Handler {
                     </div>
                     <div class="select-area">
                         <div>
-                            <p>Year</p>
+                            <p>No. of similar areas shown</p>
                             <div class="custom-select-wrapper">
-                                <select id="year-selector" name="year-selector">
+                                <select id="amount-selector" name="amount-selector">
                                     <option>Please Select</option>
                 """;
-                        
-        for (int i = 1; i < JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountryRegion).size(); ++i) {
+        
+        String selectedAmount = context.formParam("amount-selector");
+
+        for (int i = 1; i < 392; ++i) {
             html += "<option value=" + i + ">" + i + "</option>";
         }
 
         html += """
+                                </select>
+                                <span class="custom-arrow"></span>
+                            </div>
+                        </div>
+                    </div>
                     <h4>Search Similarity by</h4>
                     <div class='radio-buttons'>
                         <div>
@@ -143,12 +133,12 @@ public class PageST3A implements Handler {
                             <label for='food-in-common'>Foods in common</label>
                         </div>
                         <div>
-                            <input type='radio' name='Loss %' id='Loss %'>
-                            <label for='Loss %'>Show cause of loss</label>
+                            <input type='radio' name='loss-percent' id='loss-percent'>
+                            <label for='loss-percent'>Loss %</label>
                         </div>
                         <div>
-                            <input type='radio' name='food-supply-show' id='food-supply-show'>
-                            <label for='food-supply-show'>Show food supply stage</label>
+                            <input type='radio' name='common-and-loss' id='common-and-loss'>
+                            <label for='common-and-loss'>Common foods and loss % (Country Exclusive)</label>
                         </div>
                     </div>
                     <div>

@@ -127,8 +127,8 @@ hr {
 
 .checkboxes input,
 .radio-buttons input {
-    height: 4vh;
-    width: 4vh;
+    min-height: 4vh;
+    min-width: 4vh;
     margin-right: 10px;
 }
 

@@ -83,7 +83,7 @@ public class PageST2A implements Handler {
                                 </select>
                                 <span class="custom-arrow"></span>
                             </div>
-                            <button type="submit" class="confirm-select">Confirm Country</button>
+                            <button type="submit" class="confirm-select">Confirm Selection</button>
                         </div>
                     </div>
                     <div class="year-wrapper">

@@ -103,7 +103,7 @@ public class PageST2B implements Handler {
                                     </select>
                                     <span class="custom-arrow"></span>
                                 </div>
-                                <button type="submit" class="confirm-select">Confirm Food Group</button>
+                                <button type="submit" class="confirm-select">Confirm Selection</button>
                             </div>
                         </div>
                         <div class="year-wrapper">
