@@ -166,7 +166,34 @@ public class PageST2A implements Handler {
                 <table>
                 """;
 
-        if (selectedCountry == null || selectedCountry.equals("Please Select")) {}
+
+
+        if (selectedCountry == null || selectedCountry.equals("Please Select")) {
+            html += """
+                    <caption>Please select a country</caption>
+                    <thead>
+                        <tr>
+                            <th>Food Group</th>
+                            <th>Start Year Loss %</th>
+                            <th>End Year Loss %</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    """;
+        }
+        else if (startYear.equals("") || endYear.equals("")) {
+            html += "<caption>" + selectedCountry + "</caption>";
+            html += """    
+                    <thead>
+                        <tr>
+                            <th>Food Group</th>
+                            <th>Start Year Loss %</th>
+                            <th>End Year Loss %</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    """;
+        }
         else {
             if (context.formParam("all-years") == null) {
                 html += "<caption>" + selectedCountry + "</caption>";

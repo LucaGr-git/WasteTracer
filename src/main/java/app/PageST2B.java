@@ -186,15 +186,40 @@ public class PageST2B implements Handler {
                 <table>
                 """;
 
-        if (selectedFoodGroup == null || selectedFoodGroup.equals("Please Select")) {}
+        if (selectedFoodGroup == null || selectedFoodGroup.equals("Please Select")) {
+            html += """
+                    <caption>Please select a food group</caption>
+                    <thead>
+                        <tr>
+                            <th>Commodity</th>
+                            <th>Start Year Loss %</th>
+                            <th>End Year Loss %</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    """;
+        }
+        else if (startYear == null || endYear == null) {
+            html += "<caption>" + selectedFoodGroup + "</caption>";
+            html += """
+                    <thead>
+                        <tr>
+                            <th>Commodity</th>
+                            <th>Start Year Loss %</th>
+                            <th>End Year Loss %</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    """;
+        }
         else {
             if (context.formParam("all-years") == null) {
                 html += "<caption>" + selectedFoodGroup + "</caption>";
                 html += "<thead>";
                 html += "<tr>";
                 html += "<th>Commodity</th>";
-                html += "<th>" + startYear + "Loss %" + "</th>";
-                html += "<th>" + endYear + "Loss %" + "</th>";
+                html += "<th>" + startYear + " Loss %" + "</th>";
+                html += "<th>" + endYear + " Loss %" + "</th>";
 
                 html += "<th>Difference</th>";
 
