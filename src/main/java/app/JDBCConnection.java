@@ -853,4 +853,10 @@ public class JDBCConnection {
         }
         return avgSimilarityTable;
     }
+
+    public static String getST3BHighestPercentTable(
+        String foodGroupCPC,
+        String selectedAmount) {
+            return "";
+        }
 }

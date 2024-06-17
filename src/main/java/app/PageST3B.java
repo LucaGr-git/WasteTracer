@@ -171,7 +171,10 @@ public class PageST3B implements Handler {
                 html += JDBCConnection.getST3BavgLossTable(foodGroupCPC, selectedAmount);
             }
             else if (similarityChoice.equals("highest-percent")) {
-                
+                html += "<th>Highest Loss % Commodity</th>";
+                html += "<th>Average Loss %</th>";
+
+                html += JDBCConnection.getST3BHighestPercentTable(foodGroupCPC, selectedAmount);
             }
             else {
 

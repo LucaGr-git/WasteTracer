@@ -42,7 +42,7 @@ public class PageIndex implements Handler {
 
         html += """
             <div class="topnav">
-                <img src="logo.png">
+                <a href='/'><img src='logo.png' width='200'></a>
                 <ul class="topnav-links">
                     <div class="about-us">
                         <a href="/mission.html">About Us</a>
