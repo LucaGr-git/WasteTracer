@@ -579,9 +579,7 @@ public class JDBCConnection {
         String causeOfLoss, 
         String foodSupply,
         String sortByPercent) {
-        
-        String foodGroupCode = getGroupCode(foodGroup);
-            
+                
         String query = "";
         
         if (foodGroup == null || foodGroup.equals("Please Select")) {return null;}
@@ -607,10 +605,13 @@ public class JDBCConnection {
             }
 
             query += "FROM LossStat ";
+
+            query += "JOIN foodgroup ON foodgroup.groupcode = LossStat.groupcode ";
+
             if (activity != null) {
                 query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
             }
-            query += "WHERE groupcode = \"" + foodGroupCode + "\" ";
+            query += "WHERE groupdescriptor = \"" + foodGroup + "\" ";
             
             if (i == 0) {
                 query += "AND year = " + startYear + " ";
@@ -672,8 +673,6 @@ public class JDBCConnection {
         String causeOfLoss, 
         String foodSupply,
         String sortByPercent) {
-            String foodGroupCode = getGroupCode(foodGroup);
-
 
             String html = "<tbody>";
 
@@ -693,11 +692,13 @@ public class JDBCConnection {
 
             query += "FROM LossStat ";
 
+            query += "JOIN foodgroup ON foodgroup.groupcode = LossStat.groupcode ";
+
             if (activity != null) {
                 query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
             }
 
-            query += "WHERE groupcode = \"" + foodGroupCode + "\" "; 
+            query += "WHERE groupdescriptor = \"" + foodGroup + "\" "; 
             query += "AND year >= " + startYear + " AND year <= " + endYear + " "; 
             query += "GROUP BY descriptor, year ";
 
@@ -729,43 +730,4 @@ public class JDBCConnection {
             return html;
     }
     
-    private static String getGroupCode(String groupDescriptor){
-        String matchingGroupCode = "";
-
-        Connection connection = null;
-
-        try {
-            connection = DriverManager.getConnection(DATABASE);
-
-            Statement statement = connection.createStatement();
-            statement.setQueryTimeout(30);
-
-            String query = "SELECT * FROM FOODGROUP";
-  
-            ResultSet results = statement.executeQuery(query);
-
-            String groupCode;
-            String groupDesc;
-            while (results.next()) {
-                groupCode = results.getString("groupcode");
-                groupDesc = results.getString("groupdescriptor");
-                if (groupDesc.equals(groupDescriptor)){
-                    matchingGroupCode = groupCode;
-                }
-            }
-
-            statement.close();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                System.err.println(e.getMessage());
-            }
-        }
-        return matchingGroupCode;
-    }
 }
