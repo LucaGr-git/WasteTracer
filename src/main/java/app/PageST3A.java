@@ -110,7 +110,7 @@ public class PageST3A implements Handler {
                         <div>
                             <p>No. of similar areas shown</p>
                             <div class='custom-select-wrapper'>
-                                <select id='amount-selector' name='amount-selector'>
+                                <select id='amount-selector' name='amount-selector' required>
                                     <option>Please Select</option>
                 """;
         
@@ -130,7 +130,7 @@ public class PageST3A implements Handler {
                     <h4>Search Similarity by</h4>
                     <div class='radio-buttons'>
                         <div>
-                            <input type='radio' name='similarity-choice' value='food-in-common' id='food-in-common'>
+                            <input type='radio' name='similarity-choice' value='food-in-common' id='food-in-common' required>
                             <label for='food-in-common'>Foods in common</label>
                         </div>
                         <div>
@@ -159,7 +159,7 @@ public class PageST3A implements Handler {
         
         if (selectedCountryRegion == null || selectedCountryRegion.equals("Please Select")) {}
         else {
-
+ 
         }
 
         context.html(html);

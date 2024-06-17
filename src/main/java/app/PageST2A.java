@@ -173,8 +173,8 @@ public class PageST2A implements Handler {
                 html += "<thead>";
                 html += "<tr>";
                 html += "<th>Food Group</th>";
-                html += "<th>" + startYear + "</th>";
-                html += "<th>" + endYear + "</th>";
+                html += "<th>" + startYear + " Loss %" + "</th>";
+                html += "<th>" + endYear + " Loss %" + "</th>";
 
                 html += "<th>Difference</th>";
 
