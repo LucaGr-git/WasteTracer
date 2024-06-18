@@ -770,7 +770,7 @@ public class JDBCConnection {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT DISTINCT groupCode FROM FoodSubclass WHERE descriptor = \"" + commodity + "\"";
+            String query = "SELECT DISTINCT groupCode FROM FoodSubClass WHERE descriptor = \"" + commodity + "\"";
 
             ResultSet results = statement.executeQuery(query);
 
