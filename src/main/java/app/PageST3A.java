@@ -130,7 +130,7 @@ public class PageST3A implements Handler {
                     <h4>Search Similarity by</h4>
                     <div class='radio-buttons'>
                         <div>
-                            <input type='radio' name='similarity-choice' value='food-in-common' id='food-in-common' required>
+                            <input type='radio' name='similarity-choice' value='food-in-common' id='food-in-common'>
                             <label for='food-in-common'>Foods in common</label>
                         </div>
                         <div>
@@ -167,6 +167,17 @@ public class PageST3A implements Handler {
                         </tr>
                     </thead>
                     """; 
+        }
+        else if (selectedYear == null || selectedYear.equals("Please Select")) {
+            html += "<caption>" + selectedCountryRegion + "</caption>";
+            html += """
+                    <thead>
+                        <tr>
+                            <th>Similarity Rank</th>
+                            <th>Area</th>
+                        </tr>
+                    </thead>
+                    """;
         }
         else {
  
