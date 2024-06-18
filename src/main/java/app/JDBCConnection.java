@@ -813,28 +813,31 @@ public class JDBCConnection {
             ResultSet results = statement.executeQuery(query);
 
             int i = 0;
-            while (results.next()) {
-                if (i == 0) {
-                    avgSimilarityTable += "<tr>";
-                    avgSimilarityTable += "<td>Group of Choice</td>";
-                    avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
-                    avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
-                    avgSimilarityTable += "</tr>"; 
+            if (Integer.parseInt(selectedAmount) != 0) {
+                avgSimilarityTable += "<th>Average Loss %</th>";
+                avgSimilarityTable += "</thead>";
+
+                while (results.next()) {
+                    if (i == 0) {
+                        avgSimilarityTable += "<tr>";
+                        avgSimilarityTable += "<td>Group of Choice</td>";
+                        avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
+                        avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
+                        avgSimilarityTable += "</tr>"; 
+                    }
+                    else {
+                        avgSimilarityTable += "<tr>";
+                        avgSimilarityTable += "<td>" + i + ")</td>";
+                        avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
+                        avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
+                        avgSimilarityTable += "</tr>";
+                    }
                     ++i;
-                }
-                else {
-                    avgSimilarityTable += "<tr>";
-                    avgSimilarityTable += "<td>" + i + ")</td>";
-                    avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
-                    avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
-                    avgSimilarityTable += "</tr>";
-                    ++i;
-                }
-                if (i > Integer.parseInt(selectedAmount)) {
-                    break;
+                    if (i > Integer.parseInt(selectedAmount)) {
+                        break;
+                    }
                 }
             }
-
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         } finally {
@@ -875,27 +878,37 @@ public class JDBCConnection {
             ResultSet results = statement.executeQuery(query);
 
             int i = 0;
-            while (results.next()) {
-                if (i == 0) {
-                    highLowPercentTable += "<tr>";
-                    highLowPercentTable += "<td>Group of Choice</td>";
-                    highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
-                    highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
-                    highLowPercentTable += "<td>" + results.getFloat("max0");
-                    highLowPercentTable += "</tr>"; 
-                    ++i;
+            if (Integer.parseInt(selectedAmount) != 0) {
+                if (highOrLow.equals("MAX")) {
+                    highLowPercentTable += "<th>Highest Loss Commodity</th>";
                 }
                 else {
-                    highLowPercentTable += "<tr>";
-                    highLowPercentTable += "<td>" + i + ")</td>";
-                    highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
-                    highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
-                    highLowPercentTable += "<td>" + results.getFloat("max0");
-                    highLowPercentTable += "</tr>";
-                    ++i;
+                    highLowPercentTable += "<th>Lowest Loss Commodity</th>";
                 }
-                if (i > Integer.parseInt(selectedAmount)) {
-                    break;
+                highLowPercentTable += "<th>Loss %</th>";
+                highLowPercentTable += "</thead>";
+
+                while (results.next()) {
+                    if (i == 0) {
+                        highLowPercentTable += "<tr>";
+                        highLowPercentTable += "<td>Group of Choice</td>";
+                        highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
+                        highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
+                        highLowPercentTable += "<td>" + results.getFloat("max0");
+                        highLowPercentTable += "</tr>"; 
+                    }
+                    else {
+                        highLowPercentTable += "<tr>";
+                        highLowPercentTable += "<td>" + i + ")</td>";
+                        highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
+                        highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
+                        highLowPercentTable += "<td>" + results.getFloat("max0");
+                        highLowPercentTable += "</tr>";
+                    }
+                    ++i;
+                    if (i > Integer.parseInt(selectedAmount)) {
+                        break;
+                    }
                 }
             }
         } catch (SQLException e) {
