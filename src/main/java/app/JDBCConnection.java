@@ -348,8 +348,6 @@ public class JDBCConnection {
                 }
             }
         }
-        System.out.println(query);
-
         return query;
     }
 
@@ -410,7 +408,6 @@ public class JDBCConnection {
             }
 
             html += ST2ABTableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
-            System.out.println(query);
                 
             html += "</tbody>";
             return html;
@@ -603,7 +600,6 @@ public class JDBCConnection {
                 System.err.println(e.getMessage());
             }
         }
-        System.out.println(html);
         return html;
     }
 
@@ -696,8 +692,6 @@ public class JDBCConnection {
                 }
             }
         }
-        System.out.println(query);
-
         return query;
     }
     
@@ -760,7 +754,6 @@ public class JDBCConnection {
             }
 
             html += ST2ABTableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
-            System.out.println(query);
                 
             html += "</tbody>";
             return html;
@@ -779,7 +772,6 @@ public class JDBCConnection {
 
             String query = "SELECT DISTINCT groupCode FROM FoodSubclass WHERE descriptor = \"" + commodity + "\"";
 
-            System.out.println(query);
             ResultSet results = statement.executeQuery(query);
 
             while (results.next()) {
