@@ -157,7 +157,17 @@ public class PageST3A implements Handler {
                 <table>
                 """;
         
-        if (selectedCountryRegion == null || selectedCountryRegion.equals("Please Select")) {}
+        if (selectedCountryRegion == null || selectedCountryRegion.equals("Please Select")) {
+            html += """
+                    <caption>Please select a country or region</caption>
+                    <thead>
+                        <tr>
+                            <th>Similarity Rank</th>
+                            <th>Area</th>
+                        </tr>
+                    </thead>
+                    """; 
+        }
         else {
  
         }
