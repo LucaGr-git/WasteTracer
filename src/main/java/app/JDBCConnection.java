@@ -155,7 +155,8 @@ public class JDBCConnection {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT DISTINCT descriptor FROM LossStat";
+            String query = "SELECT DISTINCT fsc.descriptor FROM LossStat l JOIN FoodSubClass fsc ON ";
+            query += "l.subClassCode = fsc.subClassCode AND l.classCode = fsc.classCode AND l.groupCode = fsc.groupCode ORDER BY fsc.descriptor";
 
             ResultSet results = statement.executeQuery(query);
 
@@ -778,10 +779,12 @@ public class JDBCConnection {
 
             String query = "SELECT DISTINCT groupCode FROM FoodSubclass WHERE descriptor = \"" + commodity + "\"";
 
+            System.out.println(query);
             ResultSet results = statement.executeQuery(query);
 
-            results.next();
-            group = results.getString("groupCode");
+            while (results.next()) {
+                group = results.getString("groupCode");
+            }
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -813,7 +816,7 @@ public class JDBCConnection {
             String query = "SELECT groupDescriptor, AVG(lossPercentage) AS avg0, ";
             query += "(SELECT AVG(LossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "' GROUP BY groupCode) AS avg1 ";
             query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
-            query += "ORDER BY ABS(avg0 - avg1) LIMIT " + Integer.parseInt(selectedAmount) + 1;
+            query += "ORDER BY ABS(avg0 - avg1)";
 
             ResultSet results = statement.executeQuery(query);
 
@@ -854,9 +857,66 @@ public class JDBCConnection {
         return avgSimilarityTable;
     }
 
-    public static String getST3BHighestPercentTable(
+    public static String getST3BHighestLowestPercentTable(
         String foodGroupCPC,
-        String selectedAmount) {
-            return "";
+        String selectedAmount,
+        String similarityChoice) {
+        String highLowPercentTable = "";
+        
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            String highOrLow = (similarityChoice.equals("highest-percent")) ?
+                                "MAX" :
+                                "MIN";
+
+            String query = "SELECT " + highOrLow + "(lossPercentage) max0, descriptor, groupDescriptor, (SELECT " + highOrLow;
+            query += "(lossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "') AS max1 ";
+            query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
+            query += "ORDER BY ABS(max0 - max1)";
+
+            ResultSet results = statement.executeQuery(query);
+
+            int i = 0;
+            while (results.next()) {
+                if (i == 0) {
+                    highLowPercentTable += "<tr>";
+                    highLowPercentTable += "<td>Group of Choice</td>";
+                    highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
+                    highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
+                    highLowPercentTable += "<td>" + results.getFloat("max0");
+                    highLowPercentTable += "</tr>"; 
+                    ++i;
+                }
+                else {
+                    highLowPercentTable += "<tr>";
+                    highLowPercentTable += "<td>" + i + ")</td>";
+                    highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
+                    highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
+                    highLowPercentTable += "<td>" + results.getFloat("max0");
+                    highLowPercentTable += "</tr>";
+                    ++i;
+                }
+                if (i > Integer.parseInt(selectedAmount)) {
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
         }
+        return highLowPercentTable;
+    }
 }

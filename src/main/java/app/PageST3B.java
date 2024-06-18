@@ -114,7 +114,12 @@ public class PageST3B implements Handler {
 
         //23 is the amount of food groups with available data
         for (int i = 1; i < 23; ++i) {
-            html += "<option value='" + i + "'>" + i + "</option>";
+            if (selectedAmount != null && Integer.parseInt(selectedAmount) == i) {
+                html += "<option selected value='" + i + "'>" + i + "</option>";
+            }
+            else {
+                html += "<option value='" + i + "'>" + i + "</option>";
+            }
         }
 
         html += """
@@ -154,7 +159,17 @@ public class PageST3B implements Handler {
                 """;
 
         if (selectedCommodity == null || selectedCommodity.equals("Please Select") ||
-            selectedAmount == null || selectedAmount.equals("Please Select")) {}
+            selectedAmount == null || selectedAmount.equals("Please Select")) {
+            html += """
+                    <caption>Please select a commodity</caption>
+                    <thead>
+                        <tr>
+                            <th>Similarity Rank</th>
+                            <th>Food Group</th>
+                        </tr>
+                    <thead>
+                    """;
+        }
         else {
             html += "<caption>" + selectedCommodity + "</caption>";
             html += "<thead>";
@@ -171,13 +186,18 @@ public class PageST3B implements Handler {
                 html += JDBCConnection.getST3BavgLossTable(foodGroupCPC, selectedAmount);
             }
             else if (similarityChoice.equals("highest-percent")) {
-                html += "<th>Highest Loss % Commodity</th>";
-                html += "<th>Average Loss %</th>";
+                html += "<th>Highest Loss Commodity</th>";
+                html += "<th>Loss %</th>";
+                html += "</thead>";
 
-                html += JDBCConnection.getST3BHighestPercentTable(foodGroupCPC, selectedAmount);
+                html += JDBCConnection.getST3BHighestLowestPercentTable(foodGroupCPC, selectedAmount, similarityChoice);
             }
             else {
+                html += "<th>Lowest Loss Commodity</th>";
+                html += "<th>Loss %</th>";
+                html += "</thead>";
 
+                html += JDBCConnection.getST3BHighestLowestPercentTable(foodGroupCPC, selectedAmount, similarityChoice);
             }
         }
         context.html(html);

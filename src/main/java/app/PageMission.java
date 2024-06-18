@@ -71,7 +71,7 @@ public class PageMission implements Handler {
                 <img class="mission-image" src="mission-photo.jpg">
                 <div>
                     <h1>Our Mission</h1>
-                    <p>We designed this website to give people an open and unbiased resource on food waste. Big or small, we believe that making a change for the better should always be informed by reliable information. Waste tracer is a website built to provie said information and combat the problem of food waste.</p>
+                    <p>We designed this website to give people an open and unbiased resource on food waste. Big or small, we believe that making a change for the better should always be informed by reliable information. Waste tracer is a website built to provide said information and combat the problem of food waste.</p>
                     <p>It has statistics ranging from 1966 - 2022 relating to a variety of countries and regions all around the world. These statistics detail the rate of food loss for a myriad of different food groups and commoditites</p>
                     <p>This website can be used to search for food loss statistic for a specific country or a specific food group. It can also be used to find similar countries and food groups to a user-chosen option based on statistical similarity.</p>
                     <p>With this website we hope that people find relevant information to them and make a change for the better.</p>

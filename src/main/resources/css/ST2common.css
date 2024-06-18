@@ -272,7 +272,6 @@ tbody tr:nth-child(odd) {
 }
 
 th, td {
-    border: none;
     max-width: 25%;
     min-width: 20%;
     word-break: normal;
