@@ -806,7 +806,8 @@ public class JDBCConnection {
             statement.setQueryTimeout(30);
 
             String query = "SELECT groupDescriptor, AVG(lossPercentage) AS avg0, ";
-            query += "(SELECT AVG(LossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "' GROUP BY groupCode) AS avg1 ";
+            query += "(SELECT AVG(LossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "' GROUP BY groupCode) AS avg1, ";
+            query += "AVG(lossPercentage) - (SELECT AVG(lossPercentage) FROM LossStat WHERE groupCode = " + foodGroupCPC + ") AS difference ";
             query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
             query += "ORDER BY ABS(avg0 - avg1), lossStat.groupCode != \"" + foodGroupCPC + "\";";
 
@@ -815,6 +816,7 @@ public class JDBCConnection {
             int i = 0;
             if (Integer.parseInt(selectedAmount) != 0) {
                 avgSimilarityTable += "<th>Average Loss %</th>";
+                avgSimilarityTable += "<th>Difference</th>";
                 avgSimilarityTable += "</thead>";
 
                 while (results.next()) {
@@ -823,6 +825,7 @@ public class JDBCConnection {
                         avgSimilarityTable += "<td>Group of Choice</td>";
                         avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
                         avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
+                        avgSimilarityTable += "<td>" + results.getFloat("difference")+ "%</td>";
                         avgSimilarityTable += "</tr>"; 
                     }
                     else {
@@ -830,6 +833,7 @@ public class JDBCConnection {
                         avgSimilarityTable += "<td>" + i + ")</td>";
                         avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
                         avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
+                        avgSimilarityTable += "<td>" + results.getFloat("difference")+ "%</td>";
                         avgSimilarityTable += "</tr>";
                     }
                     ++i;
@@ -871,9 +875,11 @@ public class JDBCConnection {
                                 "MIN";
 
             String query = "SELECT " + highOrLow + "(lossPercentage) max0, descriptor, groupDescriptor, (SELECT " + highOrLow;
-            query += "(lossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "') AS max1 ";
+            query += "(lossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "') AS max1, ";
+            query += highOrLow + "(lossPercentage) - (SELECT " + highOrLow + "(lossPercentage) FROM LossStat WHERE groupCode = \"" + foodGroupCPC + "\") AS difference "; 
             query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
             query += "ORDER BY ABS(max0 - max1), lossStat.groupCode != \"" + foodGroupCPC + "\";";
+            System.out.println(query);
 
             ResultSet results = statement.executeQuery(query);
 
@@ -886,23 +892,26 @@ public class JDBCConnection {
                     highLowPercentTable += "<th>Lowest Loss Commodity</th>";
                 }
                 highLowPercentTable += "<th>Loss %</th>";
+                highLowPercentTable += "<th>Difference</th>";
                 highLowPercentTable += "</thead>";
 
                 while (results.next()) {
                     if (i == 0) {
                         highLowPercentTable += "<tr>";
-                        highLowPercentTable += "<td>Group of Choice</td>";
+                        highLowPercentTable += "<td><b>Group of Choice</b></td>";
                         highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
                         highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
-                        highLowPercentTable += "<td>" + results.getFloat("max0");
+                        highLowPercentTable += "<td>" + results.getFloat("max0") + "%</td>";
+                        highLowPercentTable += "<td>" + results.getFloat("difference")+ "%</td>";
                         highLowPercentTable += "</tr>"; 
                     }
                     else {
                         highLowPercentTable += "<tr>";
-                        highLowPercentTable += "<td>" + i + ")</td>";
+                        highLowPercentTable += "<td><b>" + i + ")</b></td>";
                         highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
                         highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
-                        highLowPercentTable += "<td>" + results.getFloat("max0");
+                        highLowPercentTable += "<td>" + results.getFloat("max0") + "%</td>";
+                        highLowPercentTable += "<td>" + results.getFloat("difference")+ "%</td>";
                         highLowPercentTable += "</tr>";
                     }
                     ++i;
