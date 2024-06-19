@@ -27,15 +27,15 @@ import java.text.NumberFormat;
  * @author Halil Ali, 2024. email: halil.ali@rmit.edu.au
  */
 
-public class JDBCConnection {
+public class JDBCConnection_3NF {
 
     // Name of database file (contained in database folder)
-    public static final String DATABASE = "jdbc:sqlite:database/foodloss.db";
+    public static final String DATABASE = "jdbc:sqlite:database/foodloss_3NF.db";
 
     /**
      * This creates a JDBC Object so we can keep talking to the database
      */
-    public JDBCConnection() {
+    public JDBCConnection_3NF() {
         System.out.println("Created JDBC Connection Object");
     }
 
@@ -951,15 +951,22 @@ public class JDBCConnection {
             statement.setQueryTimeout(30);
 
             
+            String query = "SELECT l2.countryregion, COUNT(l2.countryregion) as numShared, group_concat(l1.DESCRIPTOR, ' | ') as sharedCommodities FROM ( ";
+            query += "    SELECT DISTINCT  DESCRIPTOR, IFNULL(PARENTLOCATION, l.LOCATION) as countryregion ";
+            query += "    FROM LOSSSTAT  as l ";
+            query += "    JOIN COUNTRYREGION ON l.LOCATION = COUNTRYREGION.LOCATION ";
+            query += "    JOIN FOOD ON l.FOODID = FOOD.FOODID ";
+            query += "    WHERE countryregion = 'Australia' AND YEAR >= " + startYear +" AND YEAR <= " + endYear + ") as l1 ";
+            query += "    JOIN (SELECT DISTINCT DESCRIPTOR, IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) as countryregion ";
+            query += "        FROM LOSSSTAT ";
+            query += "        JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION ";
+            query += "        JOIN FOOD ON LOSSSTAT.FOODID = FOOD.FOODID ";
+            query += "        WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + "";
+            query += "        ) as l2 ON l1.DESCRIPTOR = l2.DESCRIPTOR ";
+            query += "    GROUP BY l2.countryregion ";
+            query += "    ORDER BY numShared DESC, l2.countryregion = '" + countryRegion + "' DESC; ";
+            
 
-            String query = "SELECT l2.countryregion, COUNT(l2.countryregion) as numShared, group_concat(l1.DESCRIPTOR, ' | ')  as sharedCommodities FROM ( ";
-            query += "    SELECT DISTINCT  DESCRIPTOR, IFNULL(REGION, COUNTRY) as countryregion ";
-            query += "FROM LOSSSTAT  as l ";
-            query += "    WHERE IFNULL(REGION, COUNTRY) = '" + countryRegion + "' AND YEAR >= "+ startYear + " AND YEAR <= "+ endYear + ") as l1 ";
-            query += "JOIN (SELECT DISTINCT DESCRIPTOR, IFNULL(REGION, COUNTRY) as countryregion ";
-            query += "    FROM LOSSSTAT WHERE YEAR >= "+ startYear + " AND YEAR <= " + endYear + ") as l2 ON l1.DESCRIPTOR = l2.DESCRIPTOR ";
-            query += "GROUP BY l2.countryregion ";
-            query += "ORDER BY numShared DESC, l2.countryregion = '"+ countryRegion + "' DESC; ";
 
 
             System.out.println(query);
@@ -1035,15 +1042,18 @@ public class JDBCConnection {
 
             
 
-            String query = "SELECT *, ABS(avg0 - avg1) as diff FROM (SELECT IFNULL(REGION, COUNTRY) as countryregion, AVG(LOSSPERCENTAGE) as avg0, ( ";
-            query += "        SELECT avg(LOSSPERCENTAGE) FROM LOSSSTAT ";
-            query += "        WHERE YEAR >= " + startYear + " AND YEAR <= "+ endYear + " ";
-            query += "        GROUP BY COUNTRY, REGION ";
-            query += "        HAVING COUNTRY = '" + countryRegion + "' OR REGION = '" +  countryRegion + "') as avg1";
+            String query = "SELECT *, ABS(avg0 - avg1) as diff FROM (SELECT AVG(LOSSPERCENTAGE) as avg0, IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) as countryregion, ( ";
+            query += "        SELECT AVG(LOSSPERCENTAGE) as avg0 ";
+            query += "        FROM LOSSSTAT ";
+            query += "        JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION ";
+            query += "        WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + " ";
+            query += "        GROUP BY IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) ";
+            query += "        HAVING IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) = '" + countryRegion + "') as avg1 ";
             query += "    FROM LOSSSTAT ";
-            query += "    WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + "";
-            query += "    GROUP BY COUNTRY, REGION";
-            query += "    ORDER BY ABS(avg0 - avg1), (countryregion =  '" + countryRegion + "') ASC);";
+            query += "    JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION ";
+            query += "    WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + " ";
+            query += "    GROUP BY countryregion ";
+            query += "    ORDER BY ABS(avg0 - avg1) ASC, countryregion ='" + countryRegion + "' DESC); ";
 
 
             System.out.println(query);
@@ -1119,26 +1129,34 @@ public class JDBCConnection {
 
             
 
-            String query = "SELECT countryregion, numShared, sharedCommodities, diff, IFNULL( 10 *(numshared * ( 0.5 *numshared)/ (0.35 + diff)), 10000000)  as simScore FROM ( ";
-            query += "        SELECT l2.countryregion, COUNT(l2.countryregion) as numShared, group_concat(l1.DESCRIPTOR, ' | ') as sharedCommodities FROM ( ";
-            query += "            SELECT DISTINCT  DESCRIPTOR, IFNULL(REGION, COUNTRY) as countryregion ";
-            query += "            FROM LOSSSTAT  as l ";
-            query += "            WHERE IFNULL(REGION, COUNTRY) = '" + countryRegion + "' AND YEAR >= " + startYear + " AND YEAR <= " + endYear + ") as l1 ";
-            query += "        JOIN (SELECT DISTINCT DESCRIPTOR, IFNULL(REGION, COUNTRY) as countryregion ";
-            query += "            FROM LOSSSTAT WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + ") as l2 ON l1.DESCRIPTOR = l2.DESCRIPTOR ";
-            query += "        GROUP BY l2.countryregion ";
-            query += "        ORDER BY numShared DESC, l2.countryregion = '" + countryRegion + "' DESC) as commonT ";
-            query += "    JOIN ( ";
-            query += "        SELECT *, ABS(avg0 - avg1) as diff FROM (SELECT IFNULL(REGION, COUNTRY) as countryregion1, AVG(LOSSPERCENTAGE) as avg0, ( ";
-            query += "            SELECT avg(LOSSPERCENTAGE) FROM LOSSSTAT ";
-            query += "            WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + " ";
-            query += "            GROUP BY COUNTRY, REGION ";
-            query += "            HAVING COUNTRY = '" + countryRegion + "' OR REGION = '" + countryRegion + "') as avg1 ";
+            String query = "SELECT countryregion, numShared, sharedCommodities, diff, IFNULL( 10 *(numshared * ( 0.5 *numshared)/ (0.35 + diff)), 10000000) as simScore FROM (SELECT l2.countryregion, COUNT(l2.countryregion) as numShared, group_concat(l1.DESCRIPTOR, ' | ') as sharedCommodities FROM ( ";
+            query += "    SELECT DISTINCT  DESCRIPTOR, IFNULL(PARENTLOCATION, l.LOCATION) as countryregion ";
+            query += "    FROM LOSSSTAT  as l  ";
+            query += "    JOIN COUNTRYREGION ON l.LOCATION = COUNTRYREGION.LOCATION";
+            query += "    JOIN FOOD ON l.FOODID = FOOD.FOODID";
+            query += "    WHERE countryregion = '" + countryRegion + "' AND YEAR >= " + startYear + " AND YEAR <= " + endYear + ") as l1";
+            query += "    JOIN (SELECT DISTINCT DESCRIPTOR, IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) as countryregion";
             query += "        FROM LOSSSTAT ";
+            query += "        JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION";
+            query += "        JOIN FOOD ON LOSSSTAT.FOODID = FOOD.FOODID";
+            query += "        WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + "";
+            query += "        ) as l2 ON l1.DESCRIPTOR = l2.DESCRIPTOR ";
+            query += "    GROUP BY l2.countryregion ";
+            query += "    ORDER BY numShared DESC, l2.countryregion = '" + countryRegion + "' DESC) as commonT ";
+            query += "    JOIN (SELECT *, ABS(avg0 - avg1) as diff FROM (SELECT AVG(LOSSPERCENTAGE) as avg0, IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) as countryregion1, ( ";
+            query += "        SELECT AVG(LOSSPERCENTAGE) as avg0";
+            query += "        FROM LOSSSTAT ";
+            query += "        JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION ";
             query += "        WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + " ";
-            query += "        GROUP BY COUNTRY, REGION ";
-            query += "        ORDER BY ABS(avg0 - avg1), (countryregion1 =  '" + countryRegion + "') ASC)) as losspT ON commonT.countryregion = losspT.countryregion1 ";
+            query += "        GROUP BY IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) ";
+            query += "        HAVING IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) = '" + countryRegion + "') as avg1 ";
+            query += "    FROM LOSSSTAT";
+            query += "    JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION ";
+            query += "    WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + " ";
+            query += "    GROUP BY countryregion1 ";
+            query += "    ORDER BY ABS(avg0 - avg1) ASC, countryregion1 ='" + countryRegion + "' DESC)) as losspT ON commonT.countryregion = losspT.countryregion1 ";
             query += "    ORDER BY simScore DESC, countryregion = '" + countryRegion + "' DESC; ";
+
 
 
             System.out.println(query);
@@ -1208,5 +1226,9 @@ public class JDBCConnection {
         return highLowPercentTable;
     }
     
-
+    
+    public static void main(String[] args) {
+        // System.out.println(getST3ACommonFoodTable("Australia", 1990, 2020, true, "10"));
+        System.out.println(getST3ACommonFoodAndLossPercentageTable("Australia", 0, 2020, "10", true));
+    }
 }
