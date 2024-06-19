@@ -65,7 +65,7 @@ public class PageST2A implements Handler {
                         <div>
                             <p>Countries</p>
                             <div class='custom-select-wrapper'>
-                                <select id="country-selector" name='country-selector'>
+                                <select id="country-selector" name='country-selector' onchange="this.form.submit()">
                                     <option>Please Select</option>
                 """;
 
@@ -84,7 +84,6 @@ public class PageST2A implements Handler {
                                 </select>
                                 <span class="custom-arrow"></span>
                             </div>
-                            <button type="submit" class="confirm-select">Confirm Selection</button>
                         </div>
                     </div>
                     <div class="year-wrapper">

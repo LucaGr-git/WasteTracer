@@ -822,7 +822,7 @@ public class JDBCConnection {
                 while (results.next()) {
                     if (i == 0) {
                         avgSimilarityTable += "<tr>";
-                        avgSimilarityTable += "<td>Group of Choice</td>";
+                        avgSimilarityTable += "<td><b>Group of Choice</b></td>";
                         avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
                         avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
                         avgSimilarityTable += "<td>" + results.getFloat("difference")+ "%</td>";
@@ -830,7 +830,7 @@ public class JDBCConnection {
                     }
                     else {
                         avgSimilarityTable += "<tr>";
-                        avgSimilarityTable += "<td>" + i + ")</td>";
+                        avgSimilarityTable += "<td><b>" + i + ")</b></td>";
                         avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
                         avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
                         avgSimilarityTable += "<td>" + results.getFloat("difference")+ "%</td>";

@@ -83,7 +83,7 @@ public class PageST2B implements Handler {
                             <div>
                                 <p>Food Groups</p>
                                 <div class='custom-select-wrapper'>
-                                    <select id="food-group-selector" name="food-group-selector">
+                                    <select id="food-group-selector" name="food-group-selector" onchange="this.form.submit()">
                                         <option>Please Select</option>
                 """;
 
@@ -103,7 +103,6 @@ public class PageST2B implements Handler {
                                     </select>
                                     <span class="custom-arrow"></span>
                                 </div>
-                                <button type="submit" class="confirm-select">Confirm Selection</button>
                             </div>
                         </div>
                         <div class="year-wrapper">
