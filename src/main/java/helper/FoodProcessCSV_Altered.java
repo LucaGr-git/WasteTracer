@@ -915,7 +915,8 @@ public class FoodProcessCSV_Altered {
             statement.setString(8, losscause);
             statement.setString(9, m49code);
             statement.setString(10, country);
-            statement.setString(11, region);
+            if (!region.equals("NULL")){
+               statement.setString(11, region);}
             statement.setString(12, supplystage);
             
 
