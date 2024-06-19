@@ -15,6 +15,7 @@ public class PageST2A implements Handler {
 
     public static final String URL = "/page2A.html";
     public static final String DATABASE = "jdbc:sqlite:database/foodloss.db";
+    ArrayList<String> priorCountries = new ArrayList<>();
 
     @Override
     public void handle(Context context) throws Exception {
@@ -137,7 +138,7 @@ public class PageST2A implements Handler {
                             <label for='food-supply-show'>Show food supply stage</label>
                         </div>
                     </div>
-                    <h4>Sort by Loss %</h4>
+                    <h4>Sort by Difference</h4>
                     <div class="radio-buttons">
                         <div>
                             <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending">

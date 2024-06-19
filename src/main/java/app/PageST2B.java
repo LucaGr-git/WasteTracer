@@ -157,7 +157,7 @@ public class PageST2B implements Handler {
                             <label for='food-supply-show'>Show food supply stage</label>
                         </div>
                     </div>
-                    <h4>Sort by Loss %</h4>
+                    <h4>Sort by Difference</h4>
                     <div class="radio-buttons">
                         <div>
                             <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending">

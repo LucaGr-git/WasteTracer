@@ -808,7 +808,7 @@ public class JDBCConnection {
             String query = "SELECT groupDescriptor, AVG(lossPercentage) AS avg0, ";
             query += "(SELECT AVG(LossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "' GROUP BY groupCode) AS avg1 ";
             query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
-            query += "ORDER BY ABS(avg0 - avg1)";
+            query += "ORDER BY ABS(avg0 - avg1), lossStat.groupCode != \"" + foodGroupCPC + "\";";
 
             ResultSet results = statement.executeQuery(query);
 
@@ -873,7 +873,7 @@ public class JDBCConnection {
             String query = "SELECT " + highOrLow + "(lossPercentage) max0, descriptor, groupDescriptor, (SELECT " + highOrLow;
             query += "(lossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "') AS max1 ";
             query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
-            query += "ORDER BY ABS(max0 - max1)";
+            query += "ORDER BY ABS(max0 - max1), lossStat.groupCode != \"" + foodGroupCPC + "\";";
 
             ResultSet results = statement.executeQuery(query);
 
