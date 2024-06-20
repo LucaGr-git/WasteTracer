@@ -78,6 +78,10 @@ public class PageST2A implements Handler {
             else {
                 html += "<option>" + country + "</option>";
             }
+        } 
+
+        if (selectedCountry != null && !selectedCountry.equals("Please Select")) {
+            priorCountries.add(selectedCountry);
         }
 
         html +=  """
@@ -94,8 +98,20 @@ public class PageST2A implements Handler {
 
         String startYear = context.formParam("start-year");
 
-        for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
-            html += "<option value='" + year + "'>" + year + "</option>";
+        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+                if (year.equals(startYear)) {
+                    html += "<option selected value=" + year + ">" + year + "</option>";
+                }
+                else {
+                    html += "<option value=" + year + ">" + year + "</option>";
+                }
+            }
+        }
+        else {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+                html += "<option value=" + year + ">" + year + "</option>";
+            }
         }
         
         html +=  """
@@ -108,10 +124,22 @@ public class PageST2A implements Handler {
         
         String endYear = context.formParam("end-year");
 
-        for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
-            html += "<option selected value=" + year + ">" + year + "</option>";
+        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+                if (year.equals(endYear)) {
+                    html += "<option selected value=" + year + ">" + year + "</option>";
+                }
+                else {
+                    html += "<option value=" + year + ">" + year + "</option>";
+                }
+            }
         }
-        
+        else {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+                html += "<option selected value=" + year + ">" + year + "</option>";
+            }
+        }
+
         html +=  """
                             </select>
                         </div>
@@ -233,8 +261,6 @@ public class PageST2A implements Handler {
                 <h1>Search Loss by Country</h1>
                 <table>
                 """;
-
-
 
         if (selectedCountry == null || selectedCountry.equals("Please Select")) {
             html += """

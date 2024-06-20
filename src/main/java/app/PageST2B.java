@@ -28,6 +28,7 @@ public class PageST2B implements Handler {
 
     // URL of this page relative to http://localhost:7001/
     public static final String URL = "/page2B.html";
+    ArrayList<String> priorCountries = new ArrayList<>();
 
     @Override
     public void handle(Context context) throws Exception {
@@ -99,6 +100,10 @@ public class PageST2B implements Handler {
         }
         // Some of the CPC code names were changed because they were too verbose
 
+        if (selectedFoodGroup != null && !selectedFoodGroup.equals("Please Select")) {
+            priorCountries.add(selectedFoodGroup);
+        }
+
         html += """
                                     </select>
                                     <span class="custom-arrow"></span>
@@ -113,8 +118,20 @@ public class PageST2B implements Handler {
         
         String startYear = context.formParam("start-year");
 
-        for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
-            html += "<option value='" + year + "'>" + year + "</option>";
+        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+            for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
+                if (year.equals(startYear)) {
+                    html += "<option selected value=" + year + ">" + year + "</option>";
+                }
+                else {
+                    html += "<option value=" + year + ">" + year + "</option>";
+                }
+            }
+        }
+        else {
+            for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
+                html += "<option value=" + year + ">" + year + "</option>";
+            }
         }
 
         html += """
@@ -127,8 +144,20 @@ public class PageST2B implements Handler {
 
         String endYear = context.formParam("end-year");
 
-        for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
-            html += "<option selected value='" + year + "'>" + year + "</option>";
+        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+            for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
+                if (year.equals(endYear)) {
+                    html += "<option selected value=" + year + ">" + year + "</option>";
+                }
+                else {
+                    html += "<option value=" + year + ">" + year + "</option>";
+                }
+            }
+        }
+        else {
+            for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
+                html += "<option selected value=" + year + ">" + year + "</option>";
+            }
         }
 
         html += """
