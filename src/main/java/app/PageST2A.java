@@ -65,7 +65,7 @@ public class PageST2A implements Handler {
                         <div>
                             <p>Countries</p>
                             <div class='custom-select-wrapper'>
-                                <select id="country-selector" name='country-selector' onchange="this.form.submit()">
+                                <select id="country-selector" name='country-selector' onchange="this.form.submit()" required>
                                     <option>Please Select</option>
                 """;
 
@@ -89,7 +89,7 @@ public class PageST2A implements Handler {
                     <div class="year-wrapper">
                         <div class="start-year-wrapper">
                             <p>Start Year</p>
-                            <select id="start-year" name="start-year">
+                            <select id="start-year" name="start-year"r>
                  """;
 
         String startYear = context.formParam("start-year");
@@ -125,28 +125,91 @@ public class PageST2A implements Handler {
                     <h4>Filter Columns</h4>
                     <div class='checkboxes'>
                         <div>
-                            <input type='checkbox' name='activity-show' id='activity-show'>
+                """;
+        
+        String activity = context.formParam("activity-show");
+        if (activity != null) {
+            html += "<input type='checkbox' name='activity-show' id='activity-show' checked>";
+        }
+        else {
+            html += "<input type='checkbox' name='activity-show' id='activity-show'>";
+        }
+
+        html += """                                                                        
                             <label for='activity-show'>Show activity</label>
                         </div>
                         <div>
-                            <input type='checkbox' name='cause-of-loss-show' id='cause-of-loss-show'>
+                """;           
+
+        String causeOfLoss = context.formParam("cause-of-loss-show");
+        if (causeOfLoss != null) {
+            html += "<input type='checkbox' name='cause-of-loss-show' id='cause-of-loss-show' checked>";
+        }
+        else {
+            html += "<input type='checkbox' name='cause-of-loss-show' id='cause-of-loss-show'>";
+        }
+
+        html += """          
                             <label for='cause-of-loss-show'>Show cause of loss</label>
                         </div>
                         <div>
-                            <input type='checkbox' name='food-supply-show' id='food-supply-show'>
+                """;
+        
+        String foodSupply = context.formParam("food-supply-show");
+        if (foodSupply != null) {
+            html += "<input type='checkbox' name='food-supply-show' id='food-supply-show' checked>";
+        }               
+        else {
+            html += "<input type='checkbox' name='food-supply-show' id='food-supply-show'>";
+        }
+        
+        html += """
                             <label for='food-supply-show'>Show food supply stage</label>
                         </div>
                     </div>
                     <h4>Sort by Difference</h4>
                     <div class="radio-buttons">
-                        <div>
-                            <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending">
-                            <label for="sort-by-ascending">Ascending</label>
-                        </div>
-                        <div>
-                            <input type="radio" name="sort-by-percent" value="sort-by-descending" id="sort-by-descending">
-                            <label for="sort-by-descending">Descending</label>
-                        </div>
+                    """;
+                            
+        String sortByPercent = context.formParam("sort-by-percent");
+        if (sortByPercent == null) {
+            html += """
+                    <div>
+                        <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending">
+                        <label for="sort-by-ascending">Ascending</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="sort-by-percent" value="sort-by-descending" id="sort-by-descending">
+                        <label for="sort-by-descending">Descending</label>
+                    </div>
+                    """;
+        }
+        else if (sortByPercent.equals("sort-by-descending")) {
+            html += """
+                    <div>
+                        <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending">
+                        <label for="sort-by-ascending">Ascending</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="sort-by-percent" value="sort-by-descending" id="sort-by-descending" checked>
+                        <label for="sort-by-descending">Descending</label>
+                    </div>
+                    """;    
+        }
+        else {
+            html += """
+                    <div>
+                        <input type="radio" name="sort-by-percent" value="sort-by-ascending" id="sort-by-ascending" checked>
+                        <label for="sort-by-ascending">Ascending</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="sort-by-percent" value="sort-by-descending" id="sort-by-descending">
+                        <label for="sort-by-descending">Descending</label>
+                    </div>
+                    """;
+        }
+
+        html += """
                     </div>
                     <div>
                         <button type="submit">Search Data</button>
@@ -154,11 +217,6 @@ public class PageST2A implements Handler {
                 </form>
             </div>
             """;
-
-        String activity = context.formParam("activity-show");
-        String causeOfLoss = context.formParam("cause-of-loss-show");
-        String foodSupply = context.formParam("food-supply-show");
-        String sortByPercent = context.formParam("sort-by-percent");
 
         html += """
             <div class="data-container">
