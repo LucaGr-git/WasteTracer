@@ -1047,7 +1047,6 @@ public class JDBCConnection_3NF {
         return highLowPercentTable;
     }
     
-
     public static String getST3ALossPercentageTable(
         String countryRegion,
         int startYear,
@@ -1132,7 +1131,6 @@ public class JDBCConnection_3NF {
         }
         return highLowPercentTable;
     }
-    
 
     public static String getST3ACommonFoodAndLossPercentageTable(
         String countryRegion,

@@ -64,7 +64,7 @@ public class PageST3B implements Handler {
                         <li>Search Similar Data</li>
                         <div class="subtask-dropdown">
                             <a href="/page3A.html">Search by Country/Region</a>
-                            <a href="/page3B.html">Search by Commodity</a>
+                            <a href="/page3B.html">Search by Food Group</a>
                         </div>
                     </div>
                 </ul>
@@ -104,7 +104,7 @@ public class PageST3B implements Handler {
                     </div>
                     <div class='select-area'>
                         <div>
-                            <p>No. of similar foods shown</p>
+                            <p>No. of Similar Groups Shown</p>
                             <div class='custom-select-wrapper'>
                                 <select id='amount-selector' name='amount-selector' required>
                                     <option>Please Select</option>
@@ -212,7 +212,7 @@ public class PageST3B implements Handler {
 
         html += """
             <div class="data-container">
-                <h1>Search Commodity by Similarity</h1>
+                <h1>Search Food Group by Similarity</h1>
                 <table>
                 """;
 

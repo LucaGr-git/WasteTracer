@@ -48,7 +48,7 @@ public class PageST2A implements Handler {
                         <li>Search Similar Data</li>
                         <div class="subtask-dropdown">
                             <a href="/page3A.html">Search by Country/Region</a>
-                            <a href="/page3B.html">Search by Commodity</a>
+                            <a href="/page3B.html">Search by Food Group</a>
                         </div>
                     </div>
                 </ul>
