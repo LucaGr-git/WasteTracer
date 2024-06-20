@@ -132,7 +132,61 @@ public class PageST3B implements Handler {
                     </div>
                     <h4>Search Similarity by</h4>
                     <div class='radio-buttons'>
-                        <div>
+                """;
+        
+        String similarityChoice = context.formParam("similarity-choice");      
+
+        if (similarityChoice == null) {
+            html += """
+                    <div>
+                        <input type='radio' name='similarity-choice' value='avg-loss-percent' id='avg-loss-percent' required>
+                        <label for='avg-loss-percent'>Average Loss %</label>
+                    </div>
+                    <div>
+                        <input type='radio' name='similarity-choice' value='highest-percent' id='highest-percent'>
+                        <label for='highest-percent'>Item with highest % of loss within the Food Group</label>
+                    </div>
+                    <div>
+                        <input type='radio' name='similarity-choice' value='lowest-percent' id='lowest-percent'>
+                        <label for='lowest-percent'>Item with lowest % of loss within the Food Group</label>
+                    </div>
+                    """;
+        }
+        else if (similarityChoice.equals("avg-loss-percent")) {
+            html += """
+                    <div>
+                        <input type='radio' name='similarity-choice' value='avg-loss-percent' id='avg-loss-percent' required checked>
+                        <label for='avg-loss-percent'>Average Loss %</label>
+                    </div>
+                    <div>
+                        <input type='radio' name='similarity-choice' value='highest-percent' id='highest-percent'>
+                        <label for='highest-percent'>Item with highest % of loss within the Food Group</label>
+                    </div>
+                    <div>
+                        <input type='radio' name='similarity-choice' value='lowest-percent' id='lowest-percent'>
+                        <label for='lowest-percent'>Item with lowest % of loss within the Food Group</label>
+                    </div>
+                    """;
+        }
+        else if (similarityChoice.equals("highest-percent")) {
+            html += """
+                    <div>
+                        <input type='radio' name='similarity-choice' value='avg-loss-percent' id='avg-loss-percent' required>
+                        <label for='avg-loss-percent'>Average Loss %</label>
+                    </div>
+                    <div>
+                        <input type='radio' name='similarity-choice' value='highest-percent' id='highest-percent' checked>
+                        <label for='highest-percent'>Item with highest % of loss within the Food Group</label>
+                    </div>
+                    <div>
+                        <input type='radio' name='similarity-choice' value='lowest-percent' id='lowest-percent'>
+                        <label for='lowest-percent'>Item with lowest % of loss within the Food Group</label>
+                    </div>
+                    """;
+        }
+        else {
+            html += """
+                    <div>
                             <input type='radio' name='similarity-choice' value='avg-loss-percent' id='avg-loss-percent' required>
                             <label for='avg-loss-percent'>Average Loss %</label>
                         </div>
@@ -141,9 +195,13 @@ public class PageST3B implements Handler {
                             <label for='highest-percent'>Item with highest % of loss within the Food Group</label>
                         </div>
                         <div>
-                            <input type='radio' name='similarity-choice' value='lowest-percent' id='lowest-percent'>
+                            <input type='radio' name='similarity-choice' value='lowest-percent' id='lowest-percent' checked>
                             <label for='lowest-percent'>Item with lowest % of loss within the Food Group</label>
                         </div>
+                    """;
+        }
+        
+        html += """ 
                     </div>
                     <div>
                         <button type='submit'>Search Data</button>
@@ -151,8 +209,6 @@ public class PageST3B implements Handler {
                 </form>
             </div>
                 """;
-
-        String similarityChoice = context.formParam("similarity-choice");
 
         html += """
             <div class="data-container">
