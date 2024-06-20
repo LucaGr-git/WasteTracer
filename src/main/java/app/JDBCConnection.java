@@ -406,6 +406,8 @@ public class JDBCConnection {
             else {
                 query += "ORDER BY avg ASC";
             }
+            
+            System.out.println(query);
 
             html += ST2ABTableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
                 
@@ -1211,5 +1213,19 @@ public class JDBCConnection {
         return highLowPercentTable;
     }
     
+    public static void main(String[] args) {
+        // System.out.println(getST3ACommonFoodTable("Australia", 1990, 2020, true, "10"));
+        // System.out.println(getST3BavgLossTable("012", "7"));
+ 
+ 
+        //ArrayList<String> countryregions = getAllAvailableYearsFoodGroup("Cereals");
+ 
+        /* 
+        for (String countryregion : countryregions){
+            System.out.println(countryregion);
+        }
+       */
+      System.out.println(getST2AQueryAllYears("Australia", "2015", "2017", "yes", "yes", "yes", "sort-by-descending"));
+    }
 
 }

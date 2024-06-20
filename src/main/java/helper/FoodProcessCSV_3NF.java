@@ -63,10 +63,11 @@ public class FoodProcessCSV_3NF {
       loadFoodGroup();
       
       ArrayList<String> subClasses = new ArrayList<String>();
+      
       subClasses = loadFoodClass(subClasses);
-      
+
       subClasses = loadFoodSubClass(subClasses);
-      
+
 
 
       loadFoodLossStat(subClasses);
@@ -619,7 +620,10 @@ public class FoodProcessCSV_3NF {
             statement.setString(3, supplystage);
             statement.setInt(4, year);
             statement.setString(5, location);
-            statement.setInt(6, subClasses.indexOf(cpccode));
+
+            if (cpccode.length() == 5 && cpccode.substring(4).equals("0")){cpccode = cpccode.substring(0, 4);}
+            
+            statement.setString(6,"" +  subClasses.indexOf((cpccode)));
             statement.setString(7, losscause);
             
 

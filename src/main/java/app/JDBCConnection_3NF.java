@@ -39,25 +39,30 @@ public class JDBCConnection_3NF {
         System.out.println("Created JDBC Connection Object");
     }
 
-/*Methods to populate select inputs*/
+        /*Methods to populate select inputs*/
     public static ArrayList<String> getAllCountries() {
         ArrayList<String> countries = new ArrayList<String>();
 
+
         Connection connection = null;
+
 
         try {
             connection = DriverManager.getConnection(DATABASE);
 
+
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT DISTINCT * FROM Country ORDER BY country";
-  
+
+            String query = "SELECT DISTINCT * FROM CountryRegion WHERE PARENTLOCATION is NULL ORDER BY location";
             ResultSet results = statement.executeQuery(query);
 
+
             while (results.next()) {
-                countries.add(results.getString("country"));
+                countries.add(results.getString("location"));
             }
+
 
             statement.close();
         } catch (SQLException e) {
@@ -74,24 +79,37 @@ public class JDBCConnection_3NF {
         return countries;
     }
 
+
     public static ArrayList<String> getAllFoodGroups() {
         ArrayList<String> foodGroups = new ArrayList<>();
 
+
         Connection connection = null;
+
 
         try {
             connection = DriverManager.getConnection(DATABASE);
 
+
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT DISTINCT groupDescriptor FROM FoodGroup fg JOIN LossStat l ON fg.groupCode = l.groupCode ORDER BY groupDescriptor";
-  
+
+            String query = "SELECT DISTINCT groupDescriptor\n" + //
+                                "    FROM LOSSSTAT LS\n" + //
+                                "    JOIN FOOD F ON F.FOODID = LS.FOODID\n" + //
+                                "    JOIN FOODGROUP FG ON FG.GROUPCODE = F.GROUPCODE\n" + //
+                                " ORDER BY groupDescriptor; ";
+
+
+            System.out.println(query);
             ResultSet results = statement.executeQuery(query);
+
 
             while (results.next()) {
                 foodGroups.add(results.getString("groupDescriptor"));
             }
+
 
             statement.close();
         } catch (SQLException e) {
@@ -108,6 +126,7 @@ public class JDBCConnection_3NF {
         return foodGroups;
     }
 
+
     public static ArrayList<String> getAllCountriesRegions() {
         ArrayList<String> countriesAndRegions = new ArrayList<>();
         Connection connection = null;
@@ -118,15 +137,12 @@ public class JDBCConnection_3NF {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT DISTINCT country, region FROM lossstat ORDER BY country";
+            String query = "SELECT DISTINCT location FROM COUNTRYREGION";
 
             ResultSet results = statement.executeQuery(query);
 
             while (results.next()) {
-                String countryOrRegion = 
-                (results.getString("region") == null || results.getString("region").equals("NULL")) ?
-                results.getString("country") :
-                results.getString("region");
+                String countryOrRegion = results.getString("location");
 
                 countriesAndRegions.add(countryOrRegion);
             }
@@ -154,9 +170,8 @@ public class JDBCConnection_3NF {
 
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
-
-            String query = "SELECT DISTINCT fsc.descriptor FROM LossStat l JOIN FoodSubClass fsc ON ";
-            query += "l.subClassCode = fsc.subClassCode AND l.classCode = fsc.classCode AND l.groupCode = fsc.groupCode ORDER BY fsc.descriptor";
+            // TODO why is this different from the original results?
+            String query = "SELECT DISTINCT F.DESCRIPTOR FROM LOSSSTAT LS JOIN FOOD F ON F.FOODID = LS.FOODID ORDER BY DESCRIPTOR;";
 
             ResultSet results = statement.executeQuery(query);
 
@@ -194,8 +209,11 @@ public class JDBCConnection_3NF {
                 return availableYears;
             }
             else {
-                String query = "SELECT DISTINCT year FROM Lossstat ";
-                query += "WHERE country = \"" + area + "\" OR region = \"" + area + "\" ORDER BY year ASC";
+                String query = "SELECT DISTINCT year \n" + //
+                                        "FROM LOSSSTAT\n" + //
+                                        "\n" + //
+                                        "JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION\n" + //
+                                        "WHERE IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) = \"" + area + "\" ORDER BY year ASC;";
 
                 ResultSet results = statement.executeQuery(query);
 
@@ -234,8 +252,13 @@ public class JDBCConnection_3NF {
                 return availableYears;
             }
             else {
-                String query = "SELECT DISTINCT year FROM LossStat l JOIN FoodGroup fg ON fg.groupCode = l.groupCode ";
-                query += "WHERE groupDescriptor = \"" + foodGroup + "\" ORDER BY l.groupCode, year";
+                String query = "SELECT DISTINCT year FROM LossStat l \n" + //
+                                        "\n" + //
+                                        "JOIN FOOD f ON f.FOODID = l.FOODID\n" + //
+                                        "JOIN FoodGroup fg ON fg.groupCode = f.groupCode \n" + //
+                                        "\n" + //
+                                        "WHERE groupDescriptor = '" + foodGroup + "' ORDER BY f.groupCode, year;\n" + //
+                                        "";
 
 
                 ResultSet results = statement.executeQuery(query);
@@ -296,10 +319,14 @@ public class JDBCConnection_3NF {
             }
 
             query += "FROM LossStat ";
+
+            query += "JOIN  COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION  ";
+            query += "JOIN  FOOD ON FOOD.FOODID = LOSSSTAT.FOODID  ";
+
             if (activity != null) {
                 query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
             }
-            query += "WHERE country = \"" + country + "\" ";
+            query += "WHERE IFNULL(COUNTRYREGION.Parentlocation, COUNTRYREGION.location) = \"" + country + "\" ";
             
             if (i == 0) {
                 query += "AND year = " + startYear + " ";
@@ -378,11 +405,14 @@ public class JDBCConnection_3NF {
 
             query += "FROM LossStat ";
 
+            query += "JOIN  COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION  ";
+            query += "JOIN  FOOD ON FOOD.FOODID = LOSSSTAT.FOODID  ";
+
             if (activity != null) {
                 query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
             }
 
-            query += "WHERE country = \"" + country + "\" "; 
+            query += "WHERE IFNULL(COUNTRYREGION.Parentlocation, COUNTRYREGION.location) = \"" + country + "\" "; 
             query += "AND year >= " + startYear + " AND year <= " + endYear + " "; 
             query += "GROUP BY descriptor, year ";
 
@@ -406,6 +436,8 @@ public class JDBCConnection_3NF {
             else {
                 query += "ORDER BY avg ASC";
             }
+
+            System.out.println(query);
 
             html += ST2ABTableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
                 
@@ -637,8 +669,10 @@ public class JDBCConnection_3NF {
             }
 
             query += "FROM LossStat ";
+            
+            query += "JOIN FOOD f ON f.FOODID = LOSSSTAT.FOODID  ";
+            query += "JOIN FOODGROUP fg ON fg.GROUPCODE = f.GROUPCODE  ";
 
-            query += "JOIN foodgroup ON foodgroup.groupcode = LossStat.groupcode ";
 
             if (activity != null) {
                 query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
@@ -722,7 +756,8 @@ public class JDBCConnection_3NF {
 
             query += "FROM LossStat ";
 
-            query += "JOIN foodgroup ON foodgroup.groupcode = LossStat.groupcode ";
+            query += "JOIN FOOD f ON f.FOODID = LOSSSTAT.FOODID  ";
+            query += "JOIN FOODGROUP fg ON fg.GROUPCODE = f.GROUPCODE  ";
 
             if (activity != null) {
                 query += "LEFT JOIN TakesPartIn ON row_id = statsRowId ";
@@ -752,6 +787,8 @@ public class JDBCConnection_3NF {
             else {
                 query += "ORDER BY avg ASC";
             }
+
+            System.out.println(query);
 
             html += ST2ABTableHTMLAllYears(query, activity, causeOfLoss, foodSupply);
                 
@@ -1250,6 +1287,17 @@ public class JDBCConnection_3NF {
     
     public static void main(String[] args) {
         // System.out.println(getST3ACommonFoodTable("Australia", 1990, 2020, true, "10"));
-        System.out.println(getST3BavgLossTable("012", "7"));
+        // System.out.println(getST3BavgLossTable("012", "7"));
+ 
+ 
+        //ArrayList<String> countryregions = getAllAvailableYearsFoodGroup("Cereals");
+ 
+        /* 
+        for (String countryregion : countryregions){
+            System.out.println(countryregion);
+        }
+       */
+      System.out.println(getST2BQueryAllYears("Cereals", "2015", "2017", "yes", "yes", "yes", "sort-by-descending"));
     }
+ 
 }
