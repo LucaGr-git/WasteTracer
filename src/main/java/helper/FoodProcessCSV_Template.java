@@ -31,7 +31,7 @@ import java.sql.Statement;
  * @author Timothy Wiley, 2023. email: timothy.wiley@rmit.edu.au
  * @author Halil Ali, 2024. email: halil.ali@rmit.edu.au
  */
-public class FoodProcessCSV {
+public class FoodProcessCSV_Template {
 
    // MODIFY these to load/store to/from the correct locations
    private static final String DATABASE = "jdbc:sqlite:database/foodloss.db";
