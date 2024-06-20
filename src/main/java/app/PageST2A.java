@@ -118,7 +118,17 @@ public class PageST2A implements Handler {
                     </div>
                     <div class='checkboxes'>
                         <div>
-                            <input type='checkbox' name='all-years' id='all-years'>
+                """;
+
+        if (context.formParam("all-years") != null) {
+            html += "<input type='checkbox' name='all-years' id='all-years' checked>";
+        }
+        else {
+            html += "<input type='checkbox' name='all-years' id='all-years'>";
+        }
+                                
+
+        html += """ 
                             <label for='all-years'>Show all available years</label>
                         </div>
                     </div>
