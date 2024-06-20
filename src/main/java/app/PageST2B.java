@@ -176,7 +176,7 @@ public class PageST2B implements Handler {
         }
                             
         html += """
-                            <label for="all-years">Show all available years</label>
+                            <label for="all-years">Show all years in-between</label>
                         </div>
                     </div>
                     <h4>Filter Columns</h4>
