@@ -770,7 +770,7 @@ public class JDBCConnection_3NF {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT DISTINCT groupCode FROM FoodSubClass WHERE descriptor = \"" + commodity + "\"";
+            String query = "SELECT DISTINCT groupCode FROM Food WHERE descriptor = \"" + commodity + "\"";
 
             ResultSet results = statement.executeQuery(query);
 
@@ -805,11 +805,23 @@ public class JDBCConnection_3NF {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT groupDescriptor, AVG(lossPercentage) AS avg0, ";
-            query += "(SELECT AVG(LossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "' GROUP BY groupCode) AS avg1, ";
-            query += "AVG(lossPercentage) - (SELECT AVG(lossPercentage) FROM LossStat WHERE groupCode = " + foodGroupCPC + ") AS difference ";
-            query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
-            query += "ORDER BY ABS(avg0 - avg1), lossStat.groupCode != \"" + foodGroupCPC + "\";";
+            String query = "SELECT *, ABS(avg0 - avg1) as difference FROM ( ";
+            query += "        SELECT groupDescriptor, AVG(lossPercentage) AS avg0, ";
+            query += "           (";
+            query += "           SELECT AVG(LossPercentage)";
+            query += "           FROM LossStat";
+            query += "           JOIN FOOD ON FOOD.FOODID = LOSSSTAT.FOODID";
+            query += "         WHERE groupCode = '" + foodGroupCPC + "'";
+            query += "           GROUP BY groupCode";
+            query += "           ) AS avg1";
+            query += "    FROM LossStat";
+            query += "    JOIN FOOD ON FOOD.FOODID = LOSSSTAT.FOODID";
+            query += "    JOIN FoodGroup ON FoodGroup.groupCode = FOOD.groupCode";
+            query += "     GROUP BY FoodGroup.groupCode";
+            query += "     ORDER BY ABS(avg0 - avg1), FOOD.groupCode != \"" + foodGroupCPC + "\"); ";
+
+
+            System.out.println(query);
 
             ResultSet results = statement.executeQuery(query);
 
@@ -824,16 +836,16 @@ public class JDBCConnection_3NF {
                         avgSimilarityTable += "<tr>";
                         avgSimilarityTable += "<td><b>Group of Choice</b></td>";
                         avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
-                        avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
-                        avgSimilarityTable += "<td>" + results.getFloat("difference")+ "%</td>";
+                        avgSimilarityTable += "<td>" + String.format("%.3f", (results.getFloat("avg0"))) + "%</td>";
+                        avgSimilarityTable += "<td>" + String.format("%.3f", (results.getFloat("difference"))) + "%</td>";
                         avgSimilarityTable += "</tr>"; 
                     }
                     else {
                         avgSimilarityTable += "<tr>";
                         avgSimilarityTable += "<td><b>" + i + ")</b></td>";
                         avgSimilarityTable += "<td>" + results.getString("groupDescriptor") + "</td>";
-                        avgSimilarityTable += "<td>" + results.getFloat("avg0") + "%</td>";
-                        avgSimilarityTable += "<td>" + results.getFloat("difference")+ "%</td>";
+                        avgSimilarityTable += "<td>" + String.format("%.3f", (results.getFloat("avg0"))) + "%</td>";
+                        avgSimilarityTable += "<td>" + String.format("%.3f", (results.getFloat("difference")))+ "%</td>";
                         avgSimilarityTable += "</tr>";
                     }
                     ++i;
@@ -874,11 +886,22 @@ public class JDBCConnection_3NF {
                                 "MAX" :
                                 "MIN";
 
-            String query = "SELECT " + highOrLow + "(lossPercentage) max0, descriptor, groupDescriptor, (SELECT " + highOrLow;
-            query += "(lossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "') AS max1, ";
-            query += highOrLow + "(lossPercentage) - (SELECT " + highOrLow + "(lossPercentage) FROM LossStat WHERE groupCode = \"" + foodGroupCPC + "\") AS difference "; 
-            query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
-            query += "ORDER BY ABS(max0 - max1), lossStat.groupCode != \"" + foodGroupCPC + "\";";
+
+            String query = "SELECT " + highOrLow + "(lossPercentage) max0,descriptor, groupDescriptor,( ";
+            query += "           SELECT " + highOrLow + "(lossPercentage) ";
+            query += "             FROM LossStat";
+            query += "            JOIN FOOD ON LossStat.FOODID = FOOD.FOODID";
+            query += "            WHERE groupCode = '" + foodGroupCPC + "')      AS max1, " + highOrLow + "(lossPercentage) - (";
+            query += "                                 SELECT " + highOrLow + "(lossPercentage) ";
+            query += "                                 FROM LossStat";
+            query += "                                 JOIN FOOD ON LossStat.FOODID = FOOD.FOODID";
+            query += "                                 WHERE groupCode = \"" + foodGroupCPC + "\") AS difference";
+            query += "  FROM LossStat";
+            query += "      JOIN FOOD ON LossStat.FOODID = FOOD.FOODID";
+            query += "      JOIN FoodGroup ON FoodGroup.groupCode = FOOD.groupCode";
+            query += " GROUP BY FoodGroup.groupCode";
+            query += " ORDER BY ABS(max0 - max1), FOOD.groupCode != \"" + foodGroupCPC + "\"; ";
+
             System.out.println(query);
 
             ResultSet results = statement.executeQuery(query);
@@ -901,8 +924,8 @@ public class JDBCConnection_3NF {
                         highLowPercentTable += "<td><b>Group of Choice</b></td>";
                         highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
                         highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
-                        highLowPercentTable += "<td>" + results.getFloat("max0") + "%</td>";
-                        highLowPercentTable += "<td>" + results.getFloat("difference")+ "%</td>";
+                        highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("max0"))) + "%</td>";
+                        highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("difference")))+ "%</td>";
                         highLowPercentTable += "</tr>"; 
                     }
                     else {
@@ -910,8 +933,8 @@ public class JDBCConnection_3NF {
                         highLowPercentTable += "<td><b>" + i + ")</b></td>";
                         highLowPercentTable += "<td>" + results.getString("groupDescriptor") + "</td>";
                         highLowPercentTable += "<td>" + results.getString("descriptor") + "</td>";
-                        highLowPercentTable += "<td>" + results.getFloat("max0") + "%</td>";
-                        highLowPercentTable += "<td>" + results.getFloat("difference")+ "%</td>";
+                        highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("max0"))) + "%</td>";
+                        highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("difference"))) + "%</td>";
                         highLowPercentTable += "</tr>";
                     }
                     ++i;
@@ -1229,6 +1252,6 @@ public class JDBCConnection_3NF {
     
     public static void main(String[] args) {
         // System.out.println(getST3ACommonFoodTable("Australia", 1990, 2020, true, "10"));
-        System.out.println(getST3ACommonFoodAndLossPercentageTable("Australia", 0, 2020, "10", true));
+        System.out.println(getST3BavgLossTable("012", "7"));
     }
 }

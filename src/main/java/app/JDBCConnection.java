@@ -805,11 +805,14 @@ public class JDBCConnection {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT groupDescriptor, AVG(lossPercentage) AS avg0, ";
-            query += "(SELECT AVG(LossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "' GROUP BY groupCode) AS avg1, ";
-            query += "AVG(lossPercentage) - (SELECT AVG(lossPercentage) FROM LossStat WHERE groupCode = " + foodGroupCPC + ") AS difference ";
-            query += "FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
-            query += "ORDER BY ABS(avg0 - avg1), lossStat.groupCode != \"" + foodGroupCPC + "\";";
+            String query = "SELECT *, ABS(avg0 - avg1) as difference FROM ( ";
+            query += "  SELECT groupDescriptor, AVG(lossPercentage) AS avg0, ";
+            query += "  (SELECT AVG(LossPercentage) FROM LossStat WHERE groupCode = '" + foodGroupCPC + "' GROUP BY groupCode) AS avg1, ";
+            query += "  AVG(lossPercentage) - (SELECT AVG(lossPercentage) FROM LossStat WHERE groupCode = " + foodGroupCPC + ") AS difference ";
+            query += "  FROM LossStat JOIN FoodGroup ON FoodGroup.groupCode = LossStat.groupCode GROUP BY FoodGroup.groupCode ";
+            query += "  ORDER BY ABS(avg0 - avg1), lossStat.groupCode != \"" + foodGroupCPC + "\");";
+
+            System.out.println(query);
 
             ResultSet results = statement.executeQuery(query);
 
