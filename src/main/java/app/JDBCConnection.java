@@ -79,7 +79,6 @@ public class JDBCConnection {
         return countries;
     }
 
-
     public static ArrayList<String> getAllFoodGroups() {
         ArrayList<String> foodGroups = new ArrayList<>();
 
@@ -126,7 +125,6 @@ public class JDBCConnection {
         return foodGroups;
     }
 
-
     public static ArrayList<String> getAllCountriesRegions() {
         ArrayList<String> countriesAndRegions = new ArrayList<>();
         Connection connection = null;
@@ -137,7 +135,7 @@ public class JDBCConnection {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT DISTINCT location FROM COUNTRYREGION";
+            String query = "SELECT DISTINCT COUNTRYREGION.location, parentLocation FROM COUNTRYREGION JOIN LOSSSTAT ON COUNTRYREGION.location = LOSSSTAT.location";
 
             ResultSet results = statement.executeQuery(query);
 
@@ -209,11 +207,7 @@ public class JDBCConnection {
                 return availableYears;
             }
             else {
-                String query = "SELECT DISTINCT year \n" + //
-                                        "FROM LOSSSTAT\n" + //
-                                        "\n" + //
-                                        "JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION\n" + //
-                                        "WHERE IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) = \"" + area + "\" ORDER BY year ASC;";
+                String query = "SELECT DISTINCT year FROM LossStat WHERE location = \"" + area + "\" ORDER BY year";
 
                 ResultSet results = statement.executeQuery(query);
 

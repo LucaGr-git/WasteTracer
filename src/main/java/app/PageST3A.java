@@ -64,7 +64,7 @@ public class PageST3A implements Handler {
                         <div>
                             <p>Countries and Regions</p>
                             <div class='custom-select-wrapper'>
-                                <select id='country-region-selector' name='country-region-selector'>
+                                <select id='country-region-selector' name='country-region-selector' onchange='this.form.submit()'>
                                     <option>Please Select</option>
                 """;
 
@@ -83,7 +83,6 @@ public class PageST3A implements Handler {
                                 </select>
                                 <span class='custom-arrow'></span>
                             </div>
-                            <button type='submit' class='confirm-select'>Confirm Selection</button>
                         </div>
                     </div>
                     <div class='select-area'>
@@ -91,7 +90,6 @@ public class PageST3A implements Handler {
                             <p>Available Years</p>
                             <div class='custom-select-wrapper'>
                                 <select id='year-selector' name='year-selector'>
-                                    <option>Please Select</option>
                 """;
 
         String selectedYear = context.formParam("year-selector");
