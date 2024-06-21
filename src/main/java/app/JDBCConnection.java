@@ -931,7 +931,7 @@ public class JDBCConnection {
             query += "      JOIN FOOD ON LossStat.FOODID = FOOD.FOODID";
             query += "      JOIN FoodGroup ON FoodGroup.groupCode = FOOD.groupCode";
             query += " GROUP BY FoodGroup.groupCode";   
-            query += " ORDER BY ABS(max0 - max1), FOOD.groupCode != \"" + foodGroupCPC + "\"; ";
+            query += " ORDER BY FOOD.groupCode != '" + foodGroupCPC + "', ABS(max0 - max1); ";
 
             System.out.println(query);
 
@@ -993,8 +993,13 @@ public class JDBCConnection {
         int startYear,
         int endYear,
         boolean showFoods,
-        String selectedAmount) {
+        String selectedAmount, 
+        boolean ascendingSearch) {
         String highLowPercentTable = "";
+
+        String ascOrDesc;
+        if (ascendingSearch){ascOrDesc = "ASC";}
+        else{ascOrDesc = "DESC";}
         
         Connection connection = null;
 
@@ -1018,7 +1023,7 @@ public class JDBCConnection {
             query += "        WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + "";
             query += "        ) as l2 ON l1.DESCRIPTOR = l2.DESCRIPTOR ";
             query += "    GROUP BY l2.countryregion ";
-            query += "    ORDER BY numShared DESC, l2.countryregion = '" + countryRegion + "' DESC; ";
+            query += "    ORDER BY l2.countryregion = '" + countryRegion + "' DESC, numShared " + ascOrDesc + " ; ";
             
 
 
@@ -1029,7 +1034,7 @@ public class JDBCConnection {
 
             int i = 0;
             if (Integer.parseInt(selectedAmount) != 0) {
-                highLowPercentTable += "<th>Simularity Rank</th>";   
+                highLowPercentTable += "<th>Similarity Rank</th>";   
                 highLowPercentTable += "<th>Country/Region</th>";    
                 highLowPercentTable += "<th>Number of Shared foods</th>";  
                 if (showFoods){highLowPercentTable += "<th>Shared Foods</th>";}    
@@ -1082,10 +1087,15 @@ public class JDBCConnection {
         String countryRegion,
         int startYear,
         int endYear,
-        String selectedAmount) {
+        String selectedAmount, 
+        boolean ascendingSearch) {
         String highLowPercentTable = "";
         
         Connection connection = null;
+        
+        String ascOrDesc;
+        if (ascendingSearch){ascOrDesc = "DESC";}
+        else{ascOrDesc = "ASC";}
 
         try {
             connection = DriverManager.getConnection(DATABASE);
@@ -1106,7 +1116,7 @@ public class JDBCConnection {
             query += "    JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION ";
             query += "    WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + " ";
             query += "    GROUP BY countryregion ";
-            query += "    ORDER BY ABS(avg0 - avg1) ASC, countryregion ='" + countryRegion + "' DESC); ";
+            query += "    ORDER BY countryregion = '" + countryRegion + "' DESC, ABS(avg0 - avg1) " + ascOrDesc + "); ";
 
 
             System.out.println(query);
@@ -1115,7 +1125,7 @@ public class JDBCConnection {
 
             int i = 0;
             if (Integer.parseInt(selectedAmount) != 0) {
-                highLowPercentTable += "<th>Simularity Rank</th>";   
+                highLowPercentTable += "<th>Similarity Rank</th>";   
                 highLowPercentTable += "<th>Country/Region</th>";    
                 highLowPercentTable += "<th>Average Loss%</th>";  
                 highLowPercentTable += "<th>Difference %</th>";}   
@@ -1168,9 +1178,14 @@ public class JDBCConnection {
         int startYear,
         int endYear,
         String selectedAmount,
-        boolean showFoods) {
+        boolean showFoods,
+        boolean ascendingSearch) {
         String highLowPercentTable = "";
         
+        String ascOrDesc;
+        if (ascendingSearch){ascOrDesc = "ASC";}
+        else{ascOrDesc = "DESC";}
+
         Connection connection = null;
 
         try {
@@ -1194,7 +1209,7 @@ public class JDBCConnection {
             query += "        WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + "";
             query += "        ) as l2 ON l1.DESCRIPTOR = l2.DESCRIPTOR ";
             query += "    GROUP BY l2.countryregion ";
-            query += "    ORDER BY numShared DESC, l2.countryregion = '" + countryRegion + "' DESC) as commonT ";
+            query += "    ORDER BY l2.countryregion = '" + countryRegion + "' DESC, numShared DESC) as commonT ";
             query += "    JOIN (SELECT *, ABS(avg0 - avg1) as diff FROM (SELECT AVG(LOSSPERCENTAGE) as avg0, IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) as countryregion1, ( ";
             query += "        SELECT AVG(LOSSPERCENTAGE) as avg0";
             query += "        FROM LOSSSTAT ";
@@ -1206,8 +1221,8 @@ public class JDBCConnection {
             query += "    JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION ";
             query += "    WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + " ";
             query += "    GROUP BY countryregion1 ";
-            query += "    ORDER BY ABS(avg0 - avg1) ASC, countryregion1 ='" + countryRegion + "' DESC)) as losspT ON commonT.countryregion = losspT.countryregion1 ";
-            query += "    ORDER BY simScore DESC, countryregion = '" + countryRegion + "' DESC; ";
+            query += "    ORDER BY countryregion1 ='" + countryRegion + "' DESC, ABS(avg0 - avg1) ASC)) as losspT ON commonT.countryregion = losspT.countryregion1 ";
+            query += "    ORDER BY countryregion = '" + countryRegion + "' DESC, simScore " + ascOrDesc + "; ";
 
 
 
@@ -1217,7 +1232,7 @@ public class JDBCConnection {
 
             int i = 0;
             if (Integer.parseInt(selectedAmount) != 0) {
-                highLowPercentTable += "<th>Simularity Rank</th>";   
+                highLowPercentTable += "<th>Similarity Rank</th>";   
                 highLowPercentTable += "<th>Country/Region</th>";    
                 highLowPercentTable += "<th>Number of Shared foods</th>";  
                 if (showFoods){highLowPercentTable += "<th>Shared Foods</th>";}
@@ -1240,7 +1255,7 @@ public class JDBCConnection {
                         highLowPercentTable += "<td>" + results.getInt("numShared") + "</td>";
                         if (showFoods){highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";}    
                         highLowPercentTable += "<td>" + "N/A" + "</td>"; 
-                        highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("simScore"))) + "</td>";
+                        highLowPercentTable += "<td>Country of choice</td>";
                         
                         highLowPercentTable += "</tr>"; 
                     }
