@@ -193,7 +193,7 @@ public class PageST3A implements Handler {
             html += """
                     <div>
                         <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods">
-                        <label for="search-common-foods">Search by common foods</label>
+                        <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
                     </div>
                     <div>
                         <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%">
@@ -209,7 +209,7 @@ public class PageST3A implements Handler {
             html += """
                     <div>
                         <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods" checked>
-                        <label for="search-common-foods">Search by common foods</label>
+                        <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
                     </div>
                     <div>
                         <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%">
@@ -225,7 +225,7 @@ public class PageST3A implements Handler {
             html += """
                     <div>
                         <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods">
-                        <label for="search-common-foods">Search by common foods</label>
+                        <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
                     </div>
                     <div>
                         <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%" checked>
@@ -241,7 +241,7 @@ public class PageST3A implements Handler {
             html += """
                     <div>
                         <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods">
-                        <label for="search-common-foods">Search by common foods</label>
+                        <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
                     </div>
                     <div>
                         <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%">
@@ -280,7 +280,7 @@ public class PageST3A implements Handler {
                     </div>
                     """;
         }
-        else if (sortBySim.equals("sort-by-descending")) {
+        else if (sortBySim.equals("least-most")) {
             html += """
                     <div>
                         <input type="radio" name="sort-similarity" value="most-least" id="most-least">
@@ -363,24 +363,28 @@ public class PageST3A implements Handler {
             if (sortBySim.equals("most-least")){ascendingSearch = false;}
             else{ascendingSearch = true;}
 
+            
 
-            if (searchOption.equals("search-common-foods")) {
-                
+            try{
+                if (startYear == null || endYear == null || selectedAmount == null || selectedCountry == null){}
+                else if (searchOption.equals("search-common-foods")) {
+                    
 
-                html += JDBCConnection.getST3ACommonFoodTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), true, selectedAmount, ascendingSearch);
-            }
-            else if (searchOption.equals("search-loss-%")) {
+                    html += JDBCConnection.getST3ACommonFoodTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), true, selectedAmount, ascendingSearch);
+                }
+                else if (searchOption.equals("search-loss-%")) {
 
-                
+                    
 
-                html += JDBCConnection.getST3ALossPercentageTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, ascendingSearch);
-            }
-            else {
+                    html += JDBCConnection.getST3ALossPercentageTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, ascendingSearch);
+                }
+                else {
 
-                
-                
-                html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, true, ascendingSearch);
-            }
+                    
+                    
+                    html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, true, ascendingSearch);
+                }
+            } catch (Exception e) {}
         }
         
 
