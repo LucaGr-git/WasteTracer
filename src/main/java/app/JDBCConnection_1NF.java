@@ -7,16 +7,11 @@ import java.util.Map;
 import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.plaf.nimbus.State;
 
-import org.eclipse.jetty.server.LowResourceMonitor.ConnectorsThreadPoolLowResourceCheck;
-
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 /**
  * Class for Managing the JDBC Connection to a SQLLite Database.
