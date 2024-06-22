@@ -1312,7 +1312,7 @@ public class JDBCConnection {
                 }
                 highLowPercentTable += "<th>Average Loss %</th>";
                 highLowPercentTable += "<th>Difference %</th>";
-                highLowPercentTable += "</tr></thead>";
+                highLowPercentTable += "</tr></thead><tbody>";
             }   
             while (results.next()) {
                 if (i == 0) {
@@ -1343,8 +1343,8 @@ public class JDBCConnection {
                 if (i > Integer.parseInt(selectedAmount)) {
                     break;
                 }
-                highLowPercentTable += "</tbody>";
             }
+            highLowPercentTable += "</tbody>";
         }
         catch (SQLException e) {
             System.err.println(e.getMessage());
