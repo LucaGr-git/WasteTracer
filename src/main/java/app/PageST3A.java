@@ -316,15 +316,15 @@ public class PageST3A implements Handler {
             else {ascendingSearch = true;}
 
             try {
-                if (startYear == null || endYear == null || selectedAmount == null || selectedArea == null){}
+                if (selectedYear == null || selectedAmount == null || selectedArea == null){}
                 else if (searchOption.equals("search-common-foods")) {
-                    html += JDBCConnection.getST3ACommonFoodTable(selectedArea, Integer.parseInt(startYear), Integer.parseInt(endYear), true, selectedAmount, ascendingSearch);
+                    html += JDBCConnection.getST3ACommonFoodTable(selectedArea, Integer.parseInt(selectedYear), Integer.parseInt(selectedYear), true, selectedAmount, ascendingSearch);
                 }
                 else if (searchOption.equals("search-loss-%")) {
-                    html += JDBCConnection.getST3ALossPercentageTable(selectedArea, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, ascendingSearch);
+                    html += JDBCConnection.getST3ALossPercentageTable(selectedArea, Integer.parseInt(selectedYear), Integer.parseInt(selectedYear), selectedAmount, ascendingSearch);
                 }
                 else {
-                    html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedArea, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, true, ascendingSearch);
+                    html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedArea, Integer.parseInt(selectedYear), Integer.parseInt(selectedYear), selectedAmount, true, ascendingSearch);
                 }
             } catch (Exception e) {
                 System.err.println(e.getMessage());

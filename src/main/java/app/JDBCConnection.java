@@ -1239,7 +1239,7 @@ public class JDBCConnection {
 
             
 
-            String query = "SELECT avg0, countryregion, numShared, sharedCommodities, diff, IFNULL( 10 *(numshared * ( 0.5 *numshared)/ (0.35 + diff)), 10000000) as simScore FROM (";
+            String query = "SELECT avg0, countryregion, numShared, sharedCommodities, diff, IFNULL( 10 *(numshared * ( 0.5 *numshared)/ (0.35 + ABS(diff))), 10000000) as simScore FROM (";
             
             //INCLUDE  common table 
             query += "SELECT l2.countryregion, COUNT(l2.countryregion) as numShared, group_concat(l1.DESCRIPTOR, ' | ') as sharedCommodities FROM ( ";
@@ -1310,7 +1310,7 @@ public class JDBCConnection {
                 if (showFoods) {
                     highLowPercentTable += "<th>Shared Foods</th>";
                 }
-                highLowPercentTable += "<th>Average Loss %</th>";
+                highLowPercentTable += "<th>Similarity Score</th>";
                 highLowPercentTable += "<th>Difference %</th>";
                 highLowPercentTable += "</tr></thead><tbody>";
             }   
@@ -1323,7 +1323,7 @@ public class JDBCConnection {
                     if (showFoods) {
                         highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";
                     }    
-                    highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("avg0"))) + "</td>";
+                    highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("simScore"))) + "</td>";
                     highLowPercentTable += "<td>" + "+0.000" + "</td>"; 
                     highLowPercentTable += "</tr>"; 
                 }
@@ -1335,7 +1335,7 @@ public class JDBCConnection {
                     if (showFoods) {
                         highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";
                     }    
-                    highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("avg0"))) + "</td>";
+                    highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("simScore"))) + "</td>";
                     highLowPercentTable += "<td>" + String.format("%+.3f", (results.getFloat("diff"))) + "%</td>";
                     highLowPercentTable += "</tr>"; 
                 }
