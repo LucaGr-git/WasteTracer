@@ -69,7 +69,7 @@ public class PageIndex implements Handler {
             <div class="content" style=
             'background-image: url(landing-background.jpg);
             background-size: cover;
-            height: 86vh;'>
+            height: 88vh;'>
                 <div class="landing-box">
                     <h1>Waste Tracer</h1>
                     <p class="landing-slogan">Your food, your knowledge</p>

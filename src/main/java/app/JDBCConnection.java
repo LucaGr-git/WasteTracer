@@ -1,8 +1,7 @@
 package app;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.plaf.nimbus.State;
@@ -125,8 +124,8 @@ public class JDBCConnection {
         return foodGroups;
     }
 
-    public static ArrayList<String> getAllCountriesRegions() {
-        ArrayList<String> countriesAndRegions = new ArrayList<>();
+    public static LinkedHashMap<String, String> getAllCountriesRegions() {
+        LinkedHashMap<String, String> countriesAndRegions = new LinkedHashMap<>();
         Connection connection = null;
 
         try {
@@ -135,14 +134,14 @@ public class JDBCConnection {
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            String query = "SELECT DISTINCT COUNTRYREGION.location, parentLocation FROM COUNTRYREGION JOIN LOSSSTAT ON COUNTRYREGION.location = LOSSSTAT.location";
+            String query = "SELECT DISTINCT COUNTRYREGION.location, parentLocation ";
+            query += "FROM COUNTRYREGION JOIN LOSSSTAT ON COUNTRYREGION.location = ";
+            query += "LOSSSTAT.location ORDER BY parentLocation, COUNTRYREGION.location";
 
             ResultSet results = statement.executeQuery(query);
 
             while (results.next()) {
-                String countryOrRegion = results.getString("location");
-
-                countriesAndRegions.add(countryOrRegion);
+                countriesAndRegions.put(results.getString("location"), results.getString("parentLocation"));
             }
 
         } catch (SQLException e) {

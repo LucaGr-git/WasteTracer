@@ -1,6 +1,7 @@
 package app;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -70,12 +71,14 @@ public class PageST3A implements Handler {
 
         String selectedCountryRegion = context.formParam("country-region-selector");
 
-        for (String countryOrRegion : JDBCConnection.getAllCountriesRegions()) {
-            if (selectedCountryRegion != null && countryOrRegion.equals(selectedCountryRegion)) {
-                html += "<option selected>" + countryOrRegion + "</option>";
+        LinkedHashMap<String, String> countriesAndRegions = JDBCConnection.getAllCountriesRegions();
+
+        for (String area : countriesAndRegions.keySet()) {
+            if (countriesAndRegions.get(area) == null) {
+                html += "<option value='" + area + "'>" + area + "</option>";
             }
             else {
-                html += "<option>" + countryOrRegion + "</option>";
+                html += "<option value='" + area + "'>" + countriesAndRegions.get(area) + " -- " + area + "</option>";
             }
         }
 
@@ -166,7 +169,7 @@ public class PageST3A implements Handler {
                     </thead>
                     """; 
         }
-        else if (selectedYear == null || selectedYear.equals("Please Select")) {
+        else if (selectedYear == null || selectedYear.equals("")) {
             html += "<caption>" + selectedCountryRegion + "</caption>";
             html += """
                     <thead>
@@ -178,7 +181,15 @@ public class PageST3A implements Handler {
                     """;
         }
         else {
- 
+            html += "<caption>" + selectedCountryRegion + "</caption>";
+            html += """
+                    <thead>
+                        <tr>
+                            <th>Similarity Rank</th>
+                            <th>Area</th>
+                        </tr>
+                    </thead>
+                    """;
         }
 
         context.html(html);

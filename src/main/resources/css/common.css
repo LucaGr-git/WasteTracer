@@ -9,13 +9,13 @@
 body {
    font-size: 16px;
    background-color: #FFFEF8;
-   padding-top: 14vh;
+   padding-top: 12vh;
 }
 
 /*Navbar Styling*/
 .topnav {
    background-color: #385418;
-   height: 14vh;
+   height: 12vh;
    display: flex;
    flex-direction: row;
    flex-wrap: nowrap;
@@ -43,7 +43,7 @@ body {
 }
 
 .topnav-links li, .about-us a {
-   height: 14vh;
+   height: 12vh;
    font-size: 1.8cqw;
    font-weight: bold;  
    list-style: none;
@@ -63,12 +63,12 @@ body {
 }
 
 img {
-   padding: 10px;
+   padding: 15px;
 }
 
 /*Dropdown Styling*/
 .subtask {
-   height: 14vh;
+   height: 12vh;
 }
 
 .subtask-dropdown {
@@ -101,5 +101,5 @@ img {
 /*Content Styling*/
 .content {
    color: #FFFEF8;
-   height: 86vh;
+   height: 88vh;
 }
