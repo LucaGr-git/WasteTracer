@@ -16,7 +16,7 @@ public class PageST3A implements Handler {
 
     public static final String URL = "/page3A.html";
     public static final String DATABASE = "jdbc:sqlite:database/foodloss.db";
-    ArrayList<String> priorCountries = new ArrayList<>();
+    ArrayList<String> priorAreas = new ArrayList<>();
 
     @Override
     public void handle(Context context) throws Exception {
@@ -131,23 +131,22 @@ public class PageST3A implements Handler {
         
 
         if (selectedArea != null && !selectedArea.equals("Please Select")) {
-            priorCountries.add(selectedArea);
+            priorAreas.add(selectedArea);
         }
 
-        html +=  """
-                                </select>                            
-                    
-                    <div class="year-wrapper">
-                        <div class="start-year-wrapper">
-                            <p>Start Year</p>
-                            <select id="start-year" name="start-year"r>
+        html +=  """                         
+                    <div class="select-area">
+                        <div>
+                            <p>Available years</p>
+                            <div class="custom-select-wrapper">
+                                <select id="year-selector" name="year-selector">
                  """;
 
-        String startYear = context.formParam("start-year");
+        String selectedYear = context.formParam("year-selector");
 
-        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+        if (priorAreas.size() > 1 && priorAreas.get(priorAreas.size() - 1).equals(priorAreas.get(priorAreas.size() - 2))) {
             for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedArea)) {
-                if (year.equals(startYear)) {
+                if (year.equals(selectedYear)) {
                     html += "<option selected value=" + year + ">" + year + "</option>";
                 }
                 else {
@@ -162,33 +161,9 @@ public class PageST3A implements Handler {
         }
         
         html +=  """
-                            </select>
-                        </div>
-                        <div class="end-year-wrapper">
-                            <p>End Year</p>
-                            <select id="end-year" name="end-year">
-                 """;
-        
-        String endYear = context.formParam("end-year");
-
-        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
-            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedArea)) {
-                if (year.equals(endYear)) {
-                    html += "<option selected value=" + year + ">" + year + "</option>";
-                }
-                else {
-                    html += "<option value=" + year + ">" + year + "</option>";
-                }
-            }
-        }
-        else {
-            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedArea)) {
-                html += "<option selected value=" + year + ">" + year + "</option>";
-            }
-        }
-
-        html +=  """
-                            </select>
+                                </select>
+                                <span class='custom-arrow'></span>
+                            </div>
                         </div>
                     </div>
                     <h4>Search Options</h4>
