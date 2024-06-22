@@ -136,23 +136,7 @@ public class PageST3B implements Handler {
         
         String similarityChoice = context.formParam("similarity-choice");      
 
-        if (similarityChoice == null) {
-            html += """
-                    <div>
-                        <input type='radio' name='similarity-choice' value='avg-loss-percent' id='avg-loss-percent' required>
-                        <label for='avg-loss-percent'>Average Loss %</label>
-                    </div>
-                    <div>
-                        <input type='radio' name='similarity-choice' value='highest-percent' id='highest-percent'>
-                        <label for='highest-percent'>Item with highest % of loss within the Food Group</label>
-                    </div>
-                    <div>
-                        <input type='radio' name='similarity-choice' value='lowest-percent' id='lowest-percent'>
-                        <label for='lowest-percent'>Item with lowest % of loss within the Food Group</label>
-                    </div>
-                    """;
-        }
-        else if (similarityChoice.equals("avg-loss-percent")) {
+        if (similarityChoice == null || similarityChoice.equals("avg-loss-percent")) {
             html += """
                     <div>
                         <input type='radio' name='similarity-choice' value='avg-loss-percent' id='avg-loss-percent' required checked>

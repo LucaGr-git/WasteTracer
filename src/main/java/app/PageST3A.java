@@ -70,14 +70,26 @@ public class PageST3A implements Handler {
                                     <option>Please Select</option>
                 """;
 
-        String selectedCountry = context.formParam("country-selector");
+        String selectedArea = context.formParam("country-selector");
 
-        for (String country : JDBCConnection.getAllCountriesRegions()) {
-            if (selectedCountry != null && country.equals(selectedCountry)) {
-                html += "<option selected>" + country + "</option>";
+        LinkedHashMap<String, String> countriesAndRegions = JDBCConnection.getAllCountriesRegions();
+
+        for (String area : countriesAndRegions.keySet()) {
+            if (selectedArea != null && area.equals(selectedArea)) {
+                if (countriesAndRegions.get(area) == null) {
+                    html += "<option value=" + area + " selected>" + area + "</option>";
+                }
+                else {
+                    html += "<option value=" + area + " selected>" + area + " -- " + countriesAndRegions.get(area) + "</option>";
+                }
             }
             else {
-                html += "<option>" + country + "</option>";
+                if (countriesAndRegions.get(area) == null) {
+                    html += "<option value=" + area + ">" + area + "</option>";
+                }
+                else {
+                    html += "<option value=" + area + ">" + area + " -- " + countriesAndRegions.get(area) + "</option>";
+                }
             }
         } 
 
@@ -118,8 +130,8 @@ public class PageST3A implements Handler {
                 """;
         
 
-        if (selectedCountry != null && !selectedCountry.equals("Please Select")) {
-            priorCountries.add(selectedCountry);
+        if (selectedArea != null && !selectedArea.equals("Please Select")) {
+            priorCountries.add(selectedArea);
         }
 
         html +=  """
@@ -134,7 +146,7 @@ public class PageST3A implements Handler {
         String startYear = context.formParam("start-year");
 
         if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
-            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedArea)) {
                 if (year.equals(startYear)) {
                     html += "<option selected value=" + year + ">" + year + "</option>";
                 }
@@ -144,7 +156,7 @@ public class PageST3A implements Handler {
             }
         }
         else {
-            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedArea)) {
                 html += "<option value=" + year + ">" + year + "</option>";
             }
         }
@@ -160,7 +172,7 @@ public class PageST3A implements Handler {
         String endYear = context.formParam("end-year");
 
         if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
-            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedArea)) {
                 if (year.equals(endYear)) {
                     html += "<option selected value=" + year + ">" + year + "</option>";
                 }
@@ -170,7 +182,7 @@ public class PageST3A implements Handler {
             }
         }
         else {
-            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedArea)) {
                 html += "<option selected value=" + year + ">" + year + "</option>";
             }
         }
@@ -190,23 +202,7 @@ public class PageST3A implements Handler {
                 """;
 
         String searchOption = context.formParam("search-options");
-        if (searchOption == null) {
-            html += """
-                    <div>
-                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods">
-                        <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%">
-                        <label for="search-loss-%">Search by loss %</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods">
-                        <label for="search-loss-%-common-foods">Search by loss % and common foods</label>
-                    </div>
-                    """;
-        }
-        else if (searchOption.equals("search-common-foods")) {
+        if (searchOption == null || searchOption.equals("search-common-foods")) {
             html += """
                     <div>
                         <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods" checked>
@@ -263,7 +259,7 @@ public class PageST3A implements Handler {
                         </select>
                     
                 </div>
-                <h4>Sort Search By</h4>
+                <h4>Sort by Similarity</h4>
                 <div class='radio-buttons'>
                     
                     """;
@@ -272,36 +268,36 @@ public class PageST3A implements Handler {
         if (sortBySim == null) {
             html += """
                     <div>
-                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
-                        <label for="most-least">Most -> Least Similarity</label>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
+                        <label for="least-most">Ascending</label>
                     </div>
                     <div>
-                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
-                        <label for="least-most">Least -> Most Similarity</label>
+                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
+                        <label for="most-least">Descending</label>
                     </div>
                     """;
         }
         else if (sortBySim.equals("least-most")) {
             html += """
                     <div>
-                        <input type="radio" name="sort-similarity" value="most-least" id="most-least">
-                        <label for="most-least">Most -> Least Similarity</label>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most" checked>
+                        <label for="least-most">Ascending</label>
                     </div>
                     <div>
-                        <input type="radio" name="sort-similarity" value="least-most" id="least-most" checked>
-                        <label for="least-most">Least -> Most Similarity</label>
+                        <input type="radio" name="sort-similarity" value="most-least" id="most-least">
+                        <label for="most-least">Descending</label>
                     </div>
                     """;    
         }
         else {
             html += """
                     <div>
-                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
-                        <label for="most-least">Most -> Least Similarity</label>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
+                        <label for="least-most">Ascending</label>
                     </div>
                     <div>
-                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
-                        <label for="least-most">Least -> Most Similarity</label>
+                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
+                        <label for="most-least">Descending</label>
                     </div>
                     """;
         }
@@ -317,24 +313,13 @@ public class PageST3A implements Handler {
 
         html += """ 
             <div class="data-container">
-                <h1>Search Country/Region by Similarity</h1>
+                <h1>Search Area by Similarity</h1>
                 <table>
                 """;
 
-        if (searchOption == null) {
+        if (selectedArea == null || selectedArea.equals("Please Select")) {
             html += """
-                    <caption>Please select select filters and search</caption>
-                    <thead>
-                        <tr>
-                            <th>Similarity Rank</th>
-                            <th>Food Group</th>
-                        </tr>
-                    <thead>
-                    """;
-        }
-        else if (selectedCountry == null || selectedCountry.equals("Please Select")) {
-            html += """
-                    <caption>Please select a commodity</caption>
+                    <caption>Please select a country or region</caption>
                     <thead>
                         <tr>
                             <th>Similarity Rank</th>
@@ -344,7 +329,7 @@ public class PageST3A implements Handler {
                     """;
         }
         else if (selectedAmount == null || selectedAmount.equals("Please Select")) {
-            html += "<caption>" + selectedCountry + "</caption>";
+            html += "<caption>" + selectedArea + "</caption>";
             html += """
                     <thead>
                         <tr>
@@ -353,10 +338,9 @@ public class PageST3A implements Handler {
                         </tr>
                     <thead>
                     """;
-
         }
         else {
-            html += "<caption>" + selectedCountry + "</caption>";
+            html += "<caption>" + selectedArea + "</caption>";
             html += "<thead>";
             html += "<tr>";
 
@@ -367,23 +351,23 @@ public class PageST3A implements Handler {
             
 
             try{
-                if (startYear == null || endYear == null || selectedAmount == null || selectedCountry == null){}
+                if (startYear == null || endYear == null || selectedAmount == null || selectedArea == null){}
                 else if (searchOption.equals("search-common-foods")) {
                     
 
-                    html += JDBCConnection.getST3ACommonFoodTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), true, selectedAmount, ascendingSearch);
+                    html += JDBCConnection.getST3ACommonFoodTable(selectedArea, Integer.parseInt(startYear), Integer.parseInt(endYear), true, selectedAmount, ascendingSearch);
                 }
                 else if (searchOption.equals("search-loss-%")) {
 
                     
 
-                    html += JDBCConnection.getST3ALossPercentageTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, ascendingSearch);
+                    html += JDBCConnection.getST3ALossPercentageTable(selectedArea, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, ascendingSearch);
                 }
                 else {
 
                     
                     
-                    html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, true, ascendingSearch);
+                    html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedArea, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, true, ascendingSearch);
                 }
             } catch (Exception e) {}
         }
