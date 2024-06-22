@@ -1047,7 +1047,9 @@ public class JDBCConnection {
                 highLowPercentTable += "<th>Similarity Rank</th>";
                 highLowPercentTable += "<th>Country/Region</th>";    
                 highLowPercentTable += "<th>Number of Shared foods</th>";  
-                if (showFoods){highLowPercentTable += "<th>Shared Foods</th>";}    
+                if (showFoods) {
+                    highLowPercentTable += "<th>Shared Foods</th>";
+                }    
 
                 highLowPercentTable += "</thead><tbody>";
 
@@ -1057,7 +1059,9 @@ public class JDBCConnection {
                         highLowPercentTable += "<td><b>Country/Region of Choice</b></td>";
                         highLowPercentTable += "<td>" + results.getString("countryregion") + "</td>";
                         highLowPercentTable += "<td>" + results.getInt("numShared") + "</td>";
-                        if (showFoods){highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";}    
+                        if (showFoods) {
+                            highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";
+                        }    
                         highLowPercentTable += "</tr>"; 
                     }
                     else {
@@ -1065,7 +1069,9 @@ public class JDBCConnection {
                         highLowPercentTable += "<td><b>" + i + ")</b></td>";
                         highLowPercentTable += "<td>" + results.getString("countryregion") + "</td>";
                         highLowPercentTable += "<td>" + results.getInt("numShared") + "</td>";
-                        if (showFoods){highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";}    
+                        if (showFoods) {
+                            highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";
+                        }    
                         highLowPercentTable += "</tr>"; 
                     }
                     ++i;
@@ -1073,6 +1079,17 @@ public class JDBCConnection {
                         break;
                     }
                 }
+                if (Integer.parseInt(selectedAmount) > i) {
+                    highLowPercentTable += "<tr>";
+                    highLowPercentTable += "<td><b>" + i + ")+</b></td>";
+                    highLowPercentTable += "<td>All countries/regions n.e.c.</td>";
+                    highLowPercentTable += "<td>0</td>";
+                    if (showFoods) {
+                        highLowPercentTable += "<td>None</td>";
+                    }
+                    highLowPercentTable += "</tr>";
+                }
+
                 highLowPercentTable += "</tbody>";
             }
         } catch (SQLException e) {

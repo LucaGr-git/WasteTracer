@@ -111,8 +111,8 @@ public class PageST3A implements Handler {
                                 "0" :
                                 context.formParam("amount-selector");
 
-        //23 is the amount of food groups with available data
-        for (int i = 1; i < 392; ++i) {
+        // 389 is the amount of countries/regions with available data
+        for (int i = 1; i < 389; ++i) {
             if (Integer.parseInt(selectedAmount) == i) {
                 html += "<option selected value='" + i + "'>" + i + "</option>";
             }
@@ -187,11 +187,6 @@ public class PageST3A implements Handler {
             }
         }
 
-
-
-
-
- 
         html +=  """
                             </select>
                         </div>
@@ -251,9 +246,6 @@ public class PageST3A implements Handler {
                     """;
         }
 
-        
-        
-        
         html += """
            
                         </select>
@@ -328,7 +320,7 @@ public class PageST3A implements Handler {
                     <thead>
                     """;
         }
-        else if (selectedAmount == null || selectedAmount.equals("Please Select")) {
+        else if (selectedAmount == null || selectedAmount.equals("0")) {
             html += "<caption>" + selectedArea + "</caption>";
             html += """
                     <thead>
@@ -368,9 +360,10 @@ public class PageST3A implements Handler {
                 </table>
             </div>
                 """;
-
-        html += "</div></body></html>";
+        html += "<h1>" + selectedArea + " " + selectedAmount + "</h1>";
         
+        html += "</div></body></html>";
+
         context.html(html);
     }
 }
