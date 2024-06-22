@@ -268,36 +268,36 @@ public class PageST3A implements Handler {
         if (sortBySim == null) {
             html += """
                     <div>
-                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
-                        <label for="least-most">Ascending</label>
-                    </div>
-                    <div>
                         <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
                         <label for="most-least">Descending</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
+                        <label for="least-most">Ascending</label>
                     </div>
                     """;
         }
         else if (sortBySim.equals("least-most")) {
             html += """
                     <div>
-                        <input type="radio" name="sort-similarity" value="least-most" id="least-most" checked>
-                        <label for="least-most">Ascending</label>
-                    </div>
-                    <div>
                         <input type="radio" name="sort-similarity" value="most-least" id="most-least">
                         <label for="most-least">Descending</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most" checked>
+                        <label for="least-most">Ascending</label>
                     </div>
                     """;    
         }
         else {
             html += """
                     <div>
-                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
-                        <label for="least-most">Ascending</label>
-                    </div>
-                    <div>
                         <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
                         <label for="most-least">Descending</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
+                        <label for="least-most">Ascending</label>
                     </div>
                     """;
         }
@@ -346,33 +346,30 @@ public class PageST3A implements Handler {
 
             boolean ascendingSearch;
             if (sortBySim.equals("most-least")){ascendingSearch = false;}
-            else{ascendingSearch = true;}
+            else {ascendingSearch = true;}
 
-            
-
-            try{
+            try {
                 if (startYear == null || endYear == null || selectedAmount == null || selectedArea == null){}
                 else if (searchOption.equals("search-common-foods")) {
-                    
-
                     html += JDBCConnection.getST3ACommonFoodTable(selectedArea, Integer.parseInt(startYear), Integer.parseInt(endYear), true, selectedAmount, ascendingSearch);
                 }
                 else if (searchOption.equals("search-loss-%")) {
-
-                    
-
                     html += JDBCConnection.getST3ALossPercentageTable(selectedArea, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, ascendingSearch);
                 }
                 else {
-
-                    
-                    
                     html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedArea, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, true, ascendingSearch);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
         }
-        
 
+        html += """
+                </table>
+            </div>
+                """;
+
+        html += "</div></body></html>";
         
         context.html(html);
     }

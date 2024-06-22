@@ -261,7 +261,7 @@ public class PageST2A implements Handler {
                 <h1>Search Loss by Country</h1>
                 <table>
                 """;
-
+        
         if (selectedCountry == null || selectedCountry.equals("Please Select")) {
             html += """
                     <caption>Please select a country</caption>
@@ -294,8 +294,15 @@ public class PageST2A implements Handler {
                 html += "<thead>";
                 html += "<tr>";
                 html += "<th>Food Group</th>";
-                html += "<th>" + startYear + " Loss %" + "</th>";
-                html += "<th>" + endYear + " Loss %" + "</th>";
+
+                if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+                    html += "<th>" + startYear + " Loss %" + "</th>";
+                    html += "<th>" + endYear + " Loss %" + "</th>";
+                }
+                else {
+                    html += "<th>Start Year Loss %</th>";
+                    html += "<th>End Year Loss %</th>";
+                }
 
                 html += "<th>Difference</th>";
 
@@ -312,7 +319,7 @@ public class PageST2A implements Handler {
 
                 String query = JDBCConnection.getST2AQuery(selectedCountry, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
 
-                if (query != null) {
+                if (query != null && priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
                     html += JDBCConnection.ST2ABTableHTML(query, activity, causeOfLoss, foodSupply);
                 }
             } 
@@ -335,7 +342,9 @@ public class PageST2A implements Handler {
                 }
                 html += "</tr></thead>";
 
-                html += JDBCConnection.getST2AQueryAllYears(selectedCountry, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+                if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+                    html += JDBCConnection.getST2AQueryAllYears(selectedCountry, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+                }
             }
 
         html += """

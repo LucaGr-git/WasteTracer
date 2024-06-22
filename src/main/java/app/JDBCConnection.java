@@ -1043,21 +1043,16 @@ public class JDBCConnection {
 
             int i = 0;
             if (Integer.parseInt(selectedAmount) != 0) {
-                if (ascendingSearch){
-                    highLowPercentTable += "<th>Similarity Rank (Reversed)</th>";  } 
-                else{highLowPercentTable += "<th>Similarity Rank</th>";}
 
+                highLowPercentTable += "<th>Similarity Rank</th>";
                 highLowPercentTable += "<th>Country/Region</th>";    
                 highLowPercentTable += "<th>Number of Shared foods</th>";  
                 if (showFoods){highLowPercentTable += "<th>Shared Foods</th>";}    
 
-
+                highLowPercentTable += "</thead><tbody>";
 
                 while (results.next()) {
                     if (i == 0) {
-
-                  
-                        
                         highLowPercentTable += "<tr>";
                         highLowPercentTable += "<td><b>Country/Region of Choice</b></td>";
                         highLowPercentTable += "<td>" + results.getString("countryregion") + "</td>";
@@ -1066,8 +1061,6 @@ public class JDBCConnection {
                         highLowPercentTable += "</tr>"; 
                     }
                     else {
-                       
-                        
                         highLowPercentTable += "<tr>";
                         highLowPercentTable += "<td><b>" + i + ")</b></td>";
                         highLowPercentTable += "<td>" + results.getString("countryregion") + "</td>";
@@ -1080,6 +1073,7 @@ public class JDBCConnection {
                         break;
                     }
                 }
+                highLowPercentTable += "</tbody>";
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -1346,6 +1340,5 @@ public class JDBCConnection {
         }
         return highLowPercentTable;
     }
-    
- 
+     
 }
