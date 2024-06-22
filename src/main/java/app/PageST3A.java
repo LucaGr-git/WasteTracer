@@ -103,7 +103,7 @@ public class PageST3A implements Handler {
                         <div>
                             <p>No. of Similar Countries Shown</p>
                             <div class='custom-select-wrapper'>
-                                <select id='amount-selector' name='amount-selector' required>
+                                <select id='amount-selector' name='amount-selector' required onchange="this.form.submit()">
                                     <option>Please Select</option>
                 """;
             
@@ -139,7 +139,7 @@ public class PageST3A implements Handler {
                         <div>
                             <p>Available years</p>
                             <div class="custom-select-wrapper">
-                                <select id="year-selector" name="year-selector">
+                                <select id="year-selector" name="year-selector" onchange="this.form.submit()">
                  """;
 
         String selectedYear = context.formParam("year-selector");
@@ -175,15 +175,15 @@ public class PageST3A implements Handler {
         if (searchOption == null || searchOption.equals("search-common-foods")) {
             html += """
                     <div>
-                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods" checked>
+                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods" checked onchange="this.form.submit()">
                         <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
                     </div>
                     <div>
-                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%">
+                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%" onchange="this.form.submit()">
                         <label for="search-loss-%">Search by loss %</label>
                     </div>
                     <div>
-                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods">
+                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods" onchange="this.form.submit()">
                         <label for="search-loss-%-common-foods">Search by loss % and common foods</label>
                     </div>
                     """;    
@@ -191,15 +191,15 @@ public class PageST3A implements Handler {
         else if (searchOption.equals("search-loss-%")) {
             html += """
                     <div>
-                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods">
+                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods" onchange="this.form.submit()">
                         <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
                     </div>
                     <div>
-                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%" checked>
+                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%" checked onchange="this.form.submit()">
                         <label for="search-loss-%">Search by loss %</label>
                     </div>
                     <div>
-                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods">
+                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods" onchange="this.form.submit()">
                         <label for="search-loss-%-common-foods">Search by loss % and common foods</label>
                     </div>
                     """;
@@ -207,15 +207,15 @@ public class PageST3A implements Handler {
         else {
             html += """
                     <div>
-                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods">
+                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods" onchange="this.form.submit()">
                         <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
                     </div>
                     <div>
-                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%">
+                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%" onchange="this.form.submit()">
                         <label for="search-loss-%">Search by loss %</label>
                     </div>
                     <div>
-                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods" checked>
+                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods" checked onchange="this.form.submit()">
                         <label for="search-loss-%-common-foods">Search by loss % and common foods</label>
                     </div>
                     """;
@@ -235,11 +235,11 @@ public class PageST3A implements Handler {
         if (sortBySim == null) {
             html += """
                     <div>
-                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
+                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked onchange="this.form.submit()">
                         <label for="most-least">Descending</label>
                     </div>
                     <div>
-                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most" onchange="this.form.submit()">
                         <label for="least-most">Ascending</label>
                     </div>
                     """;
@@ -247,11 +247,11 @@ public class PageST3A implements Handler {
         else if (sortBySim.equals("least-most")) {
             html += """
                     <div>
-                        <input type="radio" name="sort-similarity" value="most-least" id="most-least">
+                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" onchange="this.form.submit()">
                         <label for="most-least">Descending</label>
                     </div>
                     <div>
-                        <input type="radio" name="sort-similarity" value="least-most" id="least-most" checked>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most" checked onchange="this.form.submit()">
                         <label for="least-most">Ascending</label>
                     </div>
                     """;    
@@ -259,11 +259,11 @@ public class PageST3A implements Handler {
         else {
             html += """
                     <div>
-                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
+                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked onchange="this.form.submit()">
                         <label for="most-least">Descending</label>
                     </div>
                     <div>
-                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most" onchange="this.form.submit()">
                         <label for="least-most">Ascending</label>
                     </div>
                     """;
