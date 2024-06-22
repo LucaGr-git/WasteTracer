@@ -28,7 +28,7 @@ public class PageST2B implements Handler {
 
     // URL of this page relative to http://localhost:7001/
     public static final String URL = "/page2B.html";
-    ArrayList<String> priorCountries = new ArrayList<>();
+    ArrayList<String> priorFoodGroups = new ArrayList<>();
 
     @Override
     public void handle(Context context) throws Exception {
@@ -101,7 +101,7 @@ public class PageST2B implements Handler {
         // Some of the CPC code names were changed because they were too verbose
 
         if (selectedFoodGroup != null && !selectedFoodGroup.equals("Please Select")) {
-            priorCountries.add(selectedFoodGroup);
+            priorFoodGroups.add(selectedFoodGroup);
         }
 
         html += """
@@ -118,7 +118,7 @@ public class PageST2B implements Handler {
         
         String startYear = context.formParam("start-year");
 
-        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+        if (priorFoodGroups.size() > 1 && priorFoodGroups.get(priorFoodGroups.size() - 1).equals(priorFoodGroups.get(priorFoodGroups.size() - 2))) {
             for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
                 if (year.equals(startYear)) {
                     html += "<option selected value=" + year + ">" + year + "</option>";
@@ -144,7 +144,7 @@ public class PageST2B implements Handler {
 
         String endYear = context.formParam("end-year");
 
-        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+        if (priorFoodGroups.size() > 1 && priorFoodGroups.get(priorFoodGroups.size() - 1).equals(priorFoodGroups.get(priorFoodGroups.size() - 2))) {
             for (String year : JDBCConnection.getAllAvailableYearsFoodGroup(selectedFoodGroup)) {
                 if (year.equals(endYear)) {
                     html += "<option selected value=" + year + ">" + year + "</option>";
@@ -313,8 +313,15 @@ public class PageST2B implements Handler {
                 html += "<thead>";
                 html += "<tr>";
                 html += "<th>Commodity</th>";
-                html += "<th>" + startYear + " Loss %" + "</th>";
-                html += "<th>" + endYear + " Loss %" + "</th>";
+
+                if (priorFoodGroups.size() > 1 && priorFoodGroups.get(priorFoodGroups.size() - 1).equals(priorFoodGroups.get(priorFoodGroups.size() - 2))) {
+                    html += "<th>" + startYear + " Loss %" + "</th>";
+                    html += "<th>" + endYear + " Loss %" + "</th>";
+                }
+                else {
+                    html += "<th>Start Year Loss %</th>";
+                    html += "<th>End Year Loss %</th>";
+                }
 
                 html += "<th>Difference</th>";
 
@@ -331,7 +338,7 @@ public class PageST2B implements Handler {
 
                 String query = JDBCConnection.getST2BQuery(selectedFoodGroup, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
                 
-                if (query != null) {
+                if (query != null && priorFoodGroups.size() > 1 && priorFoodGroups.get(priorFoodGroups.size() - 1).equals(priorFoodGroups.get(priorFoodGroups.size() - 2))) {
                     html += JDBCConnection.ST2ABTableHTML(query, activity, causeOfLoss, foodSupply);
                 }
             }
@@ -354,7 +361,9 @@ public class PageST2B implements Handler {
                 }
                 html += "</tr></thead>";
                 
-                html += JDBCConnection.getST2BQueryAllYears(selectedFoodGroup, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+                if (priorFoodGroups.size() > 1 && priorFoodGroups.get(priorFoodGroups.size() - 1).equals(priorFoodGroups.get(priorFoodGroups.size() - 2))) {
+                    html += JDBCConnection.getST2BQueryAllYears(selectedFoodGroup, startYear, endYear, activity, causeOfLoss, foodSupply, sortByPercent);
+                }
             }
             html += """
                 </table>
