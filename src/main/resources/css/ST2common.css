@@ -234,6 +234,8 @@ option {
 }
 
 table {
+    position: relative;
+    left: 1vw;
     width: 80%;
     border-collapse: collapse;
     margin-bottom: 5vh;
@@ -258,7 +260,6 @@ thead {
 }
 
 th {
-    white-space: nowrap;
     text-align: left;
 }
 
@@ -271,8 +272,6 @@ tbody tr:nth-child(odd) {
 }
 
 th, td {
-    max-width: 25%;
-    min-width: 20%;
     word-break: normal;
     padding: 12px 8px;
     border: 1px solid white;

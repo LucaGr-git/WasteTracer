@@ -1051,7 +1051,7 @@ public class JDBCConnection {
                     highLowPercentTable += "<th>Shared Foods</th>";
                 }    
 
-                highLowPercentTable += "</thead><tbody>";
+                highLowPercentTable += "</tr></thead><tbody>";
 
                 while (results.next()) {
                     if (i == 0) {
@@ -1222,8 +1222,12 @@ public class JDBCConnection {
         String highLowPercentTable = "";
         
         String ascOrDesc;
-        if (ascendingSearch){ascOrDesc = "ASC";}
-        else{ascOrDesc = "DESC";}
+        if (ascendingSearch) {
+            ascOrDesc = "ASC";
+        }
+        else {
+            ascOrDesc = "DESC";
+        }
 
         Connection connection = null;
 
@@ -1235,7 +1239,7 @@ public class JDBCConnection {
 
             
 
-            String query = "SELECT countryregion, numShared, sharedCommodities, diff, IFNULL( 10 *(numshared * ( 0.5 *numshared)/ (0.35 + diff)), 10000000) as simScore FROM (";
+            String query = "SELECT avg0, countryregion, numShared, sharedCommodities, diff, IFNULL( 10 *(numshared * ( 0.5 *numshared)/ (0.35 + diff)), 10000000) as simScore FROM (";
             
             //INCLUDE  common table 
             query += "SELECT l2.countryregion, COUNT(l2.countryregion) as numShared, group_concat(l1.DESCRIPTOR, ' | ') as sharedCommodities FROM ( ";
@@ -1268,7 +1272,7 @@ public class JDBCConnection {
             query += "    JOIN ( ";
 
             // INCLUDE loss percent table 
-            query += "SELECT DISTINCT *, ABS(avg0 - avg1) AS diff  ";
+            query += "SELECT DISTINCT *, avg0 - avg1 AS diff  ";
             query += " FROM ( SELECT * FROM (SELECT AVG(LOSSPERCENTAGE) AS avg0, IFNULL(PARENTLOCATION, LOSSSTAT.LOCATION) AS countryregion1, (";
             query += "SELECT AVG(LOSSPERCENTAGE) AS avg0 FROM LOSSSTAT JOIN COUNTRYREGION ON LOSSSTAT.LOCATION = COUNTRYREGION.LOCATION ";
             query += "WHERE YEAR >= " + startYear + " AND YEAR <= " + endYear + " GROUP BY LOSSSTAT.LOCATION HAVING LOSSSTAT.LOCATION = '" + countryRegion + "' ) AS avg1  ";
@@ -1293,64 +1297,56 @@ public class JDBCConnection {
             query += ") as losspT ON commonT.countryregion = losspT.countryregion1 ";
             query += "    ORDER BY countryregion = '" + countryRegion + "' DESC, simScore " + ascOrDesc + "; ";
 
-
-
             System.out.println(query);
 
             ResultSet results = statement.executeQuery(query);
 
             int i = 0;
             if (Integer.parseInt(selectedAmount) != 0) {
-                if (ascendingSearch){
-                    highLowPercentTable += "<th>Similarity Rank (Reversed)</th>";  } 
-                else{highLowPercentTable += "<th>Similarity Rank</th>";} 
+                highLowPercentTable += "<th>Similarity Rank</th>";
                 highLowPercentTable += "<th>Country/Region</th>";    
-                highLowPercentTable += "<th>Number of Shared foods</th>";  
-                if (showFoods){highLowPercentTable += "<th>Shared Foods</th>";}
-                highLowPercentTable += "<th>Difference %</th>";
-                highLowPercentTable += "<th>Similarity Score</th>";
-            
-            }   
+                highLowPercentTable += "<th>No. of Shared foods</th>";  
 
-
-
-                while (results.next()) {
-                    if (i == 0) {
-
-                  
-                        
-                        highLowPercentTable += "<tr>";
-
-                        highLowPercentTable += "<td><b>Country/Region of Choice</b></td>";
-                        highLowPercentTable += "<td>" + results.getString("countryregion") + "</td>";
-                        highLowPercentTable += "<td>" + results.getInt("numShared") + "</td>";
-                        if (showFoods){highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";}    
-                        highLowPercentTable += "<td>" + "N/A" + "</td>"; 
-                        highLowPercentTable += "<td>Country of choice</td>";
-                        
-                        highLowPercentTable += "</tr>"; 
-                    }
-                    else {
-                       
-                        highLowPercentTable += "<tr>";
-
-                        highLowPercentTable += "<td><b>" + i + ")</b></td>";
-                        highLowPercentTable += "<td>" + results.getString("countryregion") + "</td>";
-                        highLowPercentTable += "<td>" + results.getInt("numShared") + "</td>";
-                        if (showFoods){highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";}    
-                        highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("diff"))) + "%</td>";
-                        highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("simScore"))) + "</td>";
-
-
-                        highLowPercentTable += "</tr>"; 
-                    }
-                    ++i;
-                    if (i > Integer.parseInt(selectedAmount)) {
-                        break;
-                    }
+                if (showFoods) {
+                    highLowPercentTable += "<th>Shared Foods</th>";
                 }
+                highLowPercentTable += "<th>Average Loss %</th>";
+                highLowPercentTable += "<th>Difference %</th>";
+                highLowPercentTable += "</tr></thead>";
+            }   
+            while (results.next()) {
+                if (i == 0) {
+                    highLowPercentTable += "<tr>";
+                    highLowPercentTable += "<td><b>Country/Region of Choice</b></td>";
+                    highLowPercentTable += "<td>" + results.getString("countryregion") + "</td>";
+                    highLowPercentTable += "<td>" + results.getInt("numShared") + "</td>";
+                    if (showFoods) {
+                        highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";
+                    }    
+                    highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("avg0"))) + "</td>";
+                    highLowPercentTable += "<td>" + "+0.000" + "</td>"; 
+                    highLowPercentTable += "</tr>"; 
+                }
+                else {
+                    highLowPercentTable += "<tr>";
+                    highLowPercentTable += "<td><b>" + i + ")</b></td>";
+                    highLowPercentTable += "<td>" + results.getString("countryregion") + "</td>";
+                    highLowPercentTable += "<td>" + results.getInt("numShared") + "</td>";
+                    if (showFoods) {
+                        highLowPercentTable += "<td>" + results.getString("sharedCommodities") + "</td>";
+                    }    
+                    highLowPercentTable += "<td>" + String.format("%.3f", (results.getFloat("avg0"))) + "</td>";
+                    highLowPercentTable += "<td>" + String.format("%+.3f", (results.getFloat("diff"))) + "%</td>";
+                    highLowPercentTable += "</tr>"; 
+                }
+                ++i;
+                if (i > Integer.parseInt(selectedAmount)) {
+                    break;
+                }
+                highLowPercentTable += "</tbody>";
             }
-         catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.err.println(e.getMessage());
         } finally {
             try {
