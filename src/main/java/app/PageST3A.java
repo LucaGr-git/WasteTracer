@@ -77,21 +77,25 @@ public class PageST3A implements Handler {
         for (String area : countriesAndRegions.keySet()) {
             if (selectedArea != null && area.equals(selectedArea)) {
                 if (countriesAndRegions.get(area) == null) {
-                    html += "<option value=" + area + " selected>" + area + "</option>";
+                    html += "<option value=\"" + area + "\" selected>" + area + "</option>";
                 }
                 else {
-                    html += "<option value=" + area + " selected>" + area + " -- " + countriesAndRegions.get(area) + "</option>";
+                    html += "<option value=\"" + area + "\" selected>" + area + " -- " + countriesAndRegions.get(area) + "</option>";
                 }
             }
             else {
                 if (countriesAndRegions.get(area) == null) {
-                    html += "<option value=" + area + ">" + area + "</option>";
+                    html += "<option value=\"" + area + "\">" + area + "</option>";
                 }
                 else {
-                    html += "<option value=" + area + ">" + area + " -- " + countriesAndRegions.get(area) + "</option>";
+                    html += "<option value=\"" + area + "\">" + area + " -- " + countriesAndRegions.get(area) + "</option>";
                 }
             }
         } 
+
+        if (selectedArea != null && !selectedArea.equals("Please Select")) {
+            priorAreas.add(selectedArea);
+        }
 
         html += """
                                 </select>
@@ -99,49 +103,13 @@ public class PageST3A implements Handler {
                             </div>        
                         </div>
                     </div>
-                    <div class='select-area'>
-                        <div>
-                            <p>No. of Similar Countries Shown</p>
-                            <div class='custom-select-wrapper'>
-                                <select id='amount-selector' name='amount-selector' required onchange="this.form.submit()">
-                                    <option>Please Select</option>
-                """;
-            
-        String selectedAmount = (context.formParam("amount-selector") == null || context.formParam("amount-selector").equals("Please Select")) ?
-                                "0" :
-                                context.formParam("amount-selector");
-
-        // 389 is the amount of countries/regions with available data
-        for (int i = 1; i < 389; ++i) {
-            if (Integer.parseInt(selectedAmount) == i) {
-                html += "<option selected value='" + i + "'>" + i + "</option>";
-            }
-            else {
-                html += "<option value='" + i + "'>" + i + "</option>";
-            }
-        }
-
-        html += """
-                                </select>
-                                <span class='custom-arrow'></span>
-                            </div>
-                        </div>
-                    </div>
-                """;
-        
-
-        if (selectedArea != null && !selectedArea.equals("Please Select")) {
-            priorAreas.add(selectedArea);
-        }
-
-        html +=  """                         
                     <div class="select-area">
                         <div>
                             <p>Available years</p>
                             <div class="custom-select-wrapper">
                                 <select id="year-selector" name="year-selector" onchange="this.form.submit()">
-                 """;
-
+                """;
+            
         String selectedYear = context.formParam("year-selector");
 
         if (priorAreas.size() > 1 && priorAreas.get(priorAreas.size() - 1).equals(priorAreas.get(priorAreas.size() - 2))) {
@@ -157,6 +125,34 @@ public class PageST3A implements Handler {
         else {
             for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedArea)) {
                 html += "<option value=" + year + ">" + year + "</option>";
+            }
+        }
+
+        html += """
+                                </select>
+                                <span class='custom-arrow'></span>
+                            </div>
+                        </div>
+                    </div>            
+                    <div class='select-area'>
+                        <div>
+                            <p>No. of Similar Countries Shown</p>
+                            <div class='custom-select-wrapper'>
+                                <select id='amount-selector' name='amount-selector' required onchange="this.form.submit()">
+                                    <option>Please Select</option>        
+                 """;
+
+        String selectedAmount = (context.formParam("amount-selector") == null || context.formParam("amount-selector").equals("Please Select")) ?
+        "0" :
+        context.formParam("amount-selector");
+
+        // 389 is the amount of countries/regions with available data
+        for (int i = 1; i < 389; ++i) {
+            if (Integer.parseInt(selectedAmount) == i) {
+                html += "<option selected value='" + i + "'>" + i + "</option>";
+            }
+            else {
+                html += "<option value='" + i + "'>" + i + "</option>";
             }
         }
         
@@ -186,7 +182,7 @@ public class PageST3A implements Handler {
                         <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods" onchange="this.form.submit()">
                         <label for="search-loss-%-common-foods">Search by loss % and common foods</label>
                     </div>
-                    """;    
+                    """;   
         }
         else if (searchOption.equals("search-loss-%")) {
             html += """
@@ -222,13 +218,9 @@ public class PageST3A implements Handler {
         }
 
         html += """
-           
-                        </select>
-                    
                 </div>
                 <h4>Sort by Similarity</h4>
                 <div class='radio-buttons'>
-                    
                     """;
                             
         String sortBySim = context.formParam("sort-similarity");
@@ -317,14 +309,38 @@ public class PageST3A implements Handler {
 
             try {
                 if (selectedYear == null || selectedAmount == null || selectedArea == null){}
-                else if (searchOption.equals("search-common-foods")) {
-                    html += JDBCConnection.getST3ACommonFoodTable(selectedArea, Integer.parseInt(selectedYear), Integer.parseInt(selectedYear), true, selectedAmount, ascendingSearch);
-                }
-                else if (searchOption.equals("search-loss-%")) {
-                    html += JDBCConnection.getST3ALossPercentageTable(selectedArea, Integer.parseInt(selectedYear), Integer.parseInt(selectedYear), selectedAmount, ascendingSearch);
+                else if (priorAreas.size() > 1 && priorAreas.get(priorAreas.size() - 1).equals(priorAreas.get(priorAreas.size() - 2))) {
+                    if (searchOption.equals("search-common-foods")) {
+                        html += JDBCConnection.getST3ACommonFoodTable(selectedArea, Integer.parseInt(selectedYear), Integer.parseInt(selectedYear), true, selectedAmount, ascendingSearch);
+                    }
+                    else if (searchOption.equals("search-loss-%")) {
+                        html += JDBCConnection.getST3ALossPercentageTable(selectedArea, Integer.parseInt(selectedYear), Integer.parseInt(selectedYear), selectedAmount, ascendingSearch);
+                    }
+                    else {
+                        html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedArea, Integer.parseInt(selectedYear), Integer.parseInt(selectedYear), selectedAmount, true, ascendingSearch);
+                    }
                 }
                 else {
-                    html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedArea, Integer.parseInt(selectedYear), Integer.parseInt(selectedYear), selectedAmount, true, ascendingSearch);
+                    if (searchOption.equals("search-common-foods")) {
+                        html += "<th>Similarity Rank</th>";
+                        html += "<th>Country/Region</th>";  
+                        html += "<th>No. of Shared Foods</th>";
+                        html += "<th>Shared Foods</th></thead>";
+                    }
+                    else if (searchOption.equals("search-loss-%")) {
+                        html += "<th>Similarity Rank</th>";
+                        html += "<th>Country/Region</th>";
+                        html += "<th>Average Loss %</th>";
+                        html += "<th>Difference %</th></thead>";
+                    }
+                    else {
+                        html += "<th>Similarity Rank</th>";
+                        html += "<th>Country/Region</th>";
+                        html += "<th>No. of Shared Foods</th>";
+                        html += "<th>Shared Foods</th>";
+                        html += "<th>Average Loss %</th>";
+                        html += "<th>Difference %</th></thead>";
+                    }
                 }
             } catch (Exception e) {
                 System.err.println(e.getMessage());
