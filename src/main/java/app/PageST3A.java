@@ -228,11 +228,11 @@ public class PageST3A implements Handler {
             html += """
                     <div>
                         <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked onchange="this.form.submit()">
-                        <label for="most-least">Descending</label>
+                        <label for="most-least">Most to Least</label>
                     </div>
                     <div>
                         <input type="radio" name="sort-similarity" value="least-most" id="least-most" onchange="this.form.submit()">
-                        <label for="least-most">Ascending</label>
+                        <label for="least-most">Least to Most</label>
                     </div>
                     """;
         }
@@ -240,11 +240,11 @@ public class PageST3A implements Handler {
             html += """
                     <div>
                         <input type="radio" name="sort-similarity" value="most-least" id="most-least" onchange="this.form.submit()">
-                        <label for="most-least">Descending</label>
+                        <label for="most-least">Most to Least</label>
                     </div>
                     <div>
                         <input type="radio" name="sort-similarity" value="least-most" id="least-most" checked onchange="this.form.submit()">
-                        <label for="least-most">Ascending</label>
+                        <label for="least-most">Least to Most</label>
                     </div>
                     """;    
         }
@@ -252,11 +252,11 @@ public class PageST3A implements Handler {
             html += """
                     <div>
                         <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked onchange="this.form.submit()">
-                        <label for="most-least">Descending</label>
+                        <label for="most-least">Most to Least</label>
                     </div>
                     <div>
                         <input type="radio" name="sort-similarity" value="least-most" id="least-most" onchange="this.form.submit()">
-                        <label for="least-most">Ascending</label>
+                        <label for="least-most">Least to Most</label>
                     </div>
                     """;
         }
