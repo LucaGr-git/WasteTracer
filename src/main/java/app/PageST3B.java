@@ -187,9 +187,6 @@ public class PageST3B implements Handler {
         
         html += """ 
                     </div>
-                    <div>
-                        <button>Search Data</button>
-                    </div>
                 </form>
             </div>
                 """;
