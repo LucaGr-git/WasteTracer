@@ -14,112 +14,99 @@ import java.sql.Statement;
 
 public class PageST3A implements Handler {
 
-    // URL of this page relative to http://localhost:7001/
     public static final String URL = "/page3A.html";
+    public static final String DATABASE = "jdbc:sqlite:database/foodloss.db";
+    ArrayList<String> priorCountries = new ArrayList<>();
 
     @Override
     public void handle(Context context) throws Exception {
         String html = "<html>";
 
         html += "<head>" + 
-                "<title>WasteTracer - Search Similar Data by COuntry/Region</title>";
+                "<title>WasteTracer - Search Similar Data by Country/Region</title>";
 
-        html += "<link rel='stylesheet' type='text/css' href='common.css' />";
-        html += "<link rel='stylesheet' type='text/css' href='ST2common.css' />";
+        html += "<link rel='stylesheet' type='text/css' href='common.css' />" +
+                "<link rel='stylesheet' type='text/css' href='ST2common.css'/>";
         html += "</head>";
 
         html += "<body>";
 
         html += """
-            <div class='topnav'>
+            <div class="topnav">
                 <a href='/'><img src='logo.png' width='200'></a>
-                <ul class='topnav-links'>
-                    <div id='option-1' class='about-us'>
-                        <a href='/mission.html'>About Us</a>
+                <ul class="topnav-links">
+                    <div id='option-1' class="about-us">
+                        <a href="/mission.html">About Us</a>
                     </div>
-                    <div class='subtask'>
+                    <div class="subtask">
                         <li>Search Raw Data</li>
-                        <div class='subtask-dropdown'>
-                            <a href='/page2A.html'>Search by Country</a>
-                            <a href='/page2B.html'>Search by Food Group</a>
+                        <div class="subtask-dropdown">
+                            <a href="/page2A.html">Search by Country</a>
+                            <a href="/page2B.html">Search by Food Group</a>
                         </div>
                     </div>
-                    <div class='subtask'>
+                    <div class="subtask">
                         <li>Search Similar Data</li>
-                        <div class='subtask-dropdown'>
-                            <a href='/page3A.html'>Search by Country/Region</a>
-                            <a href='/page3B.html'>Search by Food Group</a>
+                        <div class="subtask-dropdown">
+                            <a href="/page3A.html">Search by Country/Region</a>
+                            <a href="/page3B.html">Search by Food Group</a>
                         </div>
                     </div>
                 </ul>
             </div>
         """;
-        
+
         html += "<div class='content'>";
 
         html += """
-            <div class='filters'>    
+            <div class="filters">
                 <h2>Filters</h2>
-                <form class='form' action='/page3A.html' method='POST' id='ST3A-form' name='ST3A-form'>
-                    <div class='select-area'>
+                <form class="form" action='/page3A.html' method='POST' id='STA-form' name='ST3A-form'>
+                    <div class="select-area">
                         <div>
-                            <p>Countries and Regions</p>
+                            <p>Countries/Regions</p>
                             <div class='custom-select-wrapper'>
-                                <select id='country-region-selector' name='country-region-selector' onchange='this.form.submit()'>
+                                <select id="country-selector" name='country-selector' onchange="this.form.submit()" required>
                                     <option>Please Select</option>
                 """;
 
-        String selectedCountryRegion = context.formParam("country-region-selector");
+        String selectedCountry = context.formParam("country-selector");
 
-        LinkedHashMap<String, String> countriesAndRegions = JDBCConnection.getAllCountriesRegions();
-
-        for (String area : countriesAndRegions.keySet()) {
-            if (countriesAndRegions.get(area) == null) {
-                html += "<option value='" + area + "'>" + area + "</option>";
+        for (String country : JDBCConnection.getAllCountriesRegions()) {
+            if (selectedCountry != null && country.equals(selectedCountry)) {
+                html += "<option selected>" + country + "</option>";
             }
             else {
-                html += "<option value='" + area + "'>" + countriesAndRegions.get(area) + " -- " + area + "</option>";
+                html += "<option>" + country + "</option>";
             }
-        }
+        } 
 
         html += """
                                 </select>
                                 <span class='custom-arrow'></span>
-                            </div>
+                            </div>        
                         </div>
                     </div>
                     <div class='select-area'>
                         <div>
-                            <p>Available Years</p>
-                            <div class='custom-select-wrapper'>
-                                <select id='year-selector' name='year-selector'>
-                """;
-
-        String selectedYear = context.formParam("year-selector");
-
-        for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountryRegion)) {
-            html += "<option value='" + year + "'>" + year + "</option>";
-        }
-
-        html += """
-                                </select>
-                                <span class='custom-arrow'></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='select-area'>
-                        <div>
-                            <p>No. of similar areas shown</p>
+                            <p>No. of Similar Countries Shown</p>
                             <div class='custom-select-wrapper'>
                                 <select id='amount-selector' name='amount-selector' required>
                                     <option>Please Select</option>
                 """;
-        
-        String selectedAmount = context.formParam("amount-selector");
+            
+        String selectedAmount = (context.formParam("amount-selector") == null || context.formParam("amount-selector").equals("Please Select")) ?
+                                "0" :
+                                context.formParam("amount-selector");
 
-        //392 is the amount of available regions/countries
+        //23 is the amount of food groups with available data
         for (int i = 1; i < 392; ++i) {
-            html += "<option value='" + i + "'>" + i + "</option>";
+            if (Integer.parseInt(selectedAmount) == i) {
+                html += "<option selected value='" + i + "'>" + i + "</option>";
+            }
+            else {
+                html += "<option value='" + i + "'>" + i + "</option>";
+            }
         }
 
         html += """
@@ -128,71 +115,281 @@ public class PageST3A implements Handler {
                             </div>
                         </div>
                     </div>
-                    <h4>Search Similarity by</h4>
-                    <div class='radio-buttons'>
-                        <div>
-                            <input type='radio' name='similarity-choice' value='food-in-common' id='food-in-common'>
-                            <label for='food-in-common'>Foods in common</label>
+                """;
+        
+
+        if (selectedCountry != null && !selectedCountry.equals("Please Select")) {
+            priorCountries.add(selectedCountry);
+        }
+
+        html +=  """
+                                </select>                            
+                    
+                    <div class="year-wrapper">
+                        <div class="start-year-wrapper">
+                            <p>Start Year</p>
+                            <select id="start-year" name="start-year"r>
+                 """;
+
+        String startYear = context.formParam("start-year");
+
+        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+                if (year.equals(startYear)) {
+                    html += "<option selected value=" + year + ">" + year + "</option>";
+                }
+                else {
+                    html += "<option value=" + year + ">" + year + "</option>";
+                }
+            }
+        }
+        else {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+                html += "<option value=" + year + ">" + year + "</option>";
+            }
+        }
+        
+        html +=  """
+                            </select>
                         </div>
-                        <div>
-                            <input type='radio' name='similarity-choice' value='loss-percent' id='loss-percent'>
-                            <label for='loss-percent'>Loss %</label>
-                        </div>
-                        <div>
-                            <input type='radio' name='similarity-choice' value='common-and-loss' id='common-and-loss'>
-                            <label for='common-and-loss'>Common foods and loss % (Country Exclusive)</label>
+                        <div class="end-year-wrapper">
+                            <p>End Year</p>
+                            <select id="end-year" name="end-year">
+                 """;
+        
+        String endYear = context.formParam("end-year");
+
+        if (priorCountries.size() > 1 && priorCountries.get(priorCountries.size() - 1).equals(priorCountries.get(priorCountries.size() - 2))) {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+                if (year.equals(endYear)) {
+                    html += "<option selected value=" + year + ">" + year + "</option>";
+                }
+                else {
+                    html += "<option value=" + year + ">" + year + "</option>";
+                }
+            }
+        }
+        else {
+            for (String year : JDBCConnection.getAllAvailableYearsCountryRegion(selectedCountry)) {
+                html += "<option selected value=" + year + ">" + year + "</option>";
+            }
+        }
+
+
+
+
+
+ 
+        html +=  """
+                            </select>
                         </div>
                     </div>
+                    <h4>Search Options</h4>
+                    <div class='radio-buttons'>
+                        
+                """;
+
+        String searchOption = context.formParam("search-options");
+        if (searchOption == null) {
+            html += """
                     <div>
-                        <button type='submit'>Search Data</button>
+                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods">
+                        <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%">
+                        <label for="search-loss-%">Search by loss %</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods">
+                        <label for="search-loss-%-common-foods">Search by loss % and common foods</label>
+                    </div>
+                    """;
+        }
+        else if (searchOption.equals("search-common-foods")) {
+            html += """
+                    <div>
+                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods" checked>
+                        <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%">
+                        <label for="search-loss-%">Search by loss %</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods">
+                        <label for="search-loss-%-common-foods">Search by loss % and common foods</label>
+                    </div>
+                    """;    
+        }
+        else if (searchOption.equals("search-loss-%")) {
+            html += """
+                    <div>
+                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods">
+                        <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%" checked>
+                        <label for="search-loss-%">Search by loss %</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods">
+                        <label for="search-loss-%-common-foods">Search by loss % and common foods</label>
+                    </div>
+                    """;
+        }
+        else {
+            html += """
+                    <div>
+                        <input type="radio" name="search-options" value="search-common-foods" id="search-common-foods">
+                        <label for="search-common-foods">Search by common foods (with at least 1 food in common)</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="search-options" value="search-loss-%" id="search-loss-%">
+                        <label for="search-loss-%">Search by loss %</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="search-options" value="search-loss-%-common-foods" id="search-loss-%-common-foods" checked>
+                        <label for="search-loss-%-common-foods">Search by loss % and common foods</label>
+                    </div>
+                    """;
+        }
+
+        
+        
+        
+        html += """
+           
+                        </select>
+                    
+                </div>
+                <h4>Sort Search By</h4>
+                <div class='radio-buttons'>
+                    
+                    """;
+                            
+        String sortBySim = context.formParam("sort-similarity");
+        if (sortBySim == null) {
+            html += """
+                    <div>
+                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
+                        <label for="most-least">Most -> Least Similarity</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
+                        <label for="least-most">Least -> Most Similarity</label>
+                    </div>
+                    """;
+        }
+        else if (sortBySim.equals("least-most")) {
+            html += """
+                    <div>
+                        <input type="radio" name="sort-similarity" value="most-least" id="most-least">
+                        <label for="most-least">Most -> Least Similarity</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most" checked>
+                        <label for="least-most">Least -> Most Similarity</label>
+                    </div>
+                    """;    
+        }
+        else {
+            html += """
+                    <div>
+                        <input type="radio" name="sort-similarity" value="most-least" id="most-least" checked>
+                        <label for="most-least">Most -> Least Similarity</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="sort-similarity" value="least-most" id="least-most">
+                        <label for="least-most">Least -> Most Similarity</label>
+                    </div>
+                    """;
+        }
+
+        html += """
+                    </div>
+                    <div>
+                        <button type="submit">Search Data</button>
                     </div>
                 </form>
             </div>
             """;
 
-        String similarityChoice = context.formParam("similarity-choice");
-        
-        html += """
+        html += """ 
             <div class="data-container">
-                <h1>Search Area by Similarity</h1>
+                <h1>Search Country/Region by Similarity</h1>
                 <table>
                 """;
-        
-        if (selectedCountryRegion == null || selectedCountryRegion.equals("Please Select")) {
+
+        if (searchOption == null) {
             html += """
-                    <caption>Please select a country or region</caption>
+                    <caption>Please select select filters and search</caption>
                     <thead>
                         <tr>
                             <th>Similarity Rank</th>
-                            <th>Area</th>
+                            <th>Food Group</th>
                         </tr>
-                    </thead>
-                    """; 
-        }
-        else if (selectedYear == null || selectedYear.equals("")) {
-            html += "<caption>" + selectedCountryRegion + "</caption>";
-            html += """
                     <thead>
-                        <tr>
-                            <th>Similarity Rank</th>
-                            <th>Area</th>
-                        </tr>
-                    </thead>
                     """;
+        }
+        else if (selectedCountry == null || selectedCountry.equals("Please Select")) {
+            html += """
+                    <caption>Please select a commodity</caption>
+                    <thead>
+                        <tr>
+                            <th>Similarity Rank</th>
+                            <th>Food Group</th>
+                        </tr>
+                    <thead>
+                    """;
+        }
+        else if (selectedAmount == null || selectedAmount.equals("Please Select")) {
+            html += "<caption>" + selectedCountry + "</caption>";
+            html += """
+                    <thead>
+                        <tr>
+                            <th>Similarity Rank</th>
+                            <th>Food Group</th>
+                        </tr>
+                    <thead>
+                    """;
+
         }
         else {
-            html += "<caption>" + selectedCountryRegion + "</caption>";
-            html += """
-                    <thead>
-                        <tr>
-                            <th>Similarity Rank</th>
-                            <th>Area</th>
-                        </tr>
-                    </thead>
-                    """;
-        }
+            html += "<caption>" + selectedCountry + "</caption>";
+            html += "<thead>";
+            html += "<tr>";
 
+            boolean ascendingSearch;
+            if (sortBySim.equals("most-least")){ascendingSearch = false;}
+            else{ascendingSearch = true;}
+
+            
+
+            try{
+                if (startYear == null || endYear == null || selectedAmount == null || selectedCountry == null){}
+                else if (searchOption.equals("search-common-foods")) {
+                    
+
+                    html += JDBCConnection.getST3ACommonFoodTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), true, selectedAmount, ascendingSearch);
+                }
+                else if (searchOption.equals("search-loss-%")) {
+
+                    
+
+                    html += JDBCConnection.getST3ALossPercentageTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, ascendingSearch);
+                }
+                else {
+
+                    
+                    
+                    html += JDBCConnection.getST3ACommonFoodAndLossPercentageTable(selectedCountry, Integer.parseInt(startYear), Integer.parseInt(endYear), selectedAmount, true, ascendingSearch);
+                }
+            } catch (Exception e) {}
+        }
+        
+
+        
         context.html(html);
     }
-
 }
