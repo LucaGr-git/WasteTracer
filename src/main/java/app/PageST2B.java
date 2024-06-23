@@ -53,9 +53,6 @@ public class PageST2B implements Handler {
             <div class="topnav">
                 <a href='/'><img src='logo.png' width='200'></a>
                 <ul class="topnav-links">
-                    <div id='option-1' class="about-us">
-                        <a href="/mission.html">About Us</a>
-                    </div>
                     <div class="subtask">
                         <li>Search Raw Data</li>
                         <div class="subtask-dropdown">

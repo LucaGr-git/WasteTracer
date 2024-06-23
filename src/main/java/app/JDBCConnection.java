@@ -38,13 +38,58 @@ public class JDBCConnection {
         System.out.println("Created JDBC Connection Object");
     }
 
-        /*Methods to populate select inputs*/
-    public static ArrayList<String> getAllCountries() {
-        ArrayList<String> countries = new ArrayList<String>();
-
+/*Personas*/
+    public static String getPersonas() {
+        String html = "";
 
         Connection connection = null;
 
+        try {
+            connection = DriverManager.getConnection(DATABASE);
+
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            String query = "SELECT username, imgLinkPath, descriptor FROM Persona";
+            ResultSet results = statement.executeQuery(query);
+
+            while (results.next()) {
+                html += "<div class='persona-card'>";
+                html +=     "<img src='" + results.getString("imgLinkPath").substring(25) + "' width='200px'>";
+                html +=     "<div class='persona-details'>";
+                html +=         "<h5>" + results.getString("username") + "</h5>"; 
+
+                if (results.getString("username").equals("Bradley Johnson")) {
+                    html += "<p>Bradley Johnson is a high-ranking employee of a large corporate farming company in Australia. As a father and part of his job at a corporate farming company, he`s interested in the growing movement to be ecologically responsible and protect the environment. He wants to know how he can join this movement to help both his family and company. He currently lives with his family and has been working for around 30 years. He works at and deals with a lot of executive meetings and communications which can be stressful, however his input is taken seriously.</p>";
+                }
+                else {
+                    html += "<p>" + results.getString("descriptor") + "</p>";
+                }
+
+                html +=     "</div>";
+                html += "</div>";
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return html;
+    }
+
+/*Methods to populate select inputs*/
+    public static ArrayList<String> getAllCountries() {
+        ArrayList<String> countries = new ArrayList<String>();
+
+        Connection connection = null;
 
         try {
             connection = DriverManager.getConnection(DATABASE);
@@ -1369,5 +1414,4 @@ public class JDBCConnection {
         }
         return highLowPercentTable;
     }
-     
 }
