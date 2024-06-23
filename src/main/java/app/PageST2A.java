@@ -35,14 +35,14 @@ public class PageST2A implements Handler {
                 <a href='/'><img src='logo.png' width='200'></a>
                 <ul class="topnav-links">
                     <div class="subtask">
-                        <li>Search Raw Data</li>
+                        <li>Search Food Loss Data</li>
                         <div class="subtask-dropdown">
                             <a href="/page2A.html">Search by Country</a>
                             <a href="/page2B.html">Search by Food Group</a>
                         </div>
                     </div>
                     <div class="subtask">
-                        <li>Search Similar Data</li>
+                        <li>Search Data by Similarity</li>
                         <div class="subtask-dropdown">
                             <a href="/page3A.html">Search by Country/Region</a>
                             <a href="/page3B.html">Search by Food Group</a>
