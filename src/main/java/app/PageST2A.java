@@ -205,9 +205,16 @@ public class PageST2A implements Handler {
                             <label for='food-supply-show'>Show food supply stage</label>
                         </div>
                     </div>
-                    <h4>Sort by Difference</h4>
-                    <div class="radio-buttons">
-                    """;
+                """;
+                            
+        if (context.formParam("all-years") == null) {
+            html += "<h4>Sort by Difference</h4>";
+        }
+        else {
+            html += "<h4>Sort by Average Loss %</h4>";
+        }
+        
+        html += "<div class='radio-buttons'>";
                             
         String sortByPercent = context.formParam("sort-by-percent");
         if (sortByPercent == null) {
