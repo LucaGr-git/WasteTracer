@@ -29,7 +29,7 @@ body {
 }
 
 .topnav-links {
-   width: 600px;
+   width: 500px;
    margin-right: 5%;
    display: flex;
    flex-direction: row;
@@ -39,7 +39,7 @@ body {
 }
 
 .topnav-links div {
-   flex-grow: 1;
+   width: 250px;
 }
 
 .topnav-links li, .about-us a {
