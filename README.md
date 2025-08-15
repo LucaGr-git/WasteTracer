@@ -9,6 +9,12 @@ The app allows for waste data to be searched by 4 main categories (each with the
 
 The app aggregates this data by updating a Third Normal Form SQL database by parsing csv data, and performing modular queries built directly with Java. 
 
+## Group Members
+| Name            | 
+|---------------------|
+| Luca Grosso           |
+| Joe Czerniecki           | 
+
 ## 🚀 Key Features
 
 | Category            | Feature                                                                 |
