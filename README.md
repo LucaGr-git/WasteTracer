@@ -42,7 +42,7 @@ src/main/java/app/App.java
 # 4. Click “Run” (or right-click → Run Java)
 # 5. Navigate to:
 http://localhost:7000
-or whatever is linked in the javalin terminal message
+# or whatever is linked in the javalin terminal message
 ```
 
 ### 🧰 Run the Optional Helper Program (CSV → SQLite Import)
