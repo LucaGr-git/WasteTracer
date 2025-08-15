@@ -1,6 +1,6 @@
 # 🌍 WasteTracer — Food Loss & Waste Data Web App (Javalin + SQLite)
 
-**WasteTracer** is a lightweight Java web application built with **Javalin**, **Thymeleaf** and **SQLite** that allows users to **search** and **filter** through country-level food loss and waste data.  
+**WasteTracer** is a lightweight Java web application built with **Javalin** and **SQLite** that allows users to **search** and **filter** through country-level food loss and waste data.  
 The app allows for waste data to be searched by 4 main categories (each with their own filtering options)
 - Searching data by Food Group
 - Searching data by Country
@@ -57,7 +57,6 @@ src/main/java/helper/FoodProcessCSV.java
 | Category         | Tools / Libraries                           |
 |------------------|---------------------------------------------|
 | Web Framework    | Javalin (Java)                               |
-| Template Engine  | Thymeleaf                                    |
 | Database         | SQLite (+ JDBCConnection class)              |
 | Helper Program   | FoodProcessCSV (Java → JDBC CSV import)      |
 | Styling          | CSS (common.css)                             |
