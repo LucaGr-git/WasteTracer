@@ -7,7 +7,7 @@ The app allows for waste data to be searched by 4 main categories (each with the
 - Search Food Groups by similarity in statistics with other Food Groups
 - Search Countries by similarity in statistics with other Countries
 
-The app aggregates this data by updating a Third Normal Form SQL database by parsing csv data.
+The app aggregates this data by updating a Third Normal Form SQL database by parsing csv data, and performing modular queries built directly with Java. 
 
 ## 🚀 Key Features
 
@@ -69,9 +69,10 @@ src/main/java/helper/FoodProcessCSV.java
 
 | Page                          | Screenshot |
 |------------------------------|------------|
-| **Index / Search Page**      | `./screenshots/index.png` |
-| **Filtered Results Page**    | `./screenshots/results.png` |
-| **Mission Page**             | `./screenshots/mission.png` |
+| **Gome Page**      | <img width="1902" height="913" alt="Screenshot 2025-08-16 at 12 37 03 am" src="https://github.com/user-attachments/assets/59637eae-ab08-4c70-9cd0-b39835912858" />|
+| **Country Search Page**    | <img width="1885" height="914" alt="Screenshot 2025-08-16 at 12 37 29 am" src="https://github.com/user-attachments/assets/9e7ee4d1-27c8-4c7c-a745-ac678aedf808" />|
+| **Food Group Similarity Search Page**             | <img width="1899" height="908" alt="Screenshot 2025-08-16 at 12 37 44 am" src="https://github.com/user-attachments/assets/6e9bd450-6251-4772-b9f8-cf64684b9cf4" />
+|
 
 
 ---
